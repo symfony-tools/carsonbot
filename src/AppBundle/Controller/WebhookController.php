@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\GitHub\StatusManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -26,6 +27,17 @@ class WebhookController extends Controller
         switch ($event) {
             case 'issue_comment':
                 $responseData = $this->handleIssueCommentEvent($data);
+                break;
+            case 'pull_request':
+                switch ($data['action']) {
+                    case 'opened':
+                        $responseData = $this->handlePullRequestCreateEvent($data);
+                        break;
+                    default:
+                        $responseData = [
+                            'unsupported_action' => $data['action']
+                        ];
+                }
                 break;
             default:
                 $responseData = [
@@ -58,6 +70,23 @@ class WebhookController extends Controller
 
         return [
             'issue' => $issueNumber,
+            'status_change' => $newStatus,
+        ];
+    }
+
+    private function handlePullRequestCreateEvent(array $data)
+    {
+        $prNumber = $data['pull_request']['number'];
+        $newStatus = StatusManager::STATUS_NEEDS_REVIEW;
+
+        // hacky way to not actually try to talk to GitHub when testing
+        if ($this->container->getParameter('kernel.environment') != 'test') {
+            $this->get('app.issue_status_changer')
+                ->setIssueStatusLabel($prNumber, $newStatus);
+        }
+
+        return [
+            'pull_request' => $prNumber,
             'status_change' => $newStatus,
         ];
     }
