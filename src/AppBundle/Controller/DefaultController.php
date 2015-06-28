@@ -2,16 +2,24 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use AppBundle\GitHub\StatusManager;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-class DefaultController
+class DefaultController extends Controller
 {
     /**
      * @Route("/")
      */
     public function homepageAction()
     {
-        return new Response('<img src="https://pbs.twimg.com/media/B6dVMHzCYAASEhm.jpg" />');
+        return $this->render('default/homepage.html.twig', [
+            'needsReviewUrl' => sprintf(
+                'https://github.com/%s/%s/labels/%s',
+                $this->container->getParameter('repository_username'),
+                $this->container->getParameter('repository_name'),
+                urlencode(StatusManager::getLabelForStatus(StatusManager::STATUS_NEEDS_REVIEW))
+            )
+        ]);
     }
 }
