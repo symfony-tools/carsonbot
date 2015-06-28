@@ -51,12 +51,12 @@ class StatusManagerTest extends \PHPUnit_Framework_TestCase
             'STATUS: REVIEWED',
             StatusManager::STATUS_REVIEWED
         );
-        $tests = [];
+
         $tests[] = array(
             '**Status**: reviewed',
             StatusManager::STATUS_REVIEWED
         );
-        return $tests;
+
         // missing the colon - so we do NOT read this
         $tests[] = array(
             'Status reviewed',
