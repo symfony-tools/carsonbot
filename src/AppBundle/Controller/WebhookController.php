@@ -51,7 +51,7 @@ class WebhookController extends Controller
             ->getStatusChangeFromComment($commentText);
 
         // hacky way to not actually try to talk to GitHub when testing
-        if ($this->container->getParameter('kernel.environment') == 'test') {
+        if ($this->container->getParameter('kernel.environment') != 'test') {
             $this->get('app.issue_status_changer')
                 ->setIssueStatusLabel($issueNumber, $newStatus);
         }
