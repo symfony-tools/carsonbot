@@ -20,3 +20,6 @@ parameters:
 
     # token used to update labels on the repository, etc
     github_token: XXXX
+    # point to the symfony/symfony repository
+    repository_username: symfony
+    repository_name: symfony

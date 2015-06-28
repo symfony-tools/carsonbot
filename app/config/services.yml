@@ -7,3 +7,16 @@ services:
     app.github.status_manager:
         class: AppBundle\GitHub\StatusManager
         arguments: []
+
+    app.github_client:
+        class: Github\Client
+        arguments: []
+        calls:
+            - method: authenticate
+              arguments:
+                - http_token
+                - %github_token%
+
+    app.issue_status_changer:
+        class: AppBundle\GitHub\IssueStatusChanger
+        arguments: ['@app.github_client', '%repository_username%', '%repository_name%']

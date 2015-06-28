@@ -16,6 +16,13 @@ class StatusManager
         self::STATUS_REVIEWED => ['reviewed'],
     ];
 
+    private static $labels = [
+        self::STATUS_NEEDS_REVIEW => 'Status: Needs Review',
+        self::STATUS_NEEDS_WORK => 'Status: Needs Work',
+        self::STATUS_WORKS_FOR_ME => 'Status: Works for me',
+        self::STATUS_REVIEWED => 'Status: Reviewed',
+    ];
+
     /**
      * Parses the text of the comment and looks for keywords to see
      * if this should cause any status change.
@@ -52,6 +59,29 @@ class StatusManager
         }
 
         return $newStatus;
+    }
+
+    /**
+     * Returns the name of the label we use on GitHub for a status
+     *
+     * @param $status
+     * @return string
+     */
+    public static function getLabelForStatus($status)
+    {
+        if (!isset(self::$labels[$status])) {
+            throw new \InvalidArgumentException(sprintf('Invalid status "%s"', $status));
+        }
+
+        return self::$labels[$status];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getLabelToStatusMap()
+    {
+        return array_keys(self::$labels);
     }
 
     /**
