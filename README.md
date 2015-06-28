@@ -1,4 +1,5 @@
-symfony_issue_bot
-=================
+Carson Issue Butler
+===================
 
-A Symfony project created on June 28, 2015, 8:34 am.
+Carson keeps things organized in the kitchen, the library, and your open
+source repository.
