@@ -36,7 +36,10 @@ class IssueStatusChanger
         );
 
         $labelMap = StatusManager::getLabelToStatusMap();
-        foreach ($currentLabels as $currentLabel) {
+        foreach ($currentLabels as $currentLabelData) {
+            // get the name of the label
+            $currentLabel = $currentLabelData['name'];
+
             // is the label a "status label"? No? Then skip it
             if (!isset($labelMap[$currentLabel])) {
                 continue;

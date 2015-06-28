@@ -81,7 +81,7 @@ class StatusManager
      */
     public static function getLabelToStatusMap()
     {
-        return array_keys(self::$labels);
+        return array_flip(self::$labels);
     }
 
     /**
