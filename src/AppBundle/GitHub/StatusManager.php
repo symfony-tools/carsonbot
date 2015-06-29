@@ -10,10 +10,10 @@ class StatusManager
     const STATUS_REVIEWED = 'reviewed';
 
     private static $triggerWords = [
-        self::STATUS_NEEDS_REVIEW => ['needs review'],
-        self::STATUS_NEEDS_WORK => ['needs work'],
-        self::STATUS_WORKS_FOR_ME => ['works for me'],
-        self::STATUS_REVIEWED => ['reviewed'],
+        self::STATUS_NEEDS_REVIEW => 'needs review',
+        self::STATUS_NEEDS_WORK => 'needs work',
+        self::STATUS_WORKS_FOR_ME => 'works for me',
+        self::STATUS_REVIEWED => 'reviewed',
     ];
 
     private static $labels = [
@@ -47,14 +47,12 @@ class StatusManager
         $statusString = trim(substr($comment, $statusPosition));
 
         $newStatus = null;
-        foreach (self::$triggerWords as $status => $triggerWords) {
-            foreach ($triggerWords as $triggerWord) {
-                // status should be right at the beginning of the string
-                if (stripos($statusString, $triggerWord) === 0) {
-                    // don't return immediately - we use the last status
-                    // in the rare case there are multiple
-                    $newStatus = $status;
-                }
+        foreach (self::$triggerWords as $status => $triggerWord) {
+            // status should be right at the beginning of the string
+            if (stripos($statusString, $triggerWord) === 0) {
+                // don't return immediately - we use the last status
+                // in the rare case there are multiple
+                $newStatus = $status;
             }
         }
 
