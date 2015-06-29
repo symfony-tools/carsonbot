@@ -18,7 +18,7 @@ class DefaultController extends Controller
                 'https://github.com/%s/%s/labels/%s',
                 $this->container->getParameter('repository_username'),
                 $this->container->getParameter('repository_name'),
-                urlencode(StatusManager::getLabelForStatus(StatusManager::STATUS_NEEDS_REVIEW))
+                rawurlencode(StatusManager::getLabelForStatus(StatusManager::STATUS_NEEDS_REVIEW))
             )
         ]);
     }
