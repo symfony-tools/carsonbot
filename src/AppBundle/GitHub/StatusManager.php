@@ -42,21 +42,12 @@ class StatusManager
             return null;
         }
 
-        // get what comes *after* status:, with spaces trimmed
-        // now, the status string "needs review" should be at the 0 character
-        $statusString = trim(substr($comment, $statusPosition));
-
-        $newStatus = null;
         foreach (self::$triggerWords as $status => $triggerWord) {
             // status should be right at the beginning of the string
-            if (stripos($statusString, $triggerWord) === 0) {
-                // don't return immediately - we use the last status
-                // in the rare case there are multiple
-                $newStatus = $status;
+            if ($triggerWord === strtolower(substr($comment, $statusPosition, strlen($triggerWord)))) {
+                return $status;
             }
         }
-
-        return $newStatus;
     }
 
     /**
@@ -99,14 +90,16 @@ class StatusManager
      */
     private function findStatusPosition($comment)
     {
-        $formats = ['status:', '*status*:', '**status**:'];
+        // Match first character after "status:"
+        // Case insensitive ("i"), ignores formatting with "*" before or after the ":"
+        $pattern = '~status(\*+:\s*|:[\s\*]*)(\w)~i';
 
-        foreach ($formats as $format) {
-            $lastStatusPosition = strripos($comment, $format);
+        if (preg_match_all($pattern, $comment, $matches, PREG_OFFSET_CAPTURE)) {
+            // Second subpattern = first status character
+            $lastMatch = end($matches[2]);
 
-            if ($lastStatusPosition !== false) {
-                return $lastStatusPosition + strlen($format);
-            }
+            // [matched string, offset]
+            return $lastMatch[1];
         }
 
         return false;
