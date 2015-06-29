@@ -36,6 +36,7 @@ class IssueStatusChanger
         );
 
         $labelMap = StatusManager::getLabelToStatusMap();
+        $addLabel = true;
         foreach ($currentLabels as $currentLabelData) {
             // get the name of the label
             $currentLabel = $currentLabelData['name'];
@@ -47,7 +48,9 @@ class IssueStatusChanger
 
             // if the label is already the new label, we don't need to do anything!
             if ($currentLabel == $newLabel) {
-                return;
+                // we will *not* need to add the label later on
+                $addLabel = false;
+                continue;
             }
 
             // remove the old status label
@@ -59,13 +62,15 @@ class IssueStatusChanger
             );
         }
 
-        // add the new label
-        $this->getIssueLabelsApi()->add(
-            $this->repositoryUsername,
-            $this->repositoryName,
-            $issueNumber,
-            $newLabel
-        );
+        if ($addLabel) {
+            // add the new label
+            $this->getIssueLabelsApi()->add(
+                $this->repositoryUsername,
+                $this->repositoryName,
+                $issueNumber,
+                $newLabel
+            );
+        }
     }
 
     /**
