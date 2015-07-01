@@ -10,10 +10,10 @@ class StatusManager
     const STATUS_REVIEWED = 'reviewed';
 
     private static $triggerWords = [
-        self::STATUS_NEEDS_REVIEW => 'needs review',
-        self::STATUS_NEEDS_WORK => 'needs work',
-        self::STATUS_WORKS_FOR_ME => 'works for me',
-        self::STATUS_REVIEWED => 'reviewed',
+        'needs review' => self::STATUS_NEEDS_REVIEW,
+        'needs work' => self::STATUS_NEEDS_WORK,
+        'works for me' => self::STATUS_WORKS_FOR_ME,
+        'reviewed' => self::STATUS_REVIEWED,
     ];
 
     private static $labels = [
@@ -35,19 +35,19 @@ class StatusManager
      */
     public function getStatusChangeFromComment($comment)
     {
-        // 1) Find the last "status:"
-        $statusPosition = $this->findStatusPosition($comment);
+        $triggerWord = implode('|', array_keys(self::$triggerWords));
+        $formatting = '[\\s\\*]*';
 
-        if ($statusPosition === false) {
-            return null;
+        // Match first character after "status:"
+        // Case insensitive ("i"), ignores formatting with "*" before or after the ":"
+        $pattern = "~(?=\n|^)${formatting}status${formatting}:${formatting}[\"']?($triggerWord)[\"']?${formatting}[.!]?${formatting}(?<=\r\n|\n|$)~i";
+
+        if (preg_match_all($pattern, $comment, $matches)) {
+            // Second subpattern = first status character
+            return self::$triggerWords[strtolower(end($matches[1]))];
         }
 
-        foreach (self::$triggerWords as $status => $triggerWord) {
-            // status should be right at the beginning of the string
-            if ($triggerWord === strtolower(substr($comment, $statusPosition, strlen($triggerWord)))) {
-                return $status;
-            }
-        }
+        return null;
     }
 
     /**
@@ -71,37 +71,5 @@ class StatusManager
     public static function getLabelToStatusMap()
     {
         return array_flip(self::$labels);
-    }
-
-    /**
-     * Finds the position where the status string will start - e.g.
-     * for "Status: Needs review", this would return the position
-     * that points to the "N" in "Needs".
-     *
-     * If there are multiple "Status:" in the string, this returns the
-     * final one.
-     *
-     * This takes into account possible formatting (e.g. **Status**: )
-     *
-     * Returns the position or false if none was found.
-     *
-     * @param string $comment
-     * @return boolean|integer
-     */
-    private function findStatusPosition($comment)
-    {
-        // Match first character after "status:"
-        // Case insensitive ("i"), ignores formatting with "*" before or after the ":"
-        $pattern = '~status(\*+:\s*|:[\s\*]*)(\w)~i';
-
-        if (preg_match_all($pattern, $comment, $matches, PREG_OFFSET_CAPTURE)) {
-            // Second subpattern = first status character
-            $lastMatch = end($matches[2]);
-
-            // [matched string, offset]
-            return $lastMatch[1];
-        }
-
-        return false;
     }
 }
