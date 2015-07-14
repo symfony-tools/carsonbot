@@ -39,6 +39,17 @@ class WebhookController extends Controller
                         ];
                 }
                 break;
+            case 'issues':
+                switch ($data['action']) {
+                    case 'labeled':
+                        $responseData = $this->handleIssueLabelAdd($data);
+                        break;
+                    default:
+                        $responseData = [
+                            'unsupported_action' => $data['action']
+                        ];
+                }
+                break;
             default:
                 $responseData = [
                     'unsupported_event' => $event
@@ -87,6 +98,32 @@ class WebhookController extends Controller
 
         return [
             'pull_request' => $prNumber,
+            'status_change' => $newStatus,
+        ];
+    }
+
+    /**
+     * Changes "Bug" issues to "Needs Review"
+     */
+    private function handleIssueLabelAdd(array $data)
+    {
+        $issueNumber = $data['issue']['number'];
+        $newLabel = $data['label']['name'];
+
+        if ($newLabel == 'bug') {
+            $newStatus = StatusManager::STATUS_NEEDS_REVIEW;
+
+            // hacky way to not actually try to talk to GitHub when testing
+            if ($this->container->getParameter('kernel.environment') != 'test') {
+                $this->get('app.issue_status_changer')
+                    ->setIssueStatusLabel($issueNumber, $newStatus, false);
+            }
+        } else {
+            $newStatus = null;
+        }
+
+        return [
+            'issue' => $issueNumber,
             'status_change' => $newStatus,
         ];
     }

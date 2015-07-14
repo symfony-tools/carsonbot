@@ -22,6 +22,13 @@ class IssueStatusChangerTest extends KernelTestCase
             $testIssueNumber,
             array(StatusManager::getLabelForStatus(StatusManager::STATUS_NEEDS_WORK))
         );
+
+        // try to set it, but don't "replace" it. So, nothing will happen
+        $issueStatusChanger->setIssueStatusLabel($testIssueNumber, StatusManager::STATUS_REVIEWED, false);
+        $this->assertIssueLabels(
+            $testIssueNumber,
+            array(StatusManager::getLabelForStatus(StatusManager::STATUS_NEEDS_WORK))
+        );
     }
 
     /**
