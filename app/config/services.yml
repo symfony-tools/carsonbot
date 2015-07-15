@@ -4,11 +4,7 @@ parameters:
 #    parameter_name: value
 
 services:
-    app.github.status_manager:
-        class: AppBundle\GitHub\StatusManager
-        arguments: []
-
-    app.github_client:
+    app.github.client:
         class: Github\Client
         arguments: []
         calls:
@@ -17,6 +13,23 @@ services:
                 - http_token
                 - %github_token%
 
-    app.issue_status_changer:
-        class: AppBundle\GitHub\IssueStatusChanger
-        arguments: ['@app.github_client', '%repository_username%', '%repository_name%']
+    app.github.issues_api:
+        class: Github\Api\Issue
+        factory: ['@app.github.client', api]
+        arguments: [issue]
+
+    app.github.labels_api:
+        class: Github\Api\Issue\Labels
+        factory: ['@app.github.issues_api', labels]
+
+    app.github.cached_labels_api:
+        class: AppBundle\Issues\GitHub\CachedLabelsApi
+        arguments: ['@app.github.labels_api', '%repository_username%', '%repository_name%']
+
+    app.status_api:
+        class: AppBundle\Issues\GitHub\GitHubStatusApi
+        arguments: ['@app.github.cached_labels_api', '%repository_username%', '%repository_name%']
+
+    app.issue_listener:
+        class: AppBundle\Issues\IssueListener
+        arguments: ['@app.status_api']
