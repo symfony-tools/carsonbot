@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\GitHub\StatusManager;
+use AppBundle\Issues\IssueListener;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -23,15 +23,44 @@ class WebhookController extends Controller
         }
 
         $event = $request->headers->get('X-Github-Event');
+        $listener = $this->get('app.issue_listener');
 
         switch ($event) {
             case 'issue_comment':
-                $responseData = $this->handleIssueCommentEvent($data);
+                $responseData = [
+                    'issue' => $data['issue']['number'],
+                    'status_change' => $listener->handleCommentAddedEvent(
+                        $data['issue']['number'],
+                        $data['comment']['body']
+                    ),
+                ];
                 break;
             case 'pull_request':
                 switch ($data['action']) {
                     case 'opened':
-                        $responseData = $this->handlePullRequestCreateEvent($data);
+                        $responseData = [
+                            'pull_request' => $data['pull_request']['number'],
+                            'status_change' => $listener->handlePullRequestCreatedEvent(
+                                $data['pull_request']['number']
+                            ),
+                        ];
+                        break;
+                    default:
+                        $responseData = [
+                            'unsupported_action' => $data['action']
+                        ];
+                }
+                break;
+            case 'issues':
+                switch ($data['action']) {
+                    case 'labeled':
+                        $responseData = [
+                            'issue' => $data['issue']['number'],
+                            'status_change' => $listener->handleLabelAddedEvent(
+                                $data['issue']['number'],
+                                $data['label']['name']
+                            ),
+                        ];
                         break;
                     default:
                         $responseData = [
@@ -52,42 +81,5 @@ class WebhookController extends Controller
         // 3 return JSON
 
         // log something to the database?
-    }
-
-    private function handleIssueCommentEvent(array $data)
-    {
-        $commentText = $data['comment']['body'];
-        $issueNumber = $data['issue']['number'];
-
-        $newStatus = $this->get('app.github.status_manager')
-            ->getStatusChangeFromComment($commentText);
-
-        // hacky way to not actually try to talk to GitHub when testing
-        if ($this->container->getParameter('kernel.environment') != 'test') {
-            $this->get('app.issue_status_changer')
-                ->setIssueStatusLabel($issueNumber, $newStatus);
-        }
-
-        return [
-            'issue' => $issueNumber,
-            'status_change' => $newStatus,
-        ];
-    }
-
-    private function handlePullRequestCreateEvent(array $data)
-    {
-        $prNumber = $data['pull_request']['number'];
-        $newStatus = StatusManager::STATUS_NEEDS_REVIEW;
-
-        // hacky way to not actually try to talk to GitHub when testing
-        if ($this->container->getParameter('kernel.environment') != 'test') {
-            $this->get('app.issue_status_changer')
-                ->setIssueStatusLabel($prNumber, $newStatus);
-        }
-
-        return [
-            'pull_request' => $prNumber,
-            'status_change' => $newStatus,
-        ];
     }
 }
