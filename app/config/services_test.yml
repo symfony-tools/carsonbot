@@ -1,0 +1,7 @@
+
+imports:
+    - { resource: services.yml }
+
+services:
+    app.status_api:
+        class: AppBundle\Issues\NullStatusApi
