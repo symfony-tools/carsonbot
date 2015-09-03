@@ -10,6 +10,6 @@ For an introduction, read: http://symfony.com/blog/calling-for-issue-triagers-a-
 Currently, Carson's super powers are used to automatically label issues based
 on comments from people in the community. This gives anyone the power to review
 an issue or pull request and comment to update its status. If Carson does his job
-well (i.e. if it's useful), more features may be added on the future.
+well (i.e. if it's useful), more features may be added in the future.
 
 For details on how this review / label process works, see http://symfony.com/doc/current/contributing/community/reviews.html
