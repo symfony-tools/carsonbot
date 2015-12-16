@@ -93,5 +93,4 @@ class CachedLabelsApi
             unset($this->labelCache[$issueNumber][$label]);
         }
     }
-
 }
