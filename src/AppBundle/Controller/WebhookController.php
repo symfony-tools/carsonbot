@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Issues\IssueListener;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -47,7 +46,7 @@ class WebhookController extends Controller
                         break;
                     default:
                         $responseData = [
-                            'unsupported_action' => $data['action']
+                            'unsupported_action' => $data['action'],
                         ];
                 }
                 break;
@@ -64,13 +63,13 @@ class WebhookController extends Controller
                         break;
                     default:
                         $responseData = [
-                            'unsupported_action' => $data['action']
+                            'unsupported_action' => $data['action'],
                         ];
                 }
                 break;
             default:
                 $responseData = [
-                    'unsupported_event' => $event
+                    'unsupported_event' => $event,
                 ];
         }
 

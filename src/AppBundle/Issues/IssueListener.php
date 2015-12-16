@@ -51,11 +51,11 @@ class IssueListener
             return $newStatus;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Adds a "Needs Review" label to new PRs
+     * Adds a "Needs Review" label to new PRs.
      *
      * @param int $prNumber The number of the PR
      *
@@ -71,7 +71,7 @@ class IssueListener
     }
 
     /**
-     * Changes "Bug" issues to "Needs Review"
+     * Changes "Bug" issues to "Needs Review".
      *
      * @param int    $issueNumber The issue that was labeled
      * @param string $label       The added label
@@ -82,14 +82,14 @@ class IssueListener
     {
         // Ignore non-bugs
         if ('bug' !== strtolower($label)) {
-            return null;
+            return;
         }
 
         $currentStatus = $this->statusApi->getIssueStatus($issueNumber);
 
         // Ignore if the issue already has a status
         if (null !== $currentStatus) {
-            return null;
+            return;
         }
 
         $newStatus = Status::NEEDS_REVIEW;

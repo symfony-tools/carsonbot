@@ -40,8 +40,8 @@ class GitHubStatusApi implements StatusApi
     }
 
     /**
-     * @param integer $issueNumber The GitHub issue number
-     * @param string  $newStatus A Status::* constant
+     * @param int    $issueNumber The GitHub issue number
+     * @param string $newStatus   A Status::* constant
      */
     public function setIssueStatus($issueNumber, $newStatus)
     {
@@ -85,7 +85,7 @@ class GitHubStatusApi implements StatusApi
         }
 
         // No status set
-        return null;
+        return;
     }
 
     public function getNeedsReviewUrl()
