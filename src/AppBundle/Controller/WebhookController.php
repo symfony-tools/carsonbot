@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class WebhookController extends Controller
 {
@@ -19,6 +20,19 @@ class WebhookController extends Controller
         $data = json_decode($request->getContent(), true);
         if ($data === null) {
             throw new \Exception('Invalid JSON body!');
+        }
+
+        if (!isset($data['repository']['full_name'])) {
+            throw new \Exception('Repository name not defined!');
+        }
+
+        list($vendor, $name) = explode('/', $data['repository']['full_name']);
+        try {
+            $this->get('repository_stack')->push(
+                $this->get('repository_provider')->getRepository($vendor, $name)
+            );
+        } catch (\RuntimeException $exception) {
+            throw new BadRequestHttpException($exception->getMessage(), $exception);
         }
 
         $event = $request->headers->get('X-Github-Event');
@@ -72,6 +86,8 @@ class WebhookController extends Controller
                     'unsupported_event' => $event,
                 ];
         }
+
+        $this->get('repository_stack')->pop();
 
         return new JsonResponse($responseData);
 

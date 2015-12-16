@@ -7,6 +7,8 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    repositories:
+        - { vendor: '%repository_username%', name: '%repository_name%' }
 
 framework:
     #esi:             ~

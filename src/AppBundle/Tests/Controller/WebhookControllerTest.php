@@ -23,6 +23,16 @@ class WebhookControllerTest extends WebTestCase
         $this->assertEquals($expectedResponse, $responseData);
     }
 
+    public function testUnknowRepository()
+    {
+        $client = $this->createClient();
+        $body = file_get_contents(__DIR__.'/../webhook_examples/issues.labeled.unknown_repository.json');
+        $client->request('POST', '/webhooks/github', array(), array(), array('HTTP_X-Github-Event' => 'issues'), $body);
+        $response = $client->getResponse();
+
+        $this->assertEquals(400, $response->getStatusCode());
+    }
+
     public function getTests()
     {
         $tests = array();

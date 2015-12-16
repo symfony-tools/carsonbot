@@ -4,6 +4,8 @@ namespace AppBundle\Tests\Issues\GitHub;
 
 use AppBundle\Issues\GitHub\CachedLabelsApi;
 use Github\Api\Issue\Labels;
+use AppBundle\Repository\Repository;
+use AppBundle\Repository\RepositoryStack;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -29,7 +31,11 @@ class CachedLabelsApiTest extends \PHPUnit_Framework_TestCase
         $this->backendApi = $this->getMockBuilder('Github\Api\Issue\Labels')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->api = new CachedLabelsApi($this->backendApi, self::USER_NAME, self::REPO_NAME);
+
+        $repositoryStack = new RepositoryStack();
+        $repositoryStack->push(new Repository(self::USER_NAME, self::REPO_NAME));
+
+        $this->api = new CachedLabelsApi($this->backendApi, $repositoryStack);
     }
 
     public function testGetIssueLabels()

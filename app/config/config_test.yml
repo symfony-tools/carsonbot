@@ -2,6 +2,10 @@ imports:
     - { resource: config_dev.yml }
     - { resource: services_test.yml }
 
+parameters:
+    repositories:
+        - { vendor: weaverryan, name: symfony }
+
 framework:
     test: ~
     session:
