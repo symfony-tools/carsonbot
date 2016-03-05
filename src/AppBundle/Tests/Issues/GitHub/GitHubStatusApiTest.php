@@ -123,6 +123,28 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
         $this->api->setIssueStatus(1234, Status::REVIEWED);
     }
 
+    public function testSetIssueStatusRemovesUnconfirmedWhenBugIsReviewed()
+    {
+        $this->labelsApi->expects($this->once())
+            ->method('getIssueLabels')
+            ->with(1234)
+            ->willReturn(array('Bug', 'Status: Needs Review', 'Unconfirmed'));
+
+        $this->labelsApi->expects($this->at(1))
+            ->method('removeIssueLabel')
+            ->with(1234, 'Status: Needs Review');
+
+        $this->labelsApi->expects($this->at(2))
+            ->method('removeIssueLabel')
+            ->with(1234, 'Unconfirmed');
+
+        $this->labelsApi->expects($this->once())
+            ->method('addIssueLabel')
+            ->with(1234, 'Status: Reviewed');
+
+        $this->api->setIssueStatus(1234, Status::REVIEWED);
+    }
+
     public function testGetIssueStatus()
     {
         $this->labelsApi->expects($this->once())

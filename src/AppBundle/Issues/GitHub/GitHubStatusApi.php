@@ -54,8 +54,12 @@ class GitHubStatusApi implements StatusApi
         $addLabel = true;
 
         foreach ($currentLabels as $label) {
-            // Ignore non-status
-            if (!isset($this->labelToStatus[$label])) {
+            // Ignore non-status, except when the bug is reviewed
+            // but still marked as unconfirmed.
+            if (
+                !isset($this->labelToStatus[$label])
+                && !(Status::REVIEWED === $newStatus && 'Unconfirmed' === $label)
+            ) {
                 continue;
             }
 
