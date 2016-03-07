@@ -71,9 +71,9 @@ class IssueListener
         $newStatus = Status::NEEDS_REVIEW;
         $prLabels[] = $newStatus;
 
-        // the PR title usually indicates the affected component
-        if (preg_match('/^\[(?P<component>.*)\] .*/$', $prTitle, $matches)) {
-            $prLabels[] = $matches['component'];
+        // the PR title usually contains one or more labels
+        foreach ($this->extractLabels($prTitle) as $label) {
+            $prLabels[] = $label;
         }
 
         // the PR body usually indicates if this is a Bug, Feature, BC Break or Deprecation
@@ -122,5 +122,41 @@ class IssueListener
         $this->statusApi->setIssueStatus($issueNumber, $newStatus);
 
         return $newStatus;
+    }
+
+    private function extractLabels($prTitle)
+    {
+        $labels = array();
+
+        // e.g. "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses"
+        if (preg_match_all('/\[(?P<tags>.+)\]/U', $prTitle, $matches)) {
+            foreach ($matches['tags'] as $tag) {
+                if (in_array($tag, $this->getValidTags())) {
+                    $labels[] = $tag;
+                }
+            }
+        }
+
+        return $labels;
+    }
+
+    /**
+     * TODO: get valid tags from the repository via GitHub API
+     */
+    private function getValidTags()
+    {
+        return array(
+            'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'ClassLoader',
+            'Config', 'Console', 'Critical', 'CssSelector', 'Debug', 'DebugBundle',
+            'DependencyInjection', 'Deprecation', 'Doctrine', 'DoctrineBridge',
+            'DomCrawler', 'Drupal related', 'DX', 'Easy Pick', 'Enhancement',
+            'EventDispatcher', 'ExpressionLanguage', 'Feature', 'Filesystem',
+            'Finder', 'Form', 'FrameworkBundle', 'HttpFoundation', 'HttpKernel',
+            'Intl', 'Ldap', 'Locale', 'MonologBridge', 'OptionsResolver',
+            'PhpUnitBridge', 'Process', 'PropertyAccess', 'PropertyInfo', 'Ready',
+            'RFC', 'Routing', 'Security', 'SecurityBundle', 'Serializer',
+            'Stopwatch', 'Templating', 'Translator', 'TwigBridge', 'TwigBundle',
+            'Unconfirmed', 'Validator', 'VarDumper', 'WebProfilerBundle', 'Yaml',
+        );
     }
 }
