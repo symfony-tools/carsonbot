@@ -129,10 +129,10 @@ class IssueListener
         $labels = array();
 
         // e.g. "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses"
-        if (preg_match_all('/\[(?P<tags>.+)\]/U', $prTitle, $matches)) {
-            foreach ($matches['tags'] as $tag) {
-                if (in_array($tag, $this->getValidTags())) {
-                    $labels[] = $tag;
+        if (preg_match_all('/\[(?P<labels>.+)\]/U', $prTitle, $matches)) {
+            foreach ($matches['labels'] as $label) {
+                if (in_array($label, $this->getValidLabels())) {
+                    $labels[] = $label;
                 }
             }
         }
@@ -141,9 +141,9 @@ class IssueListener
     }
 
     /**
-     * TODO: get valid tags from the repository via GitHub API
+     * TODO: get valid labels from the repository via GitHub API
      */
-    private function getValidTags()
+    private function getValidLabels()
     {
         return array(
             'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'ClassLoader',
