@@ -58,14 +58,39 @@ class IssueListener
      * Adds a "Needs Review" label to new PRs.
      *
      * @param int $prNumber The number of the PR
+     * @param int $prTitle  The title of the PR
+     * @param int $prBody   The full text description of the PR
      *
      * @return string The new status
      */
-    public function handlePullRequestCreatedEvent($prNumber)
+    public function handlePullRequestCreatedEvent($prNumber, $prTitle, $prBody)
     {
-        $newStatus = Status::NEEDS_REVIEW;
+        $prLabels = array();
 
-        $this->statusApi->setIssueStatus($prNumber, $newStatus);
+        // new PRs always require review
+        $newStatus = Status::NEEDS_REVIEW;
+        $prLabels[] = $newStatus;
+
+        // the PR title usually indicates the affected component
+        if (preg_match('/^\[(?P<component>.*)\] .*/$', $prTitle, $matches)) {
+            $prLabels[] = $matches['component'];
+        }
+
+        // the PR body usually indicates if this is a Bug, Feature, BC Break or Deprecation
+        if (preg_match('/^\|\s*Bug fix?\s*\|\s*yes\s*$/', $prBody, $matches)) {
+            $prLabels[] = 'Bug';
+        }
+        if (preg_match('/^\|\s*New feature?\s*\|\s*yes\s*$/', $prBody, $matches)) {
+            $prLabels[] = 'Feature';
+        }
+        if (preg_match('/^\|\s*BC breaks?\s*\|\s*yes\s*$/', $prBody, $matches)) {
+            $prLabels[] = 'BC Break';
+        }
+        if (preg_match('/^\|\s*Deprecations?\s*\|\s*yes\s*$/', $prBody, $matches)) {
+            $prLabels[] = 'Deprecation';
+        }
+
+        $this->statusApi->setIssueLabels($prNumber, $prLabels);
 
         return $newStatus;
     }

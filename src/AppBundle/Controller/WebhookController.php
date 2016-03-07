@@ -40,7 +40,9 @@ class WebhookController extends Controller
                         $responseData = [
                             'pull_request' => $data['pull_request']['number'],
                             'status_change' => $listener->handlePullRequestCreatedEvent(
-                                $data['pull_request']['number']
+                                $data['pull_request']['number'],
+                                $data['pull_request']['title'],
+                                $data['pull_request']['body']
                             ),
                         ];
                         break;
