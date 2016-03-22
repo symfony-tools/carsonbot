@@ -153,10 +153,10 @@ class IssueListenerTest extends \PHPUnit_Framework_TestCase
     public function testHandlePullRequestCreatedEvent()
     {
         $this->statusApi->expects($this->once())
-            ->method('setIssueStatus')
-            ->with(1234, Status::NEEDS_REVIEW);
+            ->method('setIssueLabels')
+            ->with(1234, array(Status::NEEDS_REVIEW));
 
-        $newStatus = $this->listener->handlePullRequestCreatedEvent(1234);
+        $newStatus = $this->listener->handlePullRequestCreatedEvent(1234, 'The title', 'The description.');
 
         $this->assertSame(Status::NEEDS_REVIEW, $newStatus);
     }
