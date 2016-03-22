@@ -78,6 +78,20 @@ class GitHubStatusApi implements StatusApi
         }
     }
 
+    /**
+     * Replaces the existing issue labels (if any) with the given array of
+     * new labels. Use an empty array to remove all the existing labels.
+     *
+     * @param int    $issueNumber The GitHub issue number
+     * @param array  $newLabels
+     */
+    public function setIssueLabels($issueNumber, array $newLabels)
+    {
+        foreach ($newLabels as $label) {
+            $this->labelsApi->addIssueLabel($issueNumber, $label);
+        }
+    }
+
     public function getIssueStatus($issueNumber)
     {
         $currentLabels = $this->labelsApi->getIssueLabels($issueNumber);

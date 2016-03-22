@@ -15,6 +15,10 @@ class NullStatusApi implements StatusApi
     {
     }
 
+    public function setIssueLabels($issueNumber, array $newLabels)
+    {
+    }
+
     public function getNeedsReviewUrl()
     {
     }

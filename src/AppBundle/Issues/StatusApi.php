@@ -13,5 +13,7 @@ interface StatusApi
 
     public function setIssueStatus($issueNumber, $newStatus);
 
+    public function setIssueLabels($issueNumber, array $newLabels);
+
     public function getNeedsReviewUrl();
 }
