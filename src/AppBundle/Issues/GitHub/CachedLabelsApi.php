@@ -3,6 +3,7 @@
 namespace AppBundle\Issues\GitHub;
 
 use Github\Api\Issue\Labels;
+use AppBundle\Repository\RepositoryStack;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -20,20 +21,14 @@ class CachedLabelsApi
     private $labelCache = [];
 
     /**
-     * @var string
+     * @var RepositoryStack
      */
-    private $repositoryUsername;
+    private $repositoryStack;
 
-    /**
-     * @var string
-     */
-    private $repositoryName;
-
-    public function __construct(Labels $labelsApi, $repositoryUsername, $repositoryName)
+    public function __construct(Labels $labelsApi, RepositoryStack $repositoryStack)
     {
         $this->labelsApi = $labelsApi;
-        $this->repositoryUsername = $repositoryUsername;
-        $this->repositoryName = $repositoryName;
+        $this->repositoryStack = $repositoryStack;
     }
 
     public function getIssueLabels($issueNumber)
@@ -41,9 +36,10 @@ class CachedLabelsApi
         if (!isset($this->labelCache[$issueNumber])) {
             $this->labelCache[$issueNumber] = [];
 
+            $repository = $this->repositoryStack->getCurrentRepository();
             $labelsData = $this->labelsApi->all(
-                $this->repositoryUsername,
-                $this->repositoryName,
+                $repository->getVendor(),
+                $repository->getName(),
                 $issueNumber
             );
 
@@ -62,9 +58,10 @@ class CachedLabelsApi
             return;
         }
 
+        $repository = $this->repositoryStack->getCurrentRepository();
         $this->labelsApi->add(
-            $this->repositoryUsername,
-            $this->repositoryName,
+            $repository->getVendor(),
+            $repository->getName(),
             $issueNumber,
             $label
         );
@@ -81,9 +78,10 @@ class CachedLabelsApi
             return;
         }
 
+        $repository = $this->repositoryStack->getCurrentRepository();
         $this->labelsApi->remove(
-            $this->repositoryUsername,
-            $this->repositoryName,
+            $repository->getVendor(),
+            $repository->getName(),
             $issueNumber,
             $label
         );
