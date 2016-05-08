@@ -4,6 +4,7 @@ namespace AppBundle\Issues\GitHub;
 
 use AppBundle\Issues\Status;
 use AppBundle\Issues\StatusApi;
+use AppBundle\Repository\RepositoryStack;
 
 class GitHubStatusApi implements StatusApi
 {
@@ -22,21 +23,15 @@ class GitHubStatusApi implements StatusApi
     private $labelsApi;
 
     /**
-     * @var string
+     * @var RepositoryStack
      */
-    private $repositoryUsername;
+    private $repositoryStack;
 
-    /**
-     * @var string
-     */
-    private $repositoryName;
-
-    public function __construct(CachedLabelsApi $labelsApi, $repositoryUsername, $repositoryName)
+    public function __construct(CachedLabelsApi $labelsApi, RepositoryStack $repositoryStack)
     {
         $this->labelsApi = $labelsApi;
         $this->labelToStatus = array_flip($this->statusToLabel);
-        $this->repositoryUsername = $repositoryUsername;
-        $this->repositoryName = $repositoryName;
+        $this->repositoryStack = $repositoryStack;
     }
 
     /**
@@ -94,10 +89,12 @@ class GitHubStatusApi implements StatusApi
 
     public function getNeedsReviewUrl()
     {
+        $repository = $this->repositoryStack->getCurrentRepository();
+
         return sprintf(
             'https://github.com/%s/%s/labels/%s',
-            $this->repositoryUsername,
-            $this->repositoryName,
+            $repository->getVendor(),
+            $repository->getName(),
             rawurlencode($this->statusToLabel[Status::NEEDS_REVIEW])
         );
     }

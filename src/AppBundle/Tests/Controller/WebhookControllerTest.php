@@ -23,6 +23,41 @@ class WebhookControllerTest extends WebTestCase
         $this->assertEquals($expectedResponse, $responseData);
     }
 
+    public function testInvalidSignature()
+    {
+        $client = $this->createClient();
+        $body = file_get_contents(__DIR__.'/../webhook_examples/secured_hook.json');
+        $client->request('POST', '/webhooks/github', array(), array(), array('HTTP_X_HUB_SIGNATURE' => 'foo'), $body);
+
+        $response = $client->getResponse();
+        $this->assertContains('Secret does not match', $response->getContent());
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+
+    /**
+     * @requires extension hash
+     */
+    public function testValidSignature()
+    {
+        $client = $this->createClient();
+        $body = file_get_contents(__DIR__.'/../webhook_examples/secured_hook.json');
+        $client->request('POST', '/webhooks/github', array(), array(), array('HTTP_X-Github-Event' => 'foo', 'HTTP_X_HUB_SIGNATURE' => 'sha1='.hash_hmac('sha1', $body, 'mysecretisnotsecret')), $body);
+
+        $response = $client->getResponse();
+        $this->assertEquals(['unsupported_event' => 'foo'], json_decode($response->getContent(), true));
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testUnknowRepository()
+    {
+        $client = $this->createClient();
+        $body = file_get_contents(__DIR__.'/../webhook_examples/issues.labeled.unknown_repository.json');
+        $client->request('POST', '/webhooks/github', array(), array(), array('HTTP_X-Github-Event' => 'issues'), $body);
+        $response = $client->getResponse();
+
+        $this->assertEquals(400, $response->getStatusCode());
+    }
+
     public function getTests()
     {
         $tests = array();
