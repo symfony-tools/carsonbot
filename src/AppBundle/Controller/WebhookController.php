@@ -2,11 +2,13 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Security\SecretValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class WebhookController extends Controller
@@ -29,10 +31,13 @@ class WebhookController extends Controller
         list($vendor, $name) = explode('/', $data['repository']['full_name']);
         try {
             $this->get('repository_stack')->push(
-                $this->get('repository_provider')->getRepository($vendor, $name)
+                $repository = $this->get('repository_provider')->getRepository($vendor, $name)
             );
         } catch (\RuntimeException $exception) {
             throw new BadRequestHttpException($exception->getMessage(), $exception);
+        }
+        if (!SecretValidator::isValid($request, $repository)) {
+            throw new AccessDeniedHttpException('Secret does not match');
         }
 
         $event = $request->headers->get('X-Github-Event');

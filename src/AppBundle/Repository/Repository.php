@@ -17,6 +17,11 @@ class Repository
      */
     private $name;
 
+    /**
+     * @var string
+     */
+    private $secret;
+
     public function __construct($vendor, $name)
     {
         $this->vendor = $vendor;
@@ -53,5 +58,21 @@ class Repository
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSecret()
+    {
+        return $this->secret;
+    }
+
+    /**
+     * @param string|null $secret
+     */
+    public function setSecret($secret)
+    {
+        $this->secret = $secret;
     }
 }

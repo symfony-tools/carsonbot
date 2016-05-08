@@ -5,6 +5,7 @@ imports:
 parameters:
     repositories:
         - { vendor: weaverryan, name: symfony }
+        - { vendor: symfony, name: secured-repository, secret: mysecretisnotsecret }
 
 framework:
     test: ~

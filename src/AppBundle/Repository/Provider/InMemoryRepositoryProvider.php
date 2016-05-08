@@ -13,8 +13,13 @@ class InMemoryRepositoryProvider implements RepositoryProviderInterface
 
     public function __construct(array $repositories)
     {
-        foreach ($repositories as $repository) {
-            $this->addRepository(new Repository($repository['vendor'], $repository['name']));
+        foreach ($repositories as $data) {
+            $repository = new Repository($data['vendor'], $data['name']);
+            if (isset($data['secret'])) {
+                $repository->setSecret($data['secret']);
+            }
+
+            $this->addRepository($repository);
         }
     }
 
