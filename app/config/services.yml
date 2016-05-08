@@ -33,3 +33,8 @@ services:
     app.github.listener_factory:
         class: AppBundle\Issues\GitHubListenerFactory
         arguments: ['@app.github.labels_api', '%github_listeners%']
+
+    app.github.exception_listener:
+        class: Appbundle\Listener\ExceptionListener
+        tags:
+            - { name: kernel.event_subscriber }

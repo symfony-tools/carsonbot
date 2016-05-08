@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Event\GitHubEvent;
+use AppBundle\Exception\GitHubException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,12 +20,12 @@ class WebhookController extends Controller
     {
         $data = json_decode($request->getContent(), true);
         if (null === $data) {
-            throw new \Exception('Invalid JSON body!');
+            throw new GitHubException('Invalid JSON body!');
         }
 
         $repository = isset($data['repository']['full_name']) ? $data['repository']['full_name'] : null;
         if (empty($repository)) {
-            throw new \Exception('No repository name!');
+            throw new GitHubException('No repository name!');
         }
 
         $listener = $this->get('app.github.listener_factory')->createFromRepository($repository);
@@ -35,7 +36,11 @@ class WebhookController extends Controller
         $event = new GitHubEvent($data);
         $eventName = $request->headers->get('X-Github-Event');
 
-        $dispatcher->dispatch('github.'.$eventName, $event);
+        try {
+            $dispatcher->dispatch('github.'.$eventName, $event);
+        } catch (\Exception $e) {
+            throw new GitHubException(sprintf('Failed dispatching "%s" event for "%s" repository.', $eventName, $repository), 0, $e);
+        }
 
         $responseData = $event->getResponseData();
 
