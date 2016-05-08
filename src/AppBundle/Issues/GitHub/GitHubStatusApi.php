@@ -31,12 +31,13 @@ class GitHubStatusApi implements StatusApi
      */
     private $repositoryName;
 
-    public function __construct(CachedLabelsApi $labelsApi, $repositoryUsername, $repositoryName)
+    public function __construct(CachedLabelsApi $labelsApi, $repository)
     {
         $this->labelsApi = $labelsApi;
         $this->labelToStatus = array_flip($this->statusToLabel);
-        $this->repositoryUsername = $repositoryUsername;
-        $this->repositoryName = $repositoryName;
+        list($vendor, $name) = explode('/', $repository);
+        $this->repositoryUsername = $vendor;
+        $this->repositoryName = $name;
     }
 
     /**

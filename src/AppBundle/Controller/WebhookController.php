@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Event\GitHubEvent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -17,60 +18,29 @@ class WebhookController extends Controller
     public function githubAction(Request $request)
     {
         $data = json_decode($request->getContent(), true);
-        if ($data === null) {
+        if (null === $data) {
             throw new \Exception('Invalid JSON body!');
         }
 
-        $event = $request->headers->get('X-Github-Event');
-        $listener = $this->get('app.issue_listener');
+        $repository = isset($data['repository']['full_name']) ? $data['repository']['full_name'] : null;
+        if (empty($repository)) {
+            throw new \Exception('No repository name!');
+        }
 
-        switch ($event) {
-            case 'issue_comment':
-                $responseData = [
-                    'issue' => $data['issue']['number'],
-                    'status_change' => $listener->handleCommentAddedEvent(
-                        $data['issue']['number'],
-                        $data['comment']['body']
-                    ),
-                ];
-                break;
-            case 'pull_request':
-                switch ($data['action']) {
-                    case 'opened':
-                        $responseData = [
-                            'pull_request' => $data['pull_request']['number'],
-                            'status_change' => $listener->handlePullRequestCreatedEvent(
-                                $data['pull_request']['number']
-                            ),
-                        ];
-                        break;
-                    default:
-                        $responseData = [
-                            'unsupported_action' => $data['action'],
-                        ];
-                }
-                break;
-            case 'issues':
-                switch ($data['action']) {
-                    case 'labeled':
-                        $responseData = [
-                            'issue' => $data['issue']['number'],
-                            'status_change' => $listener->handleLabelAddedEvent(
-                                $data['issue']['number'],
-                                $data['label']['name']
-                            ),
-                        ];
-                        break;
-                    default:
-                        $responseData = [
-                            'unsupported_action' => $data['action'],
-                        ];
-                }
-                break;
-            default:
-                $responseData = [
-                    'unsupported_event' => $event,
-                ];
+        $listener = $this->get('app.github.listener_factory')->createFromRepository($repository);
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->addSubscriber($listener);
+
+        $event = new GitHubEvent($data);
+        $eventName = $request->headers->get('X-Github-Event');
+
+        $dispatcher->dispatch('github.'.$eventName, $event);
+
+        $responseData = $event->getResponseData();
+
+        if (empty($responseData)) {
+            $responseData['unsupported_event'] = $eventName;
         }
 
         return new JsonResponse($responseData);

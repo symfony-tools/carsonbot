@@ -20,6 +20,10 @@ parameters:
 
     # token used to update labels on the repository, etc
     github_token: XXXX
-    # point to the symfony/symfony repository
-    repository_username: symfony
-    repository_name: symfony
+    # defines symfony repository as default
+    default_repository: symfony/symfony
+    # point to the main symfony repositories
+    github_listeners:
+        symfony/symfony: 'AppBundle\Listener\SymfonyIssueListener'
+        symfony/symfony-docs: 'AppBundle\Listener\SymfonyDocsIssueListener'
+        symfony/symfony-standard: 'AppBundle\Listener\SymfonyStandardIssueListener'

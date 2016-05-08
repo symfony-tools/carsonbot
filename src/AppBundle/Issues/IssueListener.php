@@ -2,7 +2,10 @@
 
 namespace AppBundle\Issues;
 
-class IssueListener
+use AppBundle\Event\GitHubEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+abstract class IssueListener implements EventSubscriberInterface
 {
     private static $triggerWordToStatus = [
         'needs review' => Status::NEEDS_REVIEW,
@@ -25,16 +28,13 @@ class IssueListener
      * Parses the text of the comment and looks for keywords to see
      * if this should cause any status change.
      *
-     * Returns the status that this comment is causing or null of there
-     * should be no status change.
-     *
-     * @param int    $issueNumber The issue number
-     * @param string $comment     The text of the comment
-     *
-     * @return null|string The status that the issue was moved to or null
+     * @param GitHubEvent $event
      */
-    public function handleCommentAddedEvent($issueNumber, $comment)
+    public function onIssueComment(GitHubEvent $event)
     {
+        $data = $event->getData();
+        $newStatus = null;
+        $issueNumber = $data['issue']['number'];
         $triggerWord = implode('|', array_keys(self::$triggerWordToStatus));
         $formatting = '[\\s\\*]*';
 
@@ -42,60 +42,72 @@ class IssueListener
         // Case insensitive ("i"), ignores formatting with "*" before or after the ":"
         $pattern = "~(?=\n|^)${formatting}status${formatting}:${formatting}[\"']?($triggerWord)[\"']?${formatting}[.!]?${formatting}(?<=\r\n|\n|$)~i";
 
-        if (preg_match_all($pattern, $comment, $matches)) {
+        if (preg_match_all($pattern, $data['comment']['body'], $matches)) {
             // Second subpattern = first status character
             $newStatus = self::$triggerWordToStatus[strtolower(end($matches[1]))];
 
             $this->statusApi->setIssueStatus($issueNumber, $newStatus);
-
-            return $newStatus;
         }
 
-        return;
+        $event->setResponseData(array(
+            'issue' => $issueNumber,
+            'status_change' => $newStatus,
+        ));
     }
 
     /**
      * Adds a "Needs Review" label to new PRs.
      *
-     * @param int $prNumber The number of the PR
-     *
-     * @return string The new status
+     * @param GitHubEvent $event
      */
-    public function handlePullRequestCreatedEvent($prNumber)
+    public function onPullRequest(GitHubEvent $event)
     {
-        $newStatus = Status::NEEDS_REVIEW;
+        $data = $event->getData();
+        if ('opened' !== $action = $data['action']) {
+            $responseData = array('unsupported_action' => $action);
+        } else {
+            $pullRequestNumber = $data['pull_request']['number'];
+            $newStatus = Status::NEEDS_REVIEW;
 
-        $this->statusApi->setIssueStatus($prNumber, $newStatus);
+            $this->statusApi->setIssueStatus($pullRequestNumber, $newStatus);
 
-        return $newStatus;
+            $responseData = array(
+                'pull_request' => $pullRequestNumber,
+                'status_change' => $newStatus,
+            );
+        }
+
+        $event->setResponseData($responseData);
     }
 
     /**
      * Changes "Bug" issues to "Needs Review".
      *
-     * @param int    $issueNumber The issue that was labeled
-     * @param string $label       The added label
-     *
-     * @return null|string The status that the issue was moved to or null
+     * @param GitHubEvent $event
      */
-    public function handleLabelAddedEvent($issueNumber, $label)
+    public function onIssues(GitHubEvent $event)
     {
-        // Ignore non-bugs
-        if ('bug' !== strtolower($label)) {
+        $data = $event->getData();
+        if ('labeled' !== $action = $data['action']) {
+            $event->setResponseData(array('unsupported_action' => $action));
+
             return;
         }
 
-        $currentStatus = $this->statusApi->getIssueStatus($issueNumber);
+        $responseData = array('issue' => $issueNumber = $data['issue']['number']);
+        // Ignore non-bugs or issue which already has a status
+        if ('bug' !== strtolower($data['label']['name']) || null !== $currentStatus = $this->statusApi->getIssueStatus($issueNumber)) {
+            $responseData['status_change'] = null;
+            $event->setResponseData($responseData);
 
-        // Ignore if the issue already has a status
-        if (null !== $currentStatus) {
             return;
         }
 
         $newStatus = Status::NEEDS_REVIEW;
 
         $this->statusApi->setIssueStatus($issueNumber, $newStatus);
+        $responseData['status_change'] = $newStatus;
 
-        return $newStatus;
+        $event->setResponseData($responseData);
     }
 }

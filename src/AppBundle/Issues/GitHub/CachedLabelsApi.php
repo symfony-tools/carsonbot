@@ -29,8 +29,10 @@ class CachedLabelsApi
      */
     private $repositoryName;
 
-    public function __construct(Labels $labelsApi, $repositoryUsername, $repositoryName)
+    public function __construct(Labels $labelsApi, $repository)
     {
+        list($repositoryUsername, $repositoryName) = explode('/', $repository);
+
         $this->labelsApi = $labelsApi;
         $this->repositoryUsername = $repositoryUsername;
         $this->repositoryName = $repositoryName;
