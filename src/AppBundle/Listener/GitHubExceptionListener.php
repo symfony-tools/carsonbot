@@ -11,32 +11,45 @@
 
 namespace AppBundle\Listener;
 
-use AppBundle\Exception\GitHubException;
+use AppBundle\Exception\GitHubExceptionInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * ExceptionListener.
+ * GitHubExceptionListener.
  *
  * @author Jules Pietri <jules@heahprod.com>
  */
-class ExceptionListener implements EventSubscriberInterface
+class GitHubExceptionListener implements EventSubscriberInterface
 {
+    private $debug;
+
+    public function __construct($debug)
+    {
+        $this->debug = $debug;
+    }
+
     public function onGitHubException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
-        if (!$exception instanceof GitHubException) {
+        if (!$exception instanceof GitHubExceptionInterface) {
             return;
         }
 
-        $message = $exception->getMessage();
-        if ($previous = $exception->getPrevious()) {
+        $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+        if (!$this->debug && !$exception instanceof HttpExceptionInterface) {
+            $message = 'Internal error';
+        } else {
+            $message = $exception->getMessage();
+        }
+        if ($this->debug && $previous = $exception->getPrevious()) {
             $message .= ' => '.$previous->getMessage();
         }
 
-        $event->setResponse(new JsonResponse(array('error' => $message), 500));
+        $event->setResponse(new JsonResponse(array('error' => $message), $statusCode));
     }
 
     /**

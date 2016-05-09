@@ -7,7 +7,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 abstract class IssueListener implements EventSubscriberInterface
 {
-    private static $triggerWordToStatus = [
+    protected static $triggerWordToStatus = [
         'needs review' => Status::NEEDS_REVIEW,
         'needs work' => Status::NEEDS_WORK,
         'works for me' => Status::WORKS_FOR_ME,
@@ -17,7 +17,7 @@ abstract class IssueListener implements EventSubscriberInterface
     /**
      * @var StatusApi
      */
-    private $statusApi;
+    protected $statusApi;
 
     public function __construct(StatusApi $statusApi)
     {

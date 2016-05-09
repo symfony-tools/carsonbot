@@ -17,13 +17,3 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
-
-    # token used to update labels on the repository, etc
-    github_token: XXXX
-    # defines symfony repository as default
-    default_repository: symfony/symfony
-    # point to the main symfony repositories
-    github_listeners:
-        symfony/symfony: 'AppBundle\Listener\SymfonyIssueListener'
-        symfony/symfony-docs: 'AppBundle\Listener\SymfonyDocsIssueListener'
-        symfony/symfony-standard: 'AppBundle\Listener\SymfonyStandardIssueListener'
