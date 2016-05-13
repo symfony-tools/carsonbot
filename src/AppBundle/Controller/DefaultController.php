@@ -13,7 +13,7 @@ class DefaultController extends Controller
     public function homepageAction()
     {
         return $this->render('default/homepage.html.twig', [
-            'needsReviewUrl' => $this->get('app.status_api')->getNeedsReviewUrl(),
+            'needsReviewUrl' => $this->get('app.status_api.default')->getNeedsReviewUrl(),
         ]);
     }
 }

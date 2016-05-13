@@ -1,0 +1,33 @@
+parameters:
+    # token used to update labels on the repository, etc
+    github_token: XXX
+
+    # defines symfony repository as default
+    default_repository: symfony/symfony
+
+    # point to the main symfony repositories
+    repositories:
+        symfony/symfony:
+            listeners:
+                - AppBundle\Listener\SymfonyIssueListener
+            maintainers:
+                - fabpot
+                - webmozart
+                - Tobion
+                - romainneutron
+                - nicolas-grekas
+                - stof
+                - dunglas
+                - aitboudad
+                - jakzal
+                - xabbuh
+                - javiereguiluz
+            secret: change_me
+        symfony/symfony-docs:
+            listeners:
+                - AppBundle\Listener\SymfonyDocsIssueListener
+            maintainers:
+                - weaverryan
+                - WouterJ
+                - xabbuh
+                - javiereguiluz
