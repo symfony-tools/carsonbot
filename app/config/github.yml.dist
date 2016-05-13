@@ -10,7 +10,24 @@ parameters:
         symfony/symfony:
             listeners:
                 - AppBundle\Listener\SymfonyIssueListener
+            maintainers:
+                - fabpot
+                - webmozart
+                - Tobion
+                - romainneutron
+                - nicolas-grekas
+                - stof
+                - dunglas
+                - aitboudad
+                - jakzal
+                - xabbuh
+                - javiereguiluz
             secret: change_me
         symfony/symfony-docs:
             listeners:
-                 - AppBundle\Listener\SymfonyDocsIssueListener
+                - AppBundle\Listener\SymfonyDocsIssueListener
+            maintainers:
+                - weaverryan
+                - WouterJ
+                - xabbuh
+                - javiereguiluz

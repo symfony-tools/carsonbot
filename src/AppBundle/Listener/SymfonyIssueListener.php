@@ -11,8 +11,10 @@
 
 namespace AppBundle\Listener;
 
+use AppBundle\Event\GitHubEvent;
 use AppBundle\GitHubEvents;
 use AppBundle\Issues\IssueListener;
+use AppBundle\Issues\Status;
 
 /**
  * SymfonyIssueListener.
@@ -21,6 +23,49 @@ use AppBundle\Issues\IssueListener;
  */
 class SymfonyIssueListener extends IssueListener
 {
+    protected static $triggerWordToStatus = [
+        'needs review' => Status::NEEDS_REVIEW,
+        'needs work' => Status::NEEDS_WORK,
+        'works for me' => Status::WORKS_FOR_ME,
+        'reviewed' => Status::REVIEWED,
+        'needs comments' => Status::NEEDS_COMMENTS,
+    ];
+
+    protected static $privateTriggerWordToStatus = [
+        'ready' => Status::READY,
+    ];
+
+    /**
+     * Changes "Bug" issues to "Needs Review".
+     *
+     * @param GitHubEvent $event
+     */
+    public function onIssues(GitHubEvent $event)
+    {
+        $data = $event->getData();
+        if ('labeled' !== $action = $data['action']) {
+            $event->setResponseData(array('unsupported_action' => $action));
+
+            return;
+        }
+
+        $responseData = array('issue' => $issueNumber = $data['issue']['number']);
+        // Ignore non-bugs or issue which already has a status
+        if ('bug' !== strtolower($data['label']['name']) || null !== $currentStatus = $this->getIssueStatus($issueNumber)) {
+            $responseData['status_change'] = null;
+            $event->setResponseData($responseData);
+
+            return;
+        }
+
+        $newStatus = Status::NEEDS_REVIEW;
+
+        $this->setIssueStatus($issueNumber, $newStatus);
+        $responseData['status_change'] = $newStatus;
+
+        $event->setResponseData($responseData);
+    }
+
     /**
      * {@inheritdoc}
      */

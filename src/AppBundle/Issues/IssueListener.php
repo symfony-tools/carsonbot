@@ -7,19 +7,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 abstract class IssueListener implements EventSubscriberInterface
 {
-    protected static $triggerWordToStatus = [
-        'needs review' => Status::NEEDS_REVIEW,
-        'needs work' => Status::NEEDS_WORK,
-        'works for me' => Status::WORKS_FOR_ME,
-        'reviewed' => Status::REVIEWED,
-    ];
+    protected static $triggerWordToStatus;
+    protected static $privateTriggerWordToStatus;
 
     /**
      * @var StatusApi
      */
-    protected $statusApi;
+    private $statusApi;
 
-    public function __construct(StatusApi $statusApi)
+    final public function __construct(StatusApi $statusApi)
     {
         $this->statusApi = $statusApi;
     }
@@ -35,18 +31,24 @@ abstract class IssueListener implements EventSubscriberInterface
         $data = $event->getData();
         $newStatus = null;
         $issueNumber = $data['issue']['number'];
-        $triggerWord = implode('|', array_keys(self::$triggerWordToStatus));
-        $formatting = '[\\s\\*]*';
+        $user = $data['comment']['user']['login'];
+        $statuses = static::$triggerWordToStatus;
 
+        if (in_array($user, $event->getMaintainers(), true)) {
+            $statuses += static::$privateTriggerWordToStatus;
+        }
+
+        $triggerWord = implode('|', array_keys($statuses));
+        $formatting = '[\\s\\*]*';
         // Match first character after "status:"
         // Case insensitive ("i"), ignores formatting with "*" before or after the ":"
         $pattern = "~(?=\n|^)${formatting}status${formatting}:${formatting}[\"']?($triggerWord)[\"']?${formatting}[.!]?${formatting}(?<=\r\n|\n|$)~i";
 
         if (preg_match_all($pattern, $data['comment']['body'], $matches)) {
             // Second subpattern = first status character
-            $newStatus = self::$triggerWordToStatus[strtolower(end($matches[1]))];
+            $newStatus = $statuses[strtolower(end($matches[1]))];
 
-            $this->statusApi->setIssueStatus($issueNumber, $newStatus);
+            $this->setIssueStatus($issueNumber, $newStatus);
         }
 
         $event->setResponseData(array(
@@ -69,7 +71,7 @@ abstract class IssueListener implements EventSubscriberInterface
             $pullRequestNumber = $data['pull_request']['number'];
             $newStatus = Status::NEEDS_REVIEW;
 
-            $this->statusApi->setIssueStatus($pullRequestNumber, $newStatus);
+            $this->setIssueStatus($pullRequestNumber, $newStatus);
 
             $responseData = array(
                 'pull_request' => $pullRequestNumber,
@@ -80,34 +82,13 @@ abstract class IssueListener implements EventSubscriberInterface
         $event->setResponseData($responseData);
     }
 
-    /**
-     * Changes "Bug" issues to "Needs Review".
-     *
-     * @param GitHubEvent $event
-     */
-    public function onIssues(GitHubEvent $event)
+    final protected function getIssueStatus($issueNumber)
     {
-        $data = $event->getData();
-        if ('labeled' !== $action = $data['action']) {
-            $event->setResponseData(array('unsupported_action' => $action));
+        return $this->statusApi->getIssueStatus($issueNumber);
+    }
 
-            return;
-        }
-
-        $responseData = array('issue' => $issueNumber = $data['issue']['number']);
-        // Ignore non-bugs or issue which already has a status
-        if ('bug' !== strtolower($data['label']['name']) || null !== $currentStatus = $this->statusApi->getIssueStatus($issueNumber)) {
-            $responseData['status_change'] = null;
-            $event->setResponseData($responseData);
-
-            return;
-        }
-
-        $newStatus = Status::NEEDS_REVIEW;
-
-        $this->statusApi->setIssueStatus($issueNumber, $newStatus);
-        $responseData['status_change'] = $newStatus;
-
-        $event->setResponseData($responseData);
+    final protected function setIssueStatus($issueNumber, $status)
+    {
+        return $this->statusApi->setIssueStatus($issueNumber, $status);
     }
 }

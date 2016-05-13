@@ -79,7 +79,7 @@ class GitHubRequestHandler
             $this->dispatcher->addSubscriber(new $listener($api));
         }
 
-        $event = new GitHubEvent($data);
+        $event = new GitHubEvent($data, $repository, $config['maintainers']);
         $eventName = $request->headers->get('X-Github-Event');
 
         try {

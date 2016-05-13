@@ -14,15 +14,29 @@ class GitHubEvent extends Event
     protected $responseData = array();
 
     private $data;
+    private $repository;
+    private $maintainers;
 
-    public function __construct(array $data)
+    public function __construct(array $data, $repository, array $maintainers = array())
     {
         $this->data = $data;
+        $this->repository = $repository;
+        $this->maintainers = $maintainers;
     }
 
     public function getData()
     {
         return $this->data;
+    }
+
+    public function getRepository()
+    {
+        return $this->repository;
+    }
+
+    public function getMaintainers()
+    {
+        return $this->maintainers;
     }
 
     public function getResponseData()
