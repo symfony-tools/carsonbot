@@ -16,13 +16,11 @@ class GitHubEvent extends Event
 
     private $data;
     private $repository;
-    private $maintainers;
 
-    public function __construct(array $data, Repository $repository, array $maintainers = array())
+    public function __construct(array $data, Repository $repository)
     {
         $this->data = $data;
         $this->repository = $repository;
-        $this->maintainers = $maintainers;
     }
 
     public function getData()
@@ -36,11 +34,6 @@ class GitHubEvent extends Event
     public function getRepository()
     {
         return $this->repository;
-    }
-
-    public function getMaintainers()
-    {
-        return $this->maintainers;
     }
 
     public function getResponseData()

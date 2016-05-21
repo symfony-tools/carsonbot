@@ -11,24 +11,7 @@ parameters:
         symfony/symfony:
             subscribers:
                 - app.subscriber.issue_subscriber
-            maintainers:
-                - fabpot
-                - webmozart
-                - Tobion
-                - romainneutron
-                - nicolas-grekas
-                - stof
-                - dunglas
-                - aitboudad
-                - jakzal
-                - xabbuh
-                - javiereguiluz
             secret: change_me
         symfony/symfony-docs:
             subscribers:
                 - app.subscriber.issue_subscriber
-            maintainers:
-                - weaverryan
-                - WouterJ
-                - xabbuh
-                - javiereguiluz

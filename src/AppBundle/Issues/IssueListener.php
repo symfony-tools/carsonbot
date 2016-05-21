@@ -17,16 +17,12 @@ class IssueListener implements EventSubscriberInterface
         'needs comments' => Status::NEEDS_COMMENTS,
     ];
 
-    private static $privateTriggerWordToStatus = [
-        'ready' => Status::READY,
-    ];
-
     /**
      * @var StatusApi
      */
     private $statusApi;
 
-    final public function __construct(StatusApi $statusApi)
+    public function __construct(StatusApi $statusApi)
     {
         $this->statusApi = $statusApi;
     }
@@ -43,14 +39,8 @@ class IssueListener implements EventSubscriberInterface
         $repository = $event->getRepository();
         $newStatus = null;
         $issueNumber = $data['issue']['number'];
-        $user = $data['comment']['user']['login'];
-        $statuses = static::$triggerWordToStatus;
 
-        if (in_array($user, $event->getMaintainers(), true)) {
-            $statuses += static::$privateTriggerWordToStatus;
-        }
-
-        $triggerWord = implode('|', array_keys($statuses));
+        $triggerWord = implode('|', array_keys(static::$triggerWordToStatus));
         $formatting = '[\\s\\*]*';
         // Match first character after "status:"
         // Case insensitive ("i"), ignores formatting with "*" before or after the ":"
@@ -58,7 +48,7 @@ class IssueListener implements EventSubscriberInterface
 
         if (preg_match_all($pattern, $data['comment']['body'], $matches)) {
             // Second subpattern = first status character
-            $newStatus = $statuses[strtolower(end($matches[1]))];
+            $newStatus = static::$triggerWordToStatus[strtolower(end($matches[1]))];
 
             $this->setIssueStatus($issueNumber, $newStatus, $repository);
         }
@@ -79,20 +69,20 @@ class IssueListener implements EventSubscriberInterface
         $data = $event->getData();
         $repository = $event->getRepository();
         if ('opened' !== $action = $data['action']) {
-            $responseData = array('unsupported_action' => $action);
-        } else {
-            $pullRequestNumber = $data['pull_request']['number'];
-            $newStatus = Status::NEEDS_REVIEW;
+            $event->setResponseData(array('unsupported_action' => $action));
 
-            $this->setIssueStatus($pullRequestNumber, $newStatus, $repository);
-
-            $responseData = array(
-                'pull_request' => $pullRequestNumber,
-                'status_change' => $newStatus,
-            );
+            return;
         }
 
-        $event->setResponseData($responseData);
+        $pullRequestNumber = $data['pull_request']['number'];
+        $newStatus = Status::NEEDS_REVIEW;
+
+        $this->setIssueStatus($pullRequestNumber, $newStatus, $repository);
+
+        $event->setResponseData(array(
+            'pull_request' => $pullRequestNumber,
+            'status_change' => $newStatus,
+        ));
     }
 
     /**

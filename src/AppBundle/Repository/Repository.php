@@ -75,10 +75,4 @@ class Repository
     {
         // todo - implement setting a secret
     }
-
-    public function getMaintainers()
-    {
-        // todo - implement this
-        return [];
-    }
 }
