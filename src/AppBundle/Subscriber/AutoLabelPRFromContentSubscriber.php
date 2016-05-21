@@ -20,8 +20,6 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Adds a "Needs Review" label to new PRs.
-     *
      * @param GitHubEvent $event
      */
     public function onPullRequest(GitHubEvent $event)
