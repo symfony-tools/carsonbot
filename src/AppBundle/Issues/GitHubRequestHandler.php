@@ -3,17 +3,13 @@
 namespace AppBundle\Issues;
 
 use AppBundle\Event\GitHubEvent;
-use AppBundle\Exception\GitHubAccessDeniedException;
-use AppBundle\Exception\GitHubBadRequestException;
-use AppBundle\Exception\GitHubExceptionInterface;
-use AppBundle\Exception\GitHubInvalidConfigurationException;
-use AppBundle\Exception\GitHubPreconditionFailedException;
-use AppBundle\Exception\GitHubRuntimeException;
 use AppBundle\Repository\Provider\RepositoryProviderInterface;
-use Github\Api\Issue\Labels;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Handles GitHub webhook requests
@@ -36,33 +32,31 @@ class GitHubRequestHandler
     /**
      * @param Request $request
      * @return array The response data
-     *
-     * @throws GitHubExceptionInterface When the request or the configuration are invalid
      */
     public function handle(Request $request)
     {
         $data = json_decode($request->getContent(), true);
         if (null === $data) {
-            throw new GitHubBadRequestException('Invalid JSON body!');
+            throw new BadRequestHttpException('Invalid JSON body!');
         }
 
         $repositoryFullName = isset($data['repository']['full_name']) ? $data['repository']['full_name'] : null;
         if (empty($repositoryFullName)) {
-            throw new GitHubBadRequestException('No repository name!');
+            throw new BadRequestHttpException('No repository name!');
         }
 
         $repository = $this->repositoryProvider->getRepository($repositoryFullName);
 
         if (!$repository) {
-            throw new GitHubPreconditionFailedException(sprintf('Unsupported repository "%s".', $repositoryFullName));
+            throw new PreconditionFailedHttpException(sprintf('Unsupported repository "%s".', $repositoryFullName));
         }
 
         if ($repository->getSecret()) {
             if (!$request->headers->has('X-Hub-Signature')) {
-                throw new GitHubAccessDeniedException('The request is not secured.');
+                throw new AccessDeniedException('The request is not secured.');
             }
             if (!$this->authenticate($request->headers->get('X-Hub-Signature'), $repository->getSecret(), $request->getContent())) {
-                throw new GitHubAccessDeniedException('Invalid signature.');
+                throw new AccessDeniedException('Invalid signature.');
             }
         }
 
@@ -76,14 +70,10 @@ class GitHubRequestHandler
         try {
             $this->dispatcher->dispatch('github.'.$eventName, $event);
         } catch (\Exception $e) {
-            throw new GitHubRuntimeException(sprintf('Failed dispatching "%s" event for "%s" repository.', $eventName, $repository), 0, $e);
+            throw new \RuntimeException(sprintf('Failed dispatching "%s" event for "%s" repository.', $eventName, $repository), 0, $e);
         }
 
         $responseData = $event->getResponseData();
-
-        if (empty($responseData)) {
-            throw new GitHubPreconditionFailedException(sprintf('Unsupported event "%s"', $eventName));
-        }
 
         return $responseData;
     }
@@ -91,7 +81,7 @@ class GitHubRequestHandler
     private function authenticate($hash, $key, $data)
     {
         if (!extension_loaded('hash')) {
-            throw new GitHubInvalidConfigurationException('"hash" extension is needed to check request signature.');
+            throw new \RuntimeException('"hash" extension is needed to check request signature.');
         }
 
         return $hash !== 'sha1='.hash_hmac('sha1', $data, $key);

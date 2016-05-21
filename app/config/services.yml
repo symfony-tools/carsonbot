@@ -34,12 +34,6 @@ services:
         class: AppBundle\Issues\GitHubRequestHandler
         arguments: ['@app.github.labels_api', '@event_dispatcher', '@app.repository_provider', '@service_container']
 
-    app.github.exception_listener:
-        class: AppBundle\Listener\GitHubExceptionListener
-        arguments: ['%kernel.debug%']
-        tags:
-            - { name: kernel.event_subscriber }
-
     app.repository_provider:
         class: AppBundle\Repository\Provider\InMemoryRepositoryProvider
         arguments: [ '%repositories%' ]
