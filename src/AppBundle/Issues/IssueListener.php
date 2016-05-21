@@ -3,12 +3,22 @@
 namespace AppBundle\Issues;
 
 use AppBundle\Event\GitHubEvent;
+use AppBundle\GitHubEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-abstract class IssueListener implements EventSubscriberInterface
+class IssueListener implements EventSubscriberInterface
 {
-    protected static $triggerWordToStatus;
-    protected static $privateTriggerWordToStatus;
+    private static $triggerWordToStatus = [
+        'needs review' => Status::NEEDS_REVIEW,
+        'needs work' => Status::NEEDS_WORK,
+        'works for me' => Status::WORKS_FOR_ME,
+        'reviewed' => Status::REVIEWED,
+        'needs comments' => Status::NEEDS_COMMENTS,
+    ];
+
+    private static $privateTriggerWordToStatus = [
+        'ready' => Status::READY,
+    ];
 
     /**
      * @var StatusApi
@@ -82,13 +92,56 @@ abstract class IssueListener implements EventSubscriberInterface
         $event->setResponseData($responseData);
     }
 
-    final protected function getIssueStatus($issueNumber)
+    /**
+     * Changes "Bug" issues to "Needs Review".
+     *
+     * @param GitHubEvent $event
+     */
+    public function onIssues(GitHubEvent $event)
+    {
+        $data = $event->getData();
+        if ('labeled' !== $action = $data['action']) {
+            $event->setResponseData(array('unsupported_action' => $action));
+
+            return;
+        }
+
+        $responseData = array('issue' => $issueNumber = $data['issue']['number']);
+        // Ignore non-bugs or issue which already has a status
+        if ('bug' !== strtolower($data['label']['name']) || null !== $currentStatus = $this->getIssueStatus($issueNumber)) {
+            $responseData['status_change'] = null;
+            $event->setResponseData($responseData);
+
+            return;
+        }
+
+        $newStatus = Status::NEEDS_REVIEW;
+
+        $this->setIssueStatus($issueNumber, $newStatus);
+        $responseData['status_change'] = $newStatus;
+
+        $event->setResponseData($responseData);
+    }
+
+    private function getIssueStatus($issueNumber)
     {
         return $this->statusApi->getIssueStatus($issueNumber);
     }
 
-    final protected function setIssueStatus($issueNumber, $status)
+    private function setIssueStatus($issueNumber, $status)
     {
         return $this->statusApi->setIssueStatus($issueNumber, $status);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            GitHubEvents::ISSUE_COMMENT => 'onIssueComment',
+            GitHubEvents::PULL_REQUEST => 'onPullRequest',
+            GitHubEvents::ISSUES => 'onIssues',
+        );
     }
 }
