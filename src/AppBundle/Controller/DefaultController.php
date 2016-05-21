@@ -15,7 +15,7 @@ class DefaultController extends Controller
         $repositories = $this->get('app.repository_provider')->getAllRepositories();
 
         return $this->render('default/homepage.html.twig', [
-            'repositories' => $repositories
+            'repositories' => $repositories,
         ]);
     }
 }

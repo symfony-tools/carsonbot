@@ -20,14 +20,14 @@ class Repository
     private $name;
 
     /**
-     * An array of subscriber service ids
+     * An array of subscriber service ids.
      *
      * @var array
      */
     private $subscribers;
 
     /**
-     * The webhook secret  used by GitHub
+     * The webhook secret  used by GitHub.
      *
      * @var string
      */

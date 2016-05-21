@@ -29,8 +29,8 @@ class GitHubStatusApi implements StatusApi
     }
 
     /**
-     * @param int    $issueNumber The GitHub issue number
-     * @param string $newStatus   A Status::* constant
+     * @param int        $issueNumber The GitHub issue number
+     * @param string     $newStatus   A Status::* constant
      * @param Repository $repository
      */
     public function setIssueStatus($issueNumber, $newStatus, Repository $repository)

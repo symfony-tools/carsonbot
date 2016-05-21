@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * Handles GitHub webhook requests
+ * Handles GitHub webhook requests.
  *
  * @author Jules Pietri <jules@heahprod.com>
  */
@@ -31,6 +31,7 @@ class GitHubRequestHandler
 
     /**
      * @param Request $request
+     *
      * @return array The response data
      */
     public function handle(Request $request)
