@@ -14,4 +14,6 @@ interface StatusApi
     public function getIssueStatus($issueNumber, Repository $repository);
 
     public function setIssueStatus($issueNumber, $newStatus, Repository $repository);
+
+    public function setIssueLabels($issueNumber, array $newLabels, Repository $repository);
 }

@@ -15,5 +15,10 @@ class NullStatusApi implements StatusApi
 
     public function setIssueStatus($issueNumber, $newStatus, Repository $repository)
     {
+
+    }
+
+    public function setIssueLabels($issueNumber, array $newLabels, Repository $repository)
+    {
     }
 }
