@@ -6,9 +6,6 @@ services:
             - '@app.status_api.default'
 
 parameters:
-    # defines symfony repository as default
-    default_repository: symfony/symfony
-
     # point to the main symfony repositories
     repositories:
         symfony/symfony:

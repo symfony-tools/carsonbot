@@ -11,6 +11,8 @@ use AppBundle\Exception\GitHubPreconditionFailedException;
 use AppBundle\Exception\GitHubRuntimeException;
 use AppBundle\Issues\GitHub\CachedLabelsApi;
 use AppBundle\Issues\GitHub\GitHubStatusApi;
+use AppBundle\Repository\Provider\RepositoryProviderInterface;
+use AppBundle\Repository\RepositoryRegistry;
 use Github\Api\Issue\Labels;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -25,17 +27,17 @@ class GitHubRequestHandler
 {
     private $labelsApi;
     private $dispatcher;
-    private $repositories;
+    private $repositoryProvider;
     /**
      * @var ContainerInterface
      */
     private $container;
 
-    public function __construct(Labels $labelsApi, EventDispatcherInterface $dispatcher, array $repositories, ContainerInterface $container)
+    public function __construct(Labels $labelsApi, EventDispatcherInterface $dispatcher, RepositoryProviderInterface $repositoryProvider, ContainerInterface $container)
     {
         $this->labelsApi = $labelsApi;
         $this->dispatcher = $dispatcher;
-        $this->repositories = $repositories;
+        $this->repositoryProvider = $repositoryProvider;
         $this->container = $container;
     }
 
@@ -52,33 +54,31 @@ class GitHubRequestHandler
             throw new GitHubBadRequestException('Invalid JSON body!');
         }
 
-        $repository = isset($data['repository']['full_name']) ? $data['repository']['full_name'] : null;
-        if (empty($repository)) {
+        $repositoryFullName = isset($data['repository']['full_name']) ? $data['repository']['full_name'] : null;
+        if (empty($repositoryFullName)) {
             throw new GitHubBadRequestException('No repository name!');
         }
 
-        if (!isset($this->repositories[$repository])) {
-            throw new GitHubPreconditionFailedException(sprintf('Unsupported repository "%s".', $repository));
+        $repository = $this->repositoryProvider->getRepository($repositoryFullName);
+
+        if (!$repository) {
+            throw new GitHubPreconditionFailedException(sprintf('Unsupported repository "%s".', $repositoryFullName));
         }
 
-        $config = $this->repositories[$repository];
-        if (isset($config['secret'])) {
+        if ($repository->getSecret()) {
             if (!$request->headers->has('X-Hub-Signature')) {
                 throw new GitHubAccessDeniedException('The request is not secured.');
             }
-            if (!$this->authenticate($request->headers->get('X-Hub-Signature'), $config['secret'], $request->getContent())) {
+            if (!$this->authenticate($request->headers->get('X-Hub-Signature'), $repository->getSecret(), $request->getContent())) {
                 throw new GitHubAccessDeniedException('Invalid signature.');
             }
         }
-        if (empty($config['subscribers'])) {
-            throw new GitHubInvalidConfigurationException('The repository "%s" has no subscribers configured.');
-        }
 
-        foreach ($config['subscribers'] as $subscriberId) {
+        foreach ($repository->getSubscribers() as $subscriberId) {
             $this->dispatcher->addSubscriber($this->container->get($subscriberId));
         }
 
-        $event = new GitHubEvent($data, $repository, $config['maintainers']);
+        $event = new GitHubEvent($data, $repository);
         $eventName = $request->headers->get('X-Github-Event');
 
         try {
