@@ -11,7 +11,7 @@ parameters:
         symfony/symfony:
             subscribers:
                 - app.subscriber.issue_subscriber
-            secret: change_me
+            # secret: change_me
         symfony/symfony-docs:
             subscribers:
                 - app.subscriber.issue_subscriber

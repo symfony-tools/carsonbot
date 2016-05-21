@@ -24,11 +24,19 @@ class Repository
      */
     private $subscribers;
 
-    public function __construct($vendor, $name, array $subscribers)
+    /**
+     * The webhook secret  used by GitHub
+     *
+     * @var string
+     */
+    private $secret;
+
+    public function __construct($vendor, $name, array $subscribers, $secret)
     {
         $this->vendor = $vendor;
         $this->name = $name;
         $this->subscribers = $subscribers;
+        $this->secret = $secret;
     }
 
     /**
@@ -73,6 +81,6 @@ class Repository
      */
     public function getSecret()
     {
-        // todo - implement setting a secret
+        return $this->secret;
     }
 }

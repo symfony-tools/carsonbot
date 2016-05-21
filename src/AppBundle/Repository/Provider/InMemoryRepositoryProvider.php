@@ -28,10 +28,13 @@ class InMemoryRepositoryProvider implements RepositoryProviderInterface
                 throw new \InvalidArgumentException(sprintf('The repository "%s" has no subscribers configured.', $repositoryFullName));
             }
 
+            $secret = isset($repositoryData['secret']) ? $repositoryData['secret'] : null;
+
             $this->addRepository(new Repository(
                 $vendorName,
                 $repositoryName,
-                $repositoryData['subscribers']
+                $repositoryData['subscribers'],
+                $secret
             ));
         }
     }
