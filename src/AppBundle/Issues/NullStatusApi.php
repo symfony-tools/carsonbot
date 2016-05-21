@@ -17,8 +17,4 @@ class NullStatusApi implements StatusApi
     {
 
     }
-
-    public function setIssueLabels($issueNumber, array $newLabels, Repository $repository)
-    {
-    }
 }
