@@ -6,5 +6,5 @@ use AppBundle\Repository\Repository;
 
 interface CommentsApiInterface
 {
-    public function commentOnIssue($issueNumber, Repository $repository);
+    public function commentOnIssue($issueNumber, $commentBody, Repository $repository);
 }

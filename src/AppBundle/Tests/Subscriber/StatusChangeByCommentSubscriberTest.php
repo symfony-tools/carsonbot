@@ -97,4 +97,16 @@ class StatusChangeByCommentSubscriberTest extends \PHPUnit_Framework_TestCase
             array('Before the ticket was in state "Status: reviewed", but then the status was changed', null),
         );
     }
+
+    public function testGetValidCommentsForDisplay()
+    {
+        $expected = [
+            'Status: Needs Review',
+            'Status: Needs Work',
+            'Status: Works For Me',
+            'Status: Reviewed',
+        ];
+
+        $this->assertEquals($expected, StatusChangeByCommentSubscriber::getValidCommentsForDisplay());
+    }
 }

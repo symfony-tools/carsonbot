@@ -56,6 +56,16 @@ class StatusChangeByCommentSubscriber implements EventSubscriberInterface
         ));
     }
 
+    public static function getValidCommentsForDisplay()
+    {
+        $comments = [];
+        foreach (array_keys(self::$triggerWordToStatus) as $triggerText) {
+            $comments[] = ucwords('Status: '.$triggerText);
+        }
+
+        return $comments;
+    }
+
     public static function getSubscribedEvents()
     {
         return array(

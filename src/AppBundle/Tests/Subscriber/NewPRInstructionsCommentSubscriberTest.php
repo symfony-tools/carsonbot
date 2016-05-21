@@ -4,16 +4,15 @@ namespace AppBundle\Tests\Subscriber;
 
 use AppBundle\Event\GitHubEvent;
 use AppBundle\GitHubEvents;
-use AppBundle\Issues\Status;
 use AppBundle\Repository\Repository;
-use AppBundle\Subscriber\NeedsReviewNewPRSubscriber;
+use AppBundle\Subscriber\NewPRInstructionCommentSubscriber;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class NeedsReviewNewPRSubscriberTest extends \PHPUnit_Framework_TestCase
+class NewPRInstructionsCommentSubscriberTest extends \PHPUnit_Framework_TestCase
 {
-    private $needsReviewSubscriber;
+    private $newPRSubscriber;
 
-    private $statusApi;
+    private $commentsApi;
 
     private $repository;
 
@@ -29,18 +28,17 @@ class NeedsReviewNewPRSubscriberTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->statusApi = $this->getMock('AppBundle\Issues\StatusApi');
-        $this->needsReviewSubscriber = new NeedsReviewNewPRSubscriber($this->statusApi);
+        $this->commentsApi = $this->getMock('AppBundle\Issues\CommentsApiInterface');
+        $this->newPRSubscriber = new NewPRInstructionCommentSubscriber($this->commentsApi);
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
-        self::$dispatcher->addSubscriber($this->needsReviewSubscriber);
+        self::$dispatcher->addSubscriber($this->newPRSubscriber);
     }
 
     public function testOnPullRequestOpen()
     {
-        $this->statusApi->expects($this->once())
-            ->method('setIssueStatus')
-            ->with(1234, Status::NEEDS_REVIEW);
+        $this->commentsApi->expects($this->once())
+            ->method('commentOnIssue');
 
         $event = new GitHubEvent(array(
             'action' => 'opened',
@@ -51,15 +49,14 @@ class NeedsReviewNewPRSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $responseData = $event->getResponseData();
 
-        $this->assertCount(2, $responseData);
-        $this->assertSame(1234, $responseData['pull_request']);
-        $this->assertSame(Status::NEEDS_REVIEW, $responseData['status_change']);
+        $this->assertCount(1, $responseData);
+        $this->assertSame(true, $responseData['instructions_added']);
     }
 
     public function testOnPullRequestNotOpen()
     {
-        $this->statusApi->expects($this->never())
-            ->method('setIssueStatus');
+        $this->commentsApi->expects($this->never())
+            ->method('commentOnIssue');
 
         $event = new GitHubEvent(array(
             'action' => 'close',

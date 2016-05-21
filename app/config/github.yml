@@ -15,6 +15,11 @@ services:
         arguments:
             - '@app.status_api'
 
+    app.subscriber.new_pr_instructions_comment:
+        class: AppBundle\Subscriber\NewPRInstructionCommentSubscriber
+        arguments:
+            - '@app.comments_api'
+
 parameters:
     # point to the main symfony repositories
     repositories:
@@ -29,6 +34,7 @@ parameters:
                 - app.subscriber.status_change_by_comment_subscriber
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.new_pr_instructions_comment
 
         # used in a functional test
         weaverryan/symfony:
@@ -36,3 +42,4 @@ parameters:
                 - app.subscriber.status_change_by_comment_subscriber
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.new_pr_instructions_comment
