@@ -44,22 +44,20 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         }
 
         // the PR body usually indicates if this is a Bug, Feature, BC Break or Deprecation
-        if (preg_match('/^\|\s*Bug fix?\s*\|\s*yes\s*$/', $prBody, $matches)) {
+        if (preg_match('/\|\s*Bug fix\?\s*\|\s*yes\s*/', $prBody, $matches)) {
             $prLabels[] = 'Bug';
         }
-        if (preg_match('/^\|\s*New feature?\s*\|\s*yes\s*$/', $prBody, $matches)) {
+        if (preg_match('/\|\s*New feature\?\s*\|\s*yes\s*/', $prBody, $matches)) {
             $prLabels[] = 'Feature';
         }
-        if (preg_match('/^\|\s*BC breaks?\s*\|\s*yes\s*$/', $prBody, $matches)) {
+        if (preg_match('/\|\s*BC breaks\?\s*\|\s*yes\s*/', $prBody, $matches)) {
             $prLabels[] = 'BC Break';
         }
-        if (preg_match('/^\|\s*Deprecations?\s*\|\s*yes\s*$/', $prBody, $matches)) {
+        if (preg_match('/\|\s*Deprecations\?\s*\|\s*yes\s*/', $prBody, $matches)) {
             $prLabels[] = 'Deprecation';
         }
 
-        foreach ($prLabels as $prLabel) {
-            $this->labelsApi->addIssueLabel($prNumber, $prLabel, $event->getRepository());
-        }
+        $this->labelsApi->addIssueLabels($prNumber, $prLabels, $event->getRepository());
 
         $event->setResponseData(array(
             'pull_request' => $prNumber,

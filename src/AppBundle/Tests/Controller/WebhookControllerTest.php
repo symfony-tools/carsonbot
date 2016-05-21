@@ -34,7 +34,7 @@ class WebhookControllerTest extends WebTestCase
             'On pull request opened' => array(
                 'pull_request',
                 'pull_request.opened.json',
-                array('pull_request' => 3, 'status_change' => 'needs_review'),
+                array('pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => array('Bug')),
             ),
             'On issue labeled "bug"' => array(
                 'issues',
