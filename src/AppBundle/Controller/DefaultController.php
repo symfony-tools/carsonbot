@@ -12,8 +12,10 @@ class DefaultController extends Controller
      */
     public function homepageAction()
     {
+        $repositories = $this->get('app.repository_provider')->getAllRepositories();
+
         return $this->render('default/homepage.html.twig', [
-            'needsReviewUrl' => $this->get('app.status_api')->getNeedsReviewUrl(),
+            'repositories' => $repositories
         ]);
     }
 }

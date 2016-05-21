@@ -8,7 +8,7 @@ use AppBundle\Repository\Repository;
 
 class GitHubStatusApi implements StatusApi
 {
-    private $statusToLabel = [
+    private static $statusToLabel = [
         Status::NEEDS_REVIEW => 'Status: Needs Review',
         Status::NEEDS_WORK => 'Status: Needs Work',
         Status::WORKS_FOR_ME => 'Status: Works for me',
@@ -25,7 +25,7 @@ class GitHubStatusApi implements StatusApi
     public function __construct(CachedLabelsApi $labelsApi)
     {
         $this->labelsApi = $labelsApi;
-        $this->labelToStatus = array_flip($this->statusToLabel);
+        $this->labelToStatus = array_flip(self::$statusToLabel);
     }
 
     /**
@@ -35,11 +35,11 @@ class GitHubStatusApi implements StatusApi
      */
     public function setIssueStatus($issueNumber, $newStatus, Repository $repository)
     {
-        if (!isset($this->statusToLabel[$newStatus])) {
+        if (!isset(self::$statusToLabel[$newStatus])) {
             throw new \InvalidArgumentException(sprintf('Invalid status "%s"', $newStatus));
         }
 
-        $newLabel = $this->statusToLabel[$newStatus];
+        $newLabel = self::$statusToLabel[$newStatus];
         $currentLabels = $this->labelsApi->getIssueLabels($issueNumber, $repository);
         $addLabel = true;
 
@@ -82,13 +82,8 @@ class GitHubStatusApi implements StatusApi
         return;
     }
 
-    public function getNeedsReviewUrl(Repository $repository)
+    public static function getNeedsReviewLabel()
     {
-        return sprintf(
-            'https://github.com/%s/%s/labels/%s',
-            $repository->getVendor(),
-            $repository->getName(),
-            rawurlencode($this->statusToLabel[Status::NEEDS_REVIEW])
-        );
+        return self::$statusToLabel[Status::NEEDS_REVIEW];
     }
 }

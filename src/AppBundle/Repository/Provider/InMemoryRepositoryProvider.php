@@ -44,6 +44,11 @@ class InMemoryRepositoryProvider implements RepositoryProviderInterface
         return isset($this->repositories[$repositoryName]) ? $this->repositories[$repositoryName] : null;
     }
 
+    public function getAllRepositories()
+    {
+        return array_values($this->repositories);
+    }
+
     private function addRepository(Repository $repository)
     {
         $this->repositories[strtolower($repository->getVendor().'/'.$repository->getName())] = $repository;

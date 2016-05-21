@@ -15,4 +15,9 @@ interface RepositoryProviderInterface
      * @return Repository
      */
     public function getRepository($repositoryName);
+
+    /**
+     * @return Repository[]
+     */
+    public function getAllRepositories();
 }

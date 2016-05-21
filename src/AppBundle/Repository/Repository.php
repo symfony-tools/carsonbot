@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Issues\GitHub\GitHubStatusApi;
+use AppBundle\Issues\Status;
 
 /**
  * @author Ener-Getick <egetick@gmail.com>
@@ -82,5 +84,15 @@ class Repository
     public function getSecret()
     {
         return $this->secret;
+    }
+
+    public function getNeedsReviewUrl()
+    {
+        return sprintf(
+            'https://github.com/%s/%s/labels/%s',
+            $this->getVendor(),
+            $this->getName(),
+            rawurlencode(GitHubStatusApi::getNeedsReviewLabel())
+        );
     }
 }
