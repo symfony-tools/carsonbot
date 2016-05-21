@@ -1,7 +1,4 @@
 parameters:
-    # token used to update labels on the repository, etc
-    github_token: XXX
-
     # defines symfony repository as default
     default_repository: symfony/symfony
 
