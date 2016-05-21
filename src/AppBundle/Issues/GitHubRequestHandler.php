@@ -12,11 +12,12 @@ use AppBundle\Exception\GitHubRuntimeException;
 use AppBundle\Issues\GitHub\CachedLabelsApi;
 use AppBundle\Issues\GitHub\GitHubStatusApi;
 use Github\Api\Issue\Labels;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class GitHubRequestHandler.
+ * Handles GitHub webhook requests
  *
  * @author Jules Pietri <jules@heahprod.com>
  */
@@ -25,15 +26,21 @@ class GitHubRequestHandler
     private $labelsApi;
     private $dispatcher;
     private $repositories;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
-    public function __construct(Labels $labelsApi, EventDispatcherInterface $dispatcher, array $repositories)
+    public function __construct(Labels $labelsApi, EventDispatcherInterface $dispatcher, array $repositories, ContainerInterface $container)
     {
         $this->labelsApi = $labelsApi;
         $this->dispatcher = $dispatcher;
         $this->repositories = $repositories;
+        $this->container = $container;
     }
 
     /**
+     * @param Request $request
      * @return array The response data
      *
      * @throws GitHubExceptionInterface When the request or the configuration are invalid
@@ -63,20 +70,12 @@ class GitHubRequestHandler
                 throw new GitHubAccessDeniedException('Invalid signature.');
             }
         }
-        if (empty($config['listeners'])) {
-            throw new GitHubInvalidConfigurationException('The repository "%s" has no listeners configured.');
+        if (empty($config['subscribers'])) {
+            throw new GitHubInvalidConfigurationException('The repository "%s" has no subscribers configured.');
         }
 
-        $api = new GitHubStatusApi(
-            new CachedLabelsApi($this->labelsApi, $repository),
-            $repository
-        );
-        foreach ($config['listeners'] as $listener) {
-            if (!is_subclass_of($listener, __NAMESPACE__.'\IssueListener')) {
-                throw new GitHubInvalidConfigurationException(sprintf('The listener "%s" must be an instance of "\AppBundle\Issues\IssueListener".', $listener));
-            }
-
-            $this->dispatcher->addSubscriber(new $listener($api));
+        foreach ($config['subscribers'] as $subscriberId) {
+            $this->dispatcher->addSubscriber($this->container->get($subscriberId));
         }
 
         $event = new GitHubEvent($data, $repository, $config['maintainers']);

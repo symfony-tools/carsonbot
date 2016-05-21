@@ -1,3 +1,10 @@
+# listener services that you can opt into for a repository
+services:
+    app.subscriber.issue_subscriber:
+        class: AppBundle\Issues\IssueListener
+        arguments:
+            - '@app.status_api.default'
+
 parameters:
     # defines symfony repository as default
     default_repository: symfony/symfony
@@ -5,8 +12,8 @@ parameters:
     # point to the main symfony repositories
     repositories:
         symfony/symfony:
-            listeners:
-                - AppBundle\Listener\SymfonyIssueListener
+            subscribers:
+                - app.subscriber.issue_subscriber
             maintainers:
                 - fabpot
                 - webmozart
@@ -21,8 +28,8 @@ parameters:
                 - javiereguiluz
             secret: change_me
         symfony/symfony-docs:
-            listeners:
-                - AppBundle\Listener\SymfonyDocsIssueListener
+            subscribers:
+                - app.subscriber.issue_subscriber
             maintainers:
                 - weaverryan
                 - WouterJ

@@ -32,10 +32,10 @@ services:
 
     app.github.request_handler:
         class: AppBundle\Issues\GitHubRequestHandler
-        arguments: ['@app.github.labels_api', '@event_dispatcher', '%repositories%']
+        arguments: ['@app.github.labels_api', '@event_dispatcher', '%repositories%', '@service_container']
 
     app.github.exception_listener:
-        class: Appbundle\Listener\GitHubExceptionListener
+        class: AppBundle\Listener\GitHubExceptionListener
         arguments: ['%kernel.debug%']
         tags:
             - { name: kernel.event_subscriber }
