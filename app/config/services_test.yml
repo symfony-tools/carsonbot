@@ -5,3 +5,6 @@ imports:
 services:
     app.status_api:
         class: AppBundle\Issues\NullStatusApi
+
+    app.comments_api:
+        class: AppBundle\Issues\NullCommentsApi
