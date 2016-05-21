@@ -35,7 +35,7 @@ services:
         arguments: ['@app.github.cached_labels_api']
 
     app.comments_api:
-        class: AppBundle\Issues\GitHub\CommentsApi
+        class: AppBundle\Issues\GitHub\GithubCommentsApi
         arguments: ['@app.github.comments_api']
 
     app.github.request_handler:
