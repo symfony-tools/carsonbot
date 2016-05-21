@@ -25,7 +25,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
     public function onPullRequest(GitHubEvent $event)
     {
         $data = $event->getData();
-        if ('opened' !== $action = $data['action']) {
+        if (!in_array($action = $data['action'], array('opened', 'edited'), true)) {
             $event->setResponseData(array('unsupported_action' => $action));
 
             return;
@@ -55,11 +55,26 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             $prLabels[] = 'Deprecation';
         }
 
-        $this->labelsApi->addIssueLabels($prNumber, $prLabels, $event->getRepository());
+        $previousLabels = $this->labelsApi->getIssueLabels($prNumber, $event->getRepository());
+        $addLabels = array_diff($prLabels, $previousLabels);
+
+        if (count($addLabels)) {
+            $this->labelsApi->addIssueLabels($prNumber, $prLabels, $event->getRepository());
+        }
+
+        $removeLabels = array_diff($previousLabels, $prLabels);
+        
+        if (count($removeLabels)) {
+            foreach ($removeLabels as $label) {
+                if (false !== strpos($label, 'Status: ')) {
+                    $this->labelsApi->removeIssueLabel($prNumber, $label, $event->getRepository());
+                }
+            }
+        }
 
         $event->setResponseData(array(
             'pull_request' => $prNumber,
-            'pr_labels' => $prLabels,
+            'pr_labels' => $addLabels,
         ));
     }
 
