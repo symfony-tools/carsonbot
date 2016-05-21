@@ -1,0 +1,38 @@
+# listener services that you can opt into for a repository
+services:
+    app.subscriber.status_change_by_comment_subscriber:
+        class: AppBundle\Subscriber\StatusChangeByCommentSubscriber
+        arguments:
+            - '@app.status_api'
+
+    app.subscriber.needs_review_new_pr_subscriber:
+        class: AppBundle\Subscriber\NeedsReviewNewPRSubscriber
+        arguments:
+            - '@app.status_api'
+
+    app.subscriber.bug_label_new_issue_subscriber:
+        class: AppBundle\Subscriber\BugLabelNewIssueSubscriber
+        arguments:
+            - '@app.status_api'
+
+parameters:
+    # point to the main symfony repositories
+    repositories:
+        symfony/symfony:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+            # secret: change_me
+        symfony/symfony-docs:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+
+        # used in a functional test
+        weaverryan/symfony:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber

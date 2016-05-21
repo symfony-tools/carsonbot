@@ -11,10 +11,24 @@
 
                     <h1>Carson: The Issue Butler</h1>
 
-                    <div>
-                        <a href="{{ needsReviewUrl }}" class="btn btn-primary">Find "Needs Review" issues and pull requests</a>
-                    </div>
-
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Repository</th>
+                                <th>Needs Review issues &amp; pull requests</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for repository in repositories %}
+                                <tr>
+                                    <td>{{ repository.vendor }}/{{ repository.name }}</td>
+                                    <td>
+                                        <a href="{{ repository.needsReviewUrl }}" class="btn btn-xs btn-default">Needs Review Issues</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

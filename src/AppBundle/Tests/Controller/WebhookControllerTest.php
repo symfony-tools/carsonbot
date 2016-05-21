@@ -17,36 +17,35 @@ class WebhookControllerTest extends WebTestCase
         $response = $client->getResponse();
 
         $responseData = json_decode($response->getContent(), true);
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode(), isset($responseData['error']) ? $responseData['error'] : 'An error occurred.');
 
         // a weak sanity check that we went down "the right path" in the controller
-        $this->assertEquals($expectedResponse, $responseData);
+        $this->assertSame($expectedResponse, $responseData);
     }
 
     public function getTests()
     {
-        $tests = array();
-        $tests[] = array(
-            'issue_comment',
-            'issue_comment.created.json',
-            array('status_change' => 'needs_review', 'issue' => 1),
+        return array(
+            'On issue commented' => array(
+                'issue_comment',
+                'issue_comment.created.json',
+                array('issue' => 1, 'status_change' => 'needs_review'),
+            ),
+            'On pull request opened' => array(
+                'pull_request',
+                'pull_request.opened.json',
+                array('pull_request' => 3, 'status_change' => 'needs_review'),
+            ),
+            'On issue labeled "bug"' => array(
+                'issues',
+                'issues.labeled.bug.json',
+                array('issue' => 5, 'status_change' => 'needs_review'),
+            ),
+            'On issue labeled "feature"' => array(
+                'issues',
+                'issues.labeled.feature.json',
+                array('issue' => 5, 'status_change' => null),
+            ),
         );
-        $tests[] = array(
-            'pull_request',
-            'pull_request.opened.json',
-            array('status_change' => 'needs_review', 'pull_request' => 3),
-        );
-        $tests[] = array(
-            'issues',
-            'issues.labeled.bug.json',
-            array('status_change' => 'needs_review', 'issue' => 5),
-        );
-        $tests[] = array(
-            'issues',
-            'issues.labeled.feature.json',
-            array('status_change' => null, 'issue' => 5),
-        );
-
-        return $tests;
     }
 }

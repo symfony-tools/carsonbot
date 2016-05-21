@@ -3,6 +3,7 @@
 namespace AppBundle\Tests\Issues\GitHub;
 
 use AppBundle\Issues\GitHub\CachedLabelsApi;
+use AppBundle\Repository\Repository;
 use Github\Api\Issue\Labels;
 
 /**
@@ -24,12 +25,20 @@ class CachedLabelsApiTest extends \PHPUnit_Framework_TestCase
      */
     private $api;
 
+    private $repository;
+
     protected function setUp()
     {
         $this->backendApi = $this->getMockBuilder('Github\Api\Issue\Labels')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->api = new CachedLabelsApi($this->backendApi, self::USER_NAME, self::REPO_NAME);
+        $this->api = new CachedLabelsApi($this->backendApi);
+        $this->repository = new Repository(
+            self::USER_NAME,
+            self::REPO_NAME,
+            [],
+            null
+        );
     }
 
     public function testGetIssueLabels()
@@ -43,10 +52,10 @@ class CachedLabelsApiTest extends \PHPUnit_Framework_TestCase
                 array('name' => 'c'),
             ));
 
-        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234, $this->repository));
 
         // Subsequent access goes to cache
-        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234, $this->repository));
     }
 
     public function testAddIssueLabel()
@@ -58,7 +67,7 @@ class CachedLabelsApiTest extends \PHPUnit_Framework_TestCase
             ->method('add')
             ->with(self::USER_NAME, self::REPO_NAME, 1234, 'a');
 
-        $this->api->addIssueLabel(1234, 'a');
+        $this->api->addIssueLabel(1234, 'a', $this->repository);
     }
 
     public function testAddIssueLabelUpdatesCache()
@@ -76,11 +85,11 @@ class CachedLabelsApiTest extends \PHPUnit_Framework_TestCase
             ->method('add')
             ->with(self::USER_NAME, self::REPO_NAME, 1234, 'd');
 
-        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234, $this->repository));
 
-        $this->api->addIssueLabel(1234, 'd');
+        $this->api->addIssueLabel(1234, 'd', $this->repository);
 
-        $this->assertSame(array('a', 'b', 'c', 'd'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('a', 'b', 'c', 'd'), $this->api->getIssueLabels(1234, $this->repository));
     }
 
     public function testAddIssueLabelIgnoresDuplicate()
@@ -97,11 +106,11 @@ class CachedLabelsApiTest extends \PHPUnit_Framework_TestCase
         $this->backendApi->expects($this->never())
             ->method('add');
 
-        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234, $this->repository));
 
-        $this->api->addIssueLabel(1234, 'c');
+        $this->api->addIssueLabel(1234, 'c', $this->repository);
 
-        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234, $this->repository));
     }
 
     public function testRemoveIssueLabel()
@@ -113,7 +122,7 @@ class CachedLabelsApiTest extends \PHPUnit_Framework_TestCase
             ->method('remove')
             ->with(self::USER_NAME, self::REPO_NAME, 1234, 'a');
 
-        $this->api->removeIssueLabel(1234, 'a');
+        $this->api->removeIssueLabel(1234, 'a', $this->repository);
     }
 
     public function testRemoveIssueLabelUpdatesCache()
@@ -131,11 +140,11 @@ class CachedLabelsApiTest extends \PHPUnit_Framework_TestCase
             ->method('remove')
             ->with(self::USER_NAME, self::REPO_NAME, 1234, 'a');
 
-        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234, $this->repository));
 
-        $this->api->removeIssueLabel(1234, 'a');
+        $this->api->removeIssueLabel(1234, 'a', $this->repository);
 
-        $this->assertSame(array('b', 'c'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('b', 'c'), $this->api->getIssueLabels(1234, $this->repository));
     }
 
     public function testRemoveIssueLabelIgnoresUnsetLabel()
@@ -152,10 +161,10 @@ class CachedLabelsApiTest extends \PHPUnit_Framework_TestCase
         $this->backendApi->expects($this->never())
             ->method('remove');
 
-        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234, $this->repository));
 
-        $this->api->removeIssueLabel(1234, 'd');
+        $this->api->removeIssueLabel(1234, 'd', $this->repository);
 
-        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234));
+        $this->assertSame(array('a', 'b', 'c'), $this->api->getIssueLabels(1234, $this->repository));
     }
 }

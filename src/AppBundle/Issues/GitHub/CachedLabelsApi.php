@@ -2,6 +2,7 @@
 
 namespace AppBundle\Issues\GitHub;
 
+use AppBundle\Repository\Repository;
 use Github\Api\Issue\Labels;
 
 /**
@@ -19,78 +20,75 @@ class CachedLabelsApi
      */
     private $labelCache = [];
 
-    /**
-     * @var string
-     */
-    private $repositoryUsername;
-
-    /**
-     * @var string
-     */
-    private $repositoryName;
-
-    public function __construct(Labels $labelsApi, $repositoryUsername, $repositoryName)
+    public function __construct(Labels $labelsApi)
     {
         $this->labelsApi = $labelsApi;
-        $this->repositoryUsername = $repositoryUsername;
-        $this->repositoryName = $repositoryName;
     }
 
-    public function getIssueLabels($issueNumber)
+    public function getIssueLabels($issueNumber, Repository $repository)
     {
-        if (!isset($this->labelCache[$issueNumber])) {
-            $this->labelCache[$issueNumber] = [];
+        $key = $this->getCacheKey($issueNumber, $repository);
+        if (!isset($this->labelCache[$key])) {
+            $this->labelCache[$key] = [];
 
             $labelsData = $this->labelsApi->all(
-                $this->repositoryUsername,
-                $this->repositoryName,
+                $repository->getVendor(),
+                $repository->getName(),
                 $issueNumber
             );
 
             // Load labels, keep only the first status label
             foreach ($labelsData as $labelData) {
-                $this->labelCache[$issueNumber][$labelData['name']] = true;
+                $this->labelCache[$key][$labelData['name']] = true;
             }
         }
 
-        return array_keys($this->labelCache[$issueNumber]);
+        return array_keys($this->labelCache[$key]);
     }
 
-    public function addIssueLabel($issueNumber, $label)
+    public function addIssueLabel($issueNumber, $label, Repository $repository)
     {
-        if (isset($this->labelCache[$issueNumber][$label])) {
+        $key = $this->getCacheKey($issueNumber, $repository);
+
+        if (isset($this->labelCache[$key][$label])) {
             return;
         }
 
         $this->labelsApi->add(
-            $this->repositoryUsername,
-            $this->repositoryName,
+            $repository->getVendor(),
+            $repository->getName(),
             $issueNumber,
             $label
         );
 
         // Update cache if already loaded
-        if (isset($this->labelCache[$issueNumber])) {
-            $this->labelCache[$issueNumber][$label] = true;
+        if (isset($this->labelCache[$key])) {
+            $this->labelCache[$key][$label] = true;
         }
     }
 
-    public function removeIssueLabel($issueNumber, $label)
+    public function removeIssueLabel($issueNumber, $label, Repository $repository)
     {
-        if (isset($this->labelCache[$issueNumber]) && !isset($this->labelCache[$issueNumber][$label])) {
+        $key = $this->getCacheKey($issueNumber, $repository);
+        if (isset($this->labelCache[$key]) && !isset($this->labelCache[$key][$label])) {
             return;
         }
 
         $this->labelsApi->remove(
-            $this->repositoryUsername,
-            $this->repositoryName,
+            $repository->getVendor(),
+            $repository->getName(),
             $issueNumber,
             $label
         );
 
         // Update cache if already loaded
-        if (isset($this->labelCache[$issueNumber])) {
-            unset($this->labelCache[$issueNumber][$label]);
+        if (isset($this->labelCache[$key])) {
+            unset($this->labelCache[$key][$label]);
         }
+    }
+
+    private function getCacheKey($issueNumber, Repository $repository)
+    {
+        return sprintf('%s_%s_%s', $issueNumber, $repository->getVendor(), $repository->getName());
     }
 }

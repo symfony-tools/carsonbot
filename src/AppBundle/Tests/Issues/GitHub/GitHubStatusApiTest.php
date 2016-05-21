@@ -5,6 +5,7 @@ namespace AppBundle\Tests\Issues\GitHub;
 use AppBundle\Issues\GitHub\CachedLabelsApi;
 use AppBundle\Issues\GitHub\GitHubStatusApi;
 use AppBundle\Issues\Status;
+use AppBundle\Repository\Repository;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -25,12 +26,23 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
      */
     private $api;
 
+    /**
+     * @var Repository
+     */
+    private $repository;
+
     protected function setUp()
     {
         $this->labelsApi = $this->getMockBuilder('AppBundle\Issues\GitHub\CachedLabelsApi')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->api = new GitHubStatusApi($this->labelsApi, self::USER_NAME, self::REPO_NAME);
+        $this->api = new GitHubStatusApi($this->labelsApi);
+        $this->repository = new Repository(
+            self::USER_NAME,
+            self::REPO_NAME,
+            [],
+            null
+        );
     }
 
     public function testSetIssueStatus()
@@ -48,7 +60,7 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
             ->method('addIssueLabel')
             ->with(1234, 'Status: Reviewed');
 
-        $this->api->setIssueStatus(1234, Status::REVIEWED);
+        $this->api->setIssueStatus(1234, Status::REVIEWED, $this->repository);
     }
 
     public function testSetIssueStatusWithoutPreviousStatus()
@@ -65,7 +77,7 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
             ->method('addIssueLabel')
             ->with(1234, 'Status: Reviewed');
 
-        $this->api->setIssueStatus(1234, Status::REVIEWED);
+        $this->api->setIssueStatus(1234, Status::REVIEWED, $this->repository);
     }
 
     public function testSetIssueStatusRemovesExcessStatuses()
@@ -87,7 +99,7 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
             ->method('addIssueLabel')
             ->with(1234, 'Status: Reviewed');
 
-        $this->api->setIssueStatus(1234, Status::REVIEWED);
+        $this->api->setIssueStatus(1234, Status::REVIEWED, $this->repository);
     }
 
     public function testSetIssueStatusDoesNothingIfAlreadySet()
@@ -103,7 +115,7 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
         $this->labelsApi->expects($this->never())
             ->method('addIssueLabel');
 
-        $this->api->setIssueStatus(1234, Status::NEEDS_REVIEW);
+        $this->api->setIssueStatus(1234, Status::NEEDS_REVIEW, $this->repository);
     }
 
     public function testSetIssueStatusRemovesExcessLabelsIfAlreadySet()
@@ -120,7 +132,7 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
         $this->labelsApi->expects($this->never())
             ->method('addIssueLabel');
 
-        $this->api->setIssueStatus(1234, Status::REVIEWED);
+        $this->api->setIssueStatus(1234, Status::REVIEWED, $this->repository);
     }
 
     public function testSetIssueStatusRemovesUnconfirmedWhenBugIsReviewed()
@@ -142,7 +154,7 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
             ->method('addIssueLabel')
             ->with(1234, 'Status: Reviewed');
 
-        $this->api->setIssueStatus(1234, Status::REVIEWED);
+        $this->api->setIssueStatus(1234, Status::REVIEWED, $this->repository);
     }
 
     public function testGetIssueStatus()
@@ -152,7 +164,7 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
             ->with(1234)
             ->willReturn(array('Bug', 'Status: Needs Review'));
 
-        $this->assertSame(Status::NEEDS_REVIEW, $this->api->getIssueStatus(1234));
+        $this->assertSame(Status::NEEDS_REVIEW, $this->api->getIssueStatus(1234, $this->repository));
     }
 
     public function testGetIssueStatusReturnsFirst()
@@ -162,7 +174,7 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
             ->with(1234)
             ->willReturn(array('Bug', 'Status: Needs Review', 'Status: Reviewed'));
 
-        $this->assertSame(Status::NEEDS_REVIEW, $this->api->getIssueStatus(1234));
+        $this->assertSame(Status::NEEDS_REVIEW, $this->api->getIssueStatus(1234, $this->repository));
     }
 
     public function testGetIssueStatusReturnsNullIfNoneSet()
@@ -172,11 +184,6 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
             ->with(1234)
             ->willReturn(array('Bug'));
 
-        $this->assertNull($this->api->getIssueStatus(1234));
-    }
-
-    public function testGetNeedsReviewUrl()
-    {
-        $this->assertSame('https://github.com/weaverryan/carson/labels/Status%3A%20Needs%20Review', $this->api->getNeedsReviewUrl());
+        $this->assertNull($this->api->getIssueStatus(1234, $this->repository));
     }
 }
