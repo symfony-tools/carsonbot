@@ -37,8 +37,7 @@ class BugLabelNewIssueSubscriber implements EventSubscriberInterface
 
         $responseData = array('issue' => $issueNumber = $data['issue']['number']);
         // Ignore non-bugs or issue which already has a status
-        $currentStatus = $currentStatus = $this->statusApi->getIssueStatus($issueNumber, $repository);
-        if ('bug' !== strtolower($data['label']['name']) || null !== $currentStatus) {
+        if ('bug' !== strtolower($data['label']['name']) || null !== $this->statusApi->getIssueStatus($issueNumber, $repository)) {
             $responseData['status_change'] = null;
             $event->setResponseData($responseData);
 
