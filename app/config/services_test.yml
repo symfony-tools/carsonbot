@@ -3,5 +3,5 @@ imports:
     - { resource: services.yml }
 
 services:
-    app.status_api.default:
+    app.status_api:
         class: AppBundle\Issues\NullStatusApi

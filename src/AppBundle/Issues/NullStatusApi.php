@@ -1,21 +1,22 @@
 <?php
 
 namespace AppBundle\Issues;
+use AppBundle\Repository\Repository;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 class NullStatusApi implements StatusApi
 {
-    public function getIssueStatus($issueNumber)
+    public function getIssueStatus($issueNumber, Repository $repository)
     {
     }
 
-    public function setIssueStatus($issueNumber, $newStatus)
+    public function setIssueStatus($issueNumber, $newStatus, Repository $repository)
     {
     }
 
-    public function getNeedsReviewUrl()
+    public function getNeedsReviewUrl(Repository $repository)
     {
     }
 }

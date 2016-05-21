@@ -9,10 +9,7 @@ use AppBundle\Exception\GitHubExceptionInterface;
 use AppBundle\Exception\GitHubInvalidConfigurationException;
 use AppBundle\Exception\GitHubPreconditionFailedException;
 use AppBundle\Exception\GitHubRuntimeException;
-use AppBundle\Issues\GitHub\CachedLabelsApi;
-use AppBundle\Issues\GitHub\GitHubStatusApi;
 use AppBundle\Repository\Provider\RepositoryProviderInterface;
-use AppBundle\Repository\RepositoryRegistry;
 use Github\Api\Issue\Labels;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -25,17 +22,12 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class GitHubRequestHandler
 {
-    private $labelsApi;
     private $dispatcher;
     private $repositoryProvider;
-    /**
-     * @var ContainerInterface
-     */
     private $container;
 
-    public function __construct(Labels $labelsApi, EventDispatcherInterface $dispatcher, RepositoryProviderInterface $repositoryProvider, ContainerInterface $container)
+    public function __construct(EventDispatcherInterface $dispatcher, RepositoryProviderInterface $repositoryProvider, ContainerInterface $container)
     {
-        $this->labelsApi = $labelsApi;
         $this->dispatcher = $dispatcher;
         $this->repositoryProvider = $repositoryProvider;
         $this->container = $container;

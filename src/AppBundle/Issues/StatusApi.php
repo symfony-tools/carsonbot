@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Issues;
+use AppBundle\Repository\Repository;
 
 /**
  * Sets and retrieves the status for an issue.
@@ -9,9 +10,9 @@ namespace AppBundle\Issues;
  */
 interface StatusApi
 {
-    public function getIssueStatus($issueNumber);
+    public function getIssueStatus($issueNumber, Repository $repository);
 
-    public function setIssueStatus($issueNumber, $newStatus);
+    public function setIssueStatus($issueNumber, $newStatus, Repository $repository);
 
-    public function getNeedsReviewUrl();
+    public function getNeedsReviewUrl(Repository $repository);
 }

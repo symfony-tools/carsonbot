@@ -3,7 +3,7 @@ services:
     app.subscriber.issue_subscriber:
         class: AppBundle\Issues\IssueListener
         arguments:
-            - '@app.status_api.default'
+            - '@app.status_api'
 
 parameters:
     # point to the main symfony repositories

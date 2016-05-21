@@ -4,6 +4,7 @@ namespace AppBundle\Issues;
 
 use AppBundle\Event\GitHubEvent;
 use AppBundle\GitHubEvents;
+use AppBundle\Repository\Repository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class IssueListener implements EventSubscriberInterface
@@ -39,6 +40,7 @@ class IssueListener implements EventSubscriberInterface
     public function onIssueComment(GitHubEvent $event)
     {
         $data = $event->getData();
+        $repository = $event->getRepository();
         $newStatus = null;
         $issueNumber = $data['issue']['number'];
         $user = $data['comment']['user']['login'];
@@ -58,7 +60,7 @@ class IssueListener implements EventSubscriberInterface
             // Second subpattern = first status character
             $newStatus = $statuses[strtolower(end($matches[1]))];
 
-            $this->setIssueStatus($issueNumber, $newStatus);
+            $this->setIssueStatus($issueNumber, $newStatus, $repository);
         }
 
         $event->setResponseData(array(
@@ -75,13 +77,14 @@ class IssueListener implements EventSubscriberInterface
     public function onPullRequest(GitHubEvent $event)
     {
         $data = $event->getData();
+        $repository = $event->getRepository();
         if ('opened' !== $action = $data['action']) {
             $responseData = array('unsupported_action' => $action);
         } else {
             $pullRequestNumber = $data['pull_request']['number'];
             $newStatus = Status::NEEDS_REVIEW;
 
-            $this->setIssueStatus($pullRequestNumber, $newStatus);
+            $this->setIssueStatus($pullRequestNumber, $newStatus, $repository);
 
             $responseData = array(
                 'pull_request' => $pullRequestNumber,
@@ -100,6 +103,7 @@ class IssueListener implements EventSubscriberInterface
     public function onIssues(GitHubEvent $event)
     {
         $data = $event->getData();
+        $repository = $event->getRepository();
         if ('labeled' !== $action = $data['action']) {
             $event->setResponseData(array('unsupported_action' => $action));
 
@@ -108,7 +112,7 @@ class IssueListener implements EventSubscriberInterface
 
         $responseData = array('issue' => $issueNumber = $data['issue']['number']);
         // Ignore non-bugs or issue which already has a status
-        if ('bug' !== strtolower($data['label']['name']) || null !== $currentStatus = $this->getIssueStatus($issueNumber)) {
+        if ('bug' !== strtolower($data['label']['name']) || null !== $currentStatus = $this->getIssueStatus($issueNumber, $repository)) {
             $responseData['status_change'] = null;
             $event->setResponseData($responseData);
 
@@ -117,20 +121,20 @@ class IssueListener implements EventSubscriberInterface
 
         $newStatus = Status::NEEDS_REVIEW;
 
-        $this->setIssueStatus($issueNumber, $newStatus);
+        $this->setIssueStatus($issueNumber, $newStatus, $repository);
         $responseData['status_change'] = $newStatus;
 
         $event->setResponseData($responseData);
     }
 
-    private function getIssueStatus($issueNumber)
+    private function getIssueStatus($issueNumber, Repository $repository)
     {
-        return $this->statusApi->getIssueStatus($issueNumber);
+        return $this->statusApi->getIssueStatus($issueNumber, $repository);
     }
 
-    private function setIssueStatus($issueNumber, $status)
+    private function setIssueStatus($issueNumber, $status, Repository $repository)
     {
-        return $this->statusApi->setIssueStatus($issueNumber, $status);
+        return $this->statusApi->setIssueStatus($issueNumber, $status, $repository);
     }
 
     /**

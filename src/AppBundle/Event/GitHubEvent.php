@@ -2,6 +2,7 @@
 
 namespace AppBundle\Event;
 
+use AppBundle\Repository\Repository;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -17,7 +18,7 @@ class GitHubEvent extends Event
     private $repository;
     private $maintainers;
 
-    public function __construct(array $data, $repository, array $maintainers = array())
+    public function __construct(array $data, Repository $repository, array $maintainers = array())
     {
         $this->data = $data;
         $this->repository = $repository;
@@ -29,6 +30,9 @@ class GitHubEvent extends Event
         return $this->data;
     }
 
+    /**
+     * @return Repository
+     */
     public function getRepository()
     {
         return $this->repository;

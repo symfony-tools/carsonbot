@@ -4,6 +4,7 @@ namespace AppBundle\Issues\GitHub;
 
 use AppBundle\Issues\Status;
 use AppBundle\Issues\StatusApi;
+use AppBundle\Repository\Repository;
 
 class GitHubStatusApi implements StatusApi
 {
@@ -21,37 +22,25 @@ class GitHubStatusApi implements StatusApi
      */
     private $labelsApi;
 
-    /**
-     * @var string
-     */
-    private $repositoryUsername;
-
-    /**
-     * @var string
-     */
-    private $repositoryName;
-
-    public function __construct(CachedLabelsApi $labelsApi, $repository)
+    public function __construct(CachedLabelsApi $labelsApi)
     {
         $this->labelsApi = $labelsApi;
         $this->labelToStatus = array_flip($this->statusToLabel);
-        list($vendor, $name) = explode('/', $repository);
-        $this->repositoryUsername = $vendor;
-        $this->repositoryName = $name;
     }
 
     /**
      * @param int    $issueNumber The GitHub issue number
      * @param string $newStatus   A Status::* constant
+     * @param Repository $repository
      */
-    public function setIssueStatus($issueNumber, $newStatus)
+    public function setIssueStatus($issueNumber, $newStatus, Repository $repository)
     {
         if (!isset($this->statusToLabel[$newStatus])) {
             throw new \InvalidArgumentException(sprintf('Invalid status "%s"', $newStatus));
         }
 
         $newLabel = $this->statusToLabel[$newStatus];
-        $currentLabels = $this->labelsApi->getIssueLabels($issueNumber);
+        $currentLabels = $this->labelsApi->getIssueLabels($issueNumber, $repository);
         $addLabel = true;
 
         foreach ($currentLabels as $label) {
@@ -70,18 +59,18 @@ class GitHubStatusApi implements StatusApi
             }
 
             // Remove other statuses
-            $this->labelsApi->removeIssueLabel($issueNumber, $label);
+            $this->labelsApi->removeIssueLabel($issueNumber, $label, $repository);
         }
 
         // Ignored if the label is already set
         if ($addLabel) {
-            $this->labelsApi->addIssueLabel($issueNumber, $newLabel);
+            $this->labelsApi->addIssueLabel($issueNumber, $newLabel, $repository);
         }
     }
 
-    public function getIssueStatus($issueNumber)
+    public function getIssueStatus($issueNumber, Repository $repository)
     {
-        $currentLabels = $this->labelsApi->getIssueLabels($issueNumber);
+        $currentLabels = $this->labelsApi->getIssueLabels($issueNumber, $repository);
 
         foreach ($currentLabels as $label) {
             if (isset($this->labelToStatus[$label])) {
@@ -93,12 +82,12 @@ class GitHubStatusApi implements StatusApi
         return;
     }
 
-    public function getNeedsReviewUrl()
+    public function getNeedsReviewUrl(Repository $repository)
     {
         return sprintf(
             'https://github.com/%s/%s/labels/%s',
-            $this->repositoryUsername,
-            $this->repositoryName,
+            $repository->getVendor(),
+            $repository->getName(),
             rawurlencode($this->statusToLabel[Status::NEEDS_REVIEW])
         );
     }
