@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Issues;
+
 use AppBundle\Repository\Repository;
 
 /**
