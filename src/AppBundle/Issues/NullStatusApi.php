@@ -15,6 +15,5 @@ class NullStatusApi implements StatusApi
 
     public function setIssueStatus($issueNumber, $newStatus, Repository $repository)
     {
-
     }
 }

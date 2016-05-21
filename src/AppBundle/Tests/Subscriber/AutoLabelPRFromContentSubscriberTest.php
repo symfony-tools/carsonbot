@@ -4,15 +4,11 @@ namespace AppBundle\Tests\Subscriber;
 
 use AppBundle\Event\GitHubEvent;
 use AppBundle\GitHubEvents;
-use AppBundle\Issues\Status;
 use AppBundle\Repository\Repository;
 use AppBundle\Subscriber\AutoLabelPRFromContentSubscriber;
-use AppBundle\Subscriber\BugLabelNewIssueSubscriber;
-use AppBundle\Subscriber\NeedsReviewNewPRSubscriber;
-use AppBundle\Subscriber\StatusChangeByCommentSubscriber;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class AutLabelPRFromContentSubscriberTest extends \PHPUnit_Framework_TestCase
+class AutoLabelPRFromContentSubscriberTest extends \PHPUnit_Framework_TestCase
 {
     private $autoLabelSubscriber;
 
@@ -56,7 +52,7 @@ class AutLabelPRFromContentSubscriberTest extends \PHPUnit_Framework_TestCase
             'pull_request' => array(
                 'number' => 1234,
                 'title' => $prTitle,
-                'body' => $prBody
+                'body' => $prBody,
             ),
         ), $this->repository);
 
@@ -80,7 +76,7 @@ class AutLabelPRFromContentSubscriberTest extends \PHPUnit_Framework_TestCase
 FOO
 EOF
             ,
-            []
+            [],
         ];
 
         $tests[] = [
@@ -101,7 +97,7 @@ Well hi cool peeps!
 | Doc PR        | n/a
 EOF
             ,
-            ['Bug']
+            ['Bug'],
         ];
 
         $tests[] = [
@@ -122,7 +118,7 @@ Well hi cool peeps!
 | Doc PR        | n/a
 EOF
             ,
-            ['Bug', 'Feature', 'BC Break', 'Deprecation']
+            ['Bug', 'Feature', 'BC Break', 'Deprecation'],
         ];
 
         $tests[] = [
@@ -130,7 +126,7 @@ EOF
             <<<EOF
 EOF
             ,
-            ['Asset', 'BC Break', 'Bug']
+            ['Asset', 'BC Break', 'Bug'],
         ];
 
         return $tests;

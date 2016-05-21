@@ -8,7 +8,7 @@ use AppBundle\Issues\GitHub\CachedLabelsApi;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Looks at new pull requests and auto-labels based on text
+ * Looks at new pull requests and auto-labels based on text.
  */
 class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
 {
@@ -61,7 +61,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
 
         $event->setResponseData(array(
             'pull_request' => $prNumber,
-            'pr_labels' => $prLabels
+            'pr_labels' => $prLabels,
         ));
     }
 
@@ -82,7 +82,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * TODO: get valid labels from the repository via GitHub API
+     * TODO: get valid labels from the repository via GitHub API.
      */
     private function getValidLabels()
     {
