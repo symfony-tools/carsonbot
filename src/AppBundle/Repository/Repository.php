@@ -1,8 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+
 use AppBundle\Issues\GitHub\GitHubStatusApi;
-use AppBundle\Issues\Status;
 
 /**
  * @author Ener-Getick <egetick@gmail.com>
