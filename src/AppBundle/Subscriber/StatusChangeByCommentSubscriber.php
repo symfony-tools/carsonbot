@@ -15,7 +15,6 @@ class StatusChangeByCommentSubscriber implements EventSubscriberInterface
         'needs work' => Status::NEEDS_WORK,
         'works for me' => Status::WORKS_FOR_ME,
         'reviewed' => Status::REVIEWED,
-        'needs comments' => Status::NEEDS_COMMENTS,
     ];
 
     private $statusApi;
