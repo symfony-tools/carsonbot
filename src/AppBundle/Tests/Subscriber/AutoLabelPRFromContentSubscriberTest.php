@@ -143,7 +143,7 @@ EOF
         ];
 
         $tests[] = [
-            '[Asset][BC Break][Fake] Extracting from title [Bug]',
+            '[Asset][bc Break][Fake] Extracting from title [Bug]',
             <<<EOF
 EOF
             ,

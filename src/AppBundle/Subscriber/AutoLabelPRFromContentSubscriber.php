@@ -69,9 +69,18 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
 
         // e.g. "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses"
         if (preg_match_all('/\[(?P<labels>.+)\]/U', $prTitle, $matches)) {
+            // creates a key=>val array, but the key is lowercased
+            $validLabels = array_combine(
+                array_map(function($s) {
+                    return strtolower($s);
+                }, $this->getValidLabels()),
+                $this->getValidLabels()
+            );
+
             foreach ($matches['labels'] as $label) {
-                if (in_array($label, $this->getValidLabels())) {
-                    $labels[] = $label;
+                // check case-insensitively, but the apply the correctly-cased label
+                if (isset($validLabels[strtolower($label)])) {
+                    $labels[] = $validLabels[strtolower($label)];
                 }
             }
         }
