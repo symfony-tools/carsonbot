@@ -122,6 +122,27 @@ EOF
         ];
 
         $tests[] = [
+            'case-insensitive!',
+            <<<EOF
+Well hi cool peeps!
+
+| Q             | A
+| ------------- | ---
+| Branch?       | master
+| Bug fix?      | YeS
+| New feature?  | yEs
+| BC breaks?    | yES
+| Deprecations? | yeS
+| Tests pass?   | yes
+| Fixed tickets | n/a
+| License       | MIT
+| Doc PR        | n/a
+EOF
+            ,
+            ['Bug', 'Feature', 'BC Break', 'Deprecation'],
+        ];
+
+        $tests[] = [
             '[Asset][BC Break][Fake] Extracting from title [Bug]',
             <<<EOF
 EOF

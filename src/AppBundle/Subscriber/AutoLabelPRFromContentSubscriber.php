@@ -42,16 +42,16 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         }
 
         // the PR body usually indicates if this is a Bug, Feature, BC Break or Deprecation
-        if (preg_match('/\|\s*Bug fix\?\s*\|\s*yes\s*/', $prBody, $matches)) {
+        if (preg_match('/\|\s*Bug fix\?\s*\|\s*yes\s*/i', $prBody, $matches)) {
             $prLabels[] = 'Bug';
         }
-        if (preg_match('/\|\s*New feature\?\s*\|\s*yes\s*/', $prBody, $matches)) {
+        if (preg_match('/\|\s*New feature\?\s*\|\s*yes\s*/i', $prBody, $matches)) {
             $prLabels[] = 'Feature';
         }
-        if (preg_match('/\|\s*BC breaks\?\s*\|\s*yes\s*/', $prBody, $matches)) {
+        if (preg_match('/\|\s*BC breaks\?\s*\|\s*yes\s*/i', $prBody, $matches)) {
             $prLabels[] = 'BC Break';
         }
-        if (preg_match('/\|\s*Deprecations\?\s*\|\s*yes\s*/', $prBody, $matches)) {
+        if (preg_match('/\|\s*Deprecations\?\s*\|\s*yes\s*/i', $prBody, $matches)) {
             $prLabels[] = 'Deprecation';
         }
 
