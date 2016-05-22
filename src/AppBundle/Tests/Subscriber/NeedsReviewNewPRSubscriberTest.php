@@ -7,7 +7,6 @@ use AppBundle\GitHubEvents;
 use AppBundle\Issues\Status;
 use AppBundle\Repository\Repository;
 use AppBundle\Subscriber\NeedsReviewNewPRSubscriber;
-use AppBundle\Subscriber\StatusChangeByCommentSubscriber;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class NeedsReviewNewPRSubscriberTest extends \PHPUnit_Framework_TestCase

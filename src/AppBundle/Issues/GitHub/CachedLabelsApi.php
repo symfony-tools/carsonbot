@@ -87,6 +87,13 @@ class CachedLabelsApi
         }
     }
 
+    public function addIssueLabels($issueNumber, array $labels, Repository $repository)
+    {
+        foreach ($labels as $label) {
+            $this->addIssueLabel($issueNumber, $label, $repository);
+        }
+    }
+
     private function getCacheKey($issueNumber, Repository $repository)
     {
         return sprintf('%s_%s_%s', $issueNumber, $repository->getVendor(), $repository->getName());
