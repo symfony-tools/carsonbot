@@ -33,7 +33,14 @@ class NeedsReviewNewPRSubscriber implements EventSubscriberInterface
         }
 
         $pullRequestNumber = $data['pull_request']['number'];
-        $newStatus = Status::NEEDS_REVIEW;
+        $pullRequestTitle = $data['pull_request']['title'];
+
+        if (stripos($pullRequestTitle, '[wip]') === false) {
+            $newStatus = Status::NEEDS_REVIEW;
+        } else {
+            // for [WIP] titles, label as needs work
+            $newStatus = Status::NEEDS_WORK;
+        }
 
         $this->statusApi->setIssueStatus($pullRequestNumber, $newStatus, $repository);
 
