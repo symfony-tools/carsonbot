@@ -32,7 +32,7 @@ services:
 
     app.github.request_handler:
         class: AppBundle\Issues\GitHubRequestHandler
-        arguments: ['@event_dispatcher', '@app.repository_provider', '@service_container']
+        arguments: ['@event_dispatcher', '@app.repository_provider', '@service_container', '@logger']
 
     app.repository_provider:
         class: AppBundle\Repository\Provider\InMemoryRepositoryProvider

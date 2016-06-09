@@ -4,6 +4,7 @@ namespace AppBundle\Issues;
 
 use AppBundle\Event\GitHubEvent;
 use AppBundle\Repository\Provider\RepositoryProviderInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,12 +22,14 @@ class GitHubRequestHandler
     private $dispatcher;
     private $repositoryProvider;
     private $container;
+    private $logger;
 
-    public function __construct(EventDispatcherInterface $dispatcher, RepositoryProviderInterface $repositoryProvider, ContainerInterface $container)
+    public function __construct(EventDispatcherInterface $dispatcher, RepositoryProviderInterface $repositoryProvider, ContainerInterface $container, LoggerInterface $logger)
     {
         $this->dispatcher = $dispatcher;
         $this->repositoryProvider = $repositoryProvider;
         $this->container = $container;
+        $this->logger = $logger;
     }
 
     /**
@@ -45,6 +48,8 @@ class GitHubRequestHandler
         if (empty($repositoryFullName)) {
             throw new BadRequestHttpException('No repository name!');
         }
+
+        $this->logger->debug(sprintf('Handling from repository %s', $repositoryFullName));
 
         $repository = $this->repositoryProvider->getRepository($repositoryFullName);
 
