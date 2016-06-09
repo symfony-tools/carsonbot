@@ -88,7 +88,7 @@ class GitHubStatusApi implements StatusApi
         // Ignored if the label is already set
         if ($addLabel) {
             $this->logger->debug(sprintf(
-                'Adding label %s to issue %s on repository %s',
+                'Adding label "%s" to issue %s on repository %s',
                 $newLabel,
                 $issueNumber,
                 $repository->getFullName()
