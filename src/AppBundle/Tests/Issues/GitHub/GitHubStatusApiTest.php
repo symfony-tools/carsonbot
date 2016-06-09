@@ -36,7 +36,10 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
         $this->labelsApi = $this->getMockBuilder('AppBundle\Issues\GitHub\CachedLabelsApi')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->api = new GitHubStatusApi($this->labelsApi);
+        $logger = $this->getMockBuilder('Psr\Log\LoggerInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->api = new GitHubStatusApi($this->labelsApi, $logger);
         $this->repository = new Repository(
             self::USER_NAME,
             self::REPO_NAME,

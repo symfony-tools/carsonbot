@@ -6,6 +6,7 @@ use AppBundle\Event\GitHubEvent;
 use AppBundle\GitHubEvents;
 use AppBundle\Issues\Status;
 use AppBundle\Issues\StatusApi;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class StatusChangeByCommentSubscriber implements EventSubscriberInterface
@@ -18,10 +19,12 @@ class StatusChangeByCommentSubscriber implements EventSubscriberInterface
     ];
 
     private $statusApi;
+    private $logger;
 
-    public function __construct(StatusApi $statusApi)
+    public function __construct(StatusApi $statusApi, LoggerInterface $logger)
     {
         $this->statusApi = $statusApi;
+        $this->logger = $logger;
     }
 
     /**
@@ -47,6 +50,7 @@ class StatusChangeByCommentSubscriber implements EventSubscriberInterface
             // Second subpattern = first status character
             $newStatus = static::$triggerWordToStatus[strtolower(end($matches[1]))];
 
+            $this->logger->debug(sprintf('Setting issue number %s to status %s', $issueNumber, $newStatus));
             $this->statusApi->setIssueStatus($issueNumber, $newStatus, $repository);
         }
 

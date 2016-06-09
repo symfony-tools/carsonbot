@@ -79,4 +79,9 @@ class Repository
             rawurlencode(GitHubStatusApi::getNeedsReviewLabel())
         );
     }
+
+    public function getFullName()
+    {
+        return sprintf('%s/%s', $this->getVendor(), $this->getName());
+    }
 }

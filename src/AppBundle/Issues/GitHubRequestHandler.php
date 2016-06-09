@@ -76,7 +76,7 @@ class GitHubRequestHandler
         try {
             $this->dispatcher->dispatch('github.'.$eventName, $event);
         } catch (\Exception $e) {
-            throw new \RuntimeException(sprintf('Failed dispatching "%s" event for "%s" repository.', $eventName, $repository->getName()), 0, $e);
+            throw new \RuntimeException(sprintf('Failed dispatching "%s" event for "%s" repository.', $eventName, $repository->getFullName()), 0, $e);
         }
 
         $responseData = $event->getResponseData();

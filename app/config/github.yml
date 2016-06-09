@@ -4,6 +4,7 @@ services:
         class: AppBundle\Subscriber\StatusChangeByCommentSubscriber
         arguments:
             - '@app.status_api'
+            - '@logger'
 
     app.subscriber.needs_review_new_pr_subscriber:
         class: AppBundle\Subscriber\NeedsReviewNewPRSubscriber

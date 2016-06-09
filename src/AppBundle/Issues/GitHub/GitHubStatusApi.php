@@ -5,6 +5,7 @@ namespace AppBundle\Issues\GitHub;
 use AppBundle\Issues\Status;
 use AppBundle\Issues\StatusApi;
 use AppBundle\Repository\Repository;
+use Psr\Log\LoggerInterface;
 
 class GitHubStatusApi implements StatusApi
 {
@@ -21,11 +22,16 @@ class GitHubStatusApi implements StatusApi
      * @var CachedLabelsApi
      */
     private $labelsApi;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
-    public function __construct(CachedLabelsApi $labelsApi)
+    public function __construct(CachedLabelsApi $labelsApi, LoggerInterface $logger)
     {
         $this->labelsApi = $labelsApi;
         $this->labelToStatus = array_flip(self::$statusToLabel);
+        $this->logger = $logger;
     }
 
     /**
@@ -59,6 +65,12 @@ class GitHubStatusApi implements StatusApi
             }
 
             // Remove other statuses
+            $this->logger->debug(sprintf(
+                'Removing label %s from issue %s on repository %s',
+                $label,
+                $issueNumber,
+                $repository->getFullName()
+            ));
             $this->labelsApi->removeIssueLabel($issueNumber, $label, $repository);
         }
 

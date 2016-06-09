@@ -30,7 +30,8 @@ class StatusChangeByCommentSubscriberTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->statusApi = $this->getMock('AppBundle\Issues\StatusApi');
-        $this->statusChangeSubscriber = new StatusChangeByCommentSubscriber($this->statusApi);
+        $logger = $this->getMock('Psr\Log\LoggerInterface');
+        $this->statusChangeSubscriber = new StatusChangeByCommentSubscriber($this->statusApi, $logger);
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
         self::$dispatcher->addSubscriber($this->statusChangeSubscriber);
