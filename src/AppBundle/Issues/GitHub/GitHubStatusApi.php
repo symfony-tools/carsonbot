@@ -46,7 +46,18 @@ class GitHubStatusApi implements StatusApi
         }
 
         $newLabel = self::$statusToLabel[$newStatus];
+        $this->logger->info(sprintf(
+            'Fetching issue labels for issue %s, repository %s',
+            $issueNumber,
+            $repository->getFullName()
+        ));
         $currentLabels = $this->labelsApi->getIssueLabels($issueNumber, $repository);
+
+        $this->logger->info(sprintf(
+            'Fetched the following labels: %s',
+            implode(', ', $currentLabels)
+        ))
+
         $addLabel = true;
 
         foreach ($currentLabels as $label) {
