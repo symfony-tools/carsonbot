@@ -56,7 +56,7 @@ class GitHubStatusApi implements StatusApi
         $this->logger->info(sprintf(
             'Fetched the following labels: %s',
             implode(', ', $currentLabels)
-        ))
+        ));
 
         $addLabel = true;
 
