@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by Ener-Getick at 2016-05-28T14:16:03Z
+
+:-1: this class [is deprecated](https://github.com/symfony/symfony/blob/2.8/src/Symfony/Component/Security/Core/Util/StringUtils.php#L14) in favor of ``hash_equals``.
+
+@weaverryan does your server run on php 5.6 or higher ?
+
+---------------------------------------------------------------------------
+
+by sstok at 2016-05-29T07:25:16Z
+
+@Ener-Getick fixed 👍
+
+---------------------------------------------------------------------------
+
+by Ener-Getick at 2016-05-29T08:28:36Z
+
+:+1: fine for me now ☺
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2016-05-29T18:02:00Z
+
+You may want to require the Symfony Polyfill package now to be able to still use this on older PHP versions.
+
+---------------------------------------------------------------------------
+
+by wouterj at 2016-05-29T18:03:14Z
+
+As carson is a symfony app, it should already be included when needed
