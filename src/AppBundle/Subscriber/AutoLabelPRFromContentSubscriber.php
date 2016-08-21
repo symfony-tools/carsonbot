@@ -104,8 +104,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             'PhpUnitBridge', 'Process', 'PropertyAccess', 'PropertyInfo', 'Ready',
             'RFC', 'Routing', 'Security', 'SecurityBundle', 'Serializer',
             'Stopwatch', 'Templating', 'Translator', 'TwigBridge', 'TwigBundle',
-            'Unconfirmed', 'Validator', 'VarDumper', 'WebProfilerBundle', 'Workflow',
-            'Yaml',
+            'Validator', 'VarDumper', 'WebProfilerBundle', 'Workflow', 'Yaml',
         );
     }
 

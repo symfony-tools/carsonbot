@@ -53,7 +53,7 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
         $this->labelsApi->expects($this->once())
             ->method('getIssueLabels')
             ->with(1234)
-            ->willReturn(array('Bug', 'Status: Needs Review'));
+            ->willReturn(array('Feature', 'Status: Needs Review'));
 
         $this->labelsApi->expects($this->once())
             ->method('removeIssueLabel')
@@ -143,21 +143,17 @@ class GitHubStatusApiTest extends \PHPUnit_Framework_TestCase
         $this->labelsApi->expects($this->once())
             ->method('getIssueLabels')
             ->with(1234)
-            ->willReturn(array('Bug', 'Status: Needs Review', 'Unconfirmed'));
+            ->willReturn(array('Bug', 'Status: Unconfirmed'));
 
         $this->labelsApi->expects($this->at(1))
             ->method('removeIssueLabel')
-            ->with(1234, 'Status: Needs Review');
-
-        $this->labelsApi->expects($this->at(2))
-            ->method('removeIssueLabel')
-            ->with(1234, 'Unconfirmed');
+            ->with(1234, 'Status: Unconfirmed');
 
         $this->labelsApi->expects($this->once())
             ->method('addIssueLabel')
-            ->with(1234, 'Status: Reviewed');
+            ->with(1234, 'Status: Confirmed');
 
-        $this->api->setIssueStatus(1234, Status::REVIEWED, $this->repository);
+        $this->api->setIssueStatus(1234, Status::CONFIRMED, $this->repository);
     }
 
     public function testGetIssueStatus()

@@ -44,7 +44,7 @@ class BugLabelNewIssueSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $newStatus = Status::NEEDS_REVIEW;
+        $newStatus = Status::UNCONFIRMED;
 
         $this->statusApi->setIssueStatus($issueNumber, $newStatus, $repository);
         $responseData['status_change'] = $newStatus;

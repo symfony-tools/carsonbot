@@ -14,8 +14,10 @@ class StatusChangeByCommentSubscriber implements EventSubscriberInterface
     private static $triggerWordToStatus = [
         'needs review' => Status::NEEDS_REVIEW,
         'needs work' => Status::NEEDS_WORK,
+        'unconfirmed' => Status::UNCONFIRMED,
         'works for me' => Status::WORKS_FOR_ME,
         'reviewed' => Status::REVIEWED,
+        'confirmed' => Status::CONFIRMED,
     ];
 
     private $statusApi;

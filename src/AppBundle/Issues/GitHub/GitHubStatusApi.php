@@ -12,8 +12,10 @@ class GitHubStatusApi implements StatusApi
     private static $statusToLabel = [
         Status::NEEDS_REVIEW => 'Status: Needs Review',
         Status::NEEDS_WORK => 'Status: Needs Work',
+        Status::UNCONFIRMED => 'Status: Unconfirmed',
         Status::WORKS_FOR_ME => 'Status: Works for me',
         Status::REVIEWED => 'Status: Reviewed',
+        Status::CONFIRMED => 'Status: Confirmed',
     ];
 
     private $labelToStatus = [];
@@ -65,7 +67,7 @@ class GitHubStatusApi implements StatusApi
             // but still marked as unconfirmed.
             if (
                 !isset($this->labelToStatus[$label])
-                && !(Status::REVIEWED === $newStatus && 'Unconfirmed' === $label)
+                && !(Status::CONFIRMED === $newStatus && Status::UNCONFIRMED === $label)
             ) {
                 continue;
             }
