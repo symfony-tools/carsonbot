@@ -6,6 +6,11 @@ services:
             - '@app.status_api'
             - '@logger'
 
+    app.subscriber.status_change_on_push_subscriber:
+        class: AppBundle\Subscriber\StatusChangeOnPushSubscriber
+        arguments:
+            - '@app.status_api'
+
     app.subscriber.needs_review_new_pr_subscriber:
         class: AppBundle\Subscriber\NeedsReviewNewPRSubscriber
         arguments:
@@ -35,6 +40,7 @@ parameters:
         symfony/symfony-docs:
             subscribers:
                 - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.status_change_on_push_subscriber
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
             # secret: %symfony_docs_secret%
@@ -43,6 +49,7 @@ parameters:
         weaverryan/symfony:
             subscribers:
                 - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.status_change_on_push_subscriber
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
