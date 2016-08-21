@@ -90,6 +90,6 @@ class GitHubRequestHandler
             throw new \RuntimeException('"hash" extension is needed to check request signature.');
         }
 
-        return $hash !== 'sha1='.hash_hmac('sha1', $data, $key);
+        return hash_equals($hash, 'sha1='.hash_hmac('sha1', $data, $key));
     }
 }
