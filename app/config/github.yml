@@ -29,27 +29,164 @@ services:
 parameters:
     # point to the main symfony repositories
     repositories:
-        symfony/symfony:
+        liip/LiipImagineBundle:
             subscribers:
                 - app.subscriber.status_change_by_comment_subscriber
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
-            # secret: change_me
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
 
-        symfony/symfony-docs:
+        robfrawley/LiipImagineBundle:
             subscribers:
                 - app.subscriber.status_change_by_comment_subscriber
-                - app.subscriber.status_change_on_push_subscriber
-                - app.subscriber.needs_review_new_pr_subscriber
-                - app.subscriber.bug_label_new_issue_subscriber
-            # secret: %symfony_docs_secret%
-
-        # used in a functional test
-        weaverryan/symfony:
-            subscribers:
-                - app.subscriber.status_change_by_comment_subscriber
-                - app.subscriber.status_change_on_push_subscriber
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/serif:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/darker-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/bright-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/augustus-deprecation-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/augustus-exception-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/augustus-file-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/augustus-inflector-bundle:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/augustus-polyfill-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/augustus-primitive-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/augustus-reflection-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/augustus-serializer-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/augustus-utility-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/wonka-bundle:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/wonka-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/vermicious-console-io-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""
+
+        src-run/vermicious-environment-library:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+            secret: ""

@@ -4,7 +4,29 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+            <style type="text/css">
+                h1 {
+                    margin : 80px;
+                }
+                .listing {
+                    margin : 36px 0;
+                }
+                [class*="col-xs-6"] {
+                    padding-top: 15px;
+                    padding-bottom: 15px;
+                    min-height: 54px;
+                    background-color: rgba(86,61,124,.15);
+                    border: 1px solid rgba(86,61,124,.2);
+                }
+                a {
+                    color : #000;
+                }
+                a:hover,
+                a:active {
+                    color : #000;
+                }
+            </style>
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
