@@ -80,6 +80,43 @@ class Repository
         );
     }
 
+    public function openIssuesUrl()
+    {
+        $query = http_build_query([
+            'q' => 'is:open',
+        ]);
+
+        return sprintf(
+            'https://github.com/%s/%s/issues?%s',
+            $this->getVendor(),
+            $this->getName(),
+            $query
+        );
+    }
+
+    public function closedIssuesUrl()
+    {
+        $query = http_build_query([
+            'q' => 'is:closed',
+        ]);
+
+        return sprintf(
+            'https://github.com/%s/%s/issues?%s',
+            $this->getVendor(),
+            $this->getName(),
+            $query
+        );
+    }
+
+    public function url()
+    {
+        return sprintf(
+            'https://github.com/%s/%s',
+            $this->getVendor(),
+            $this->getName()
+        );
+    }
+
     public function getFullName()
     {
         return sprintf('%s/%s', $this->getVendor(), $this->getName());

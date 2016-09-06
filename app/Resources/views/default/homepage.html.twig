@@ -3,32 +3,33 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class="col-xs-6 col-xs-offset-3">
-                <div class="text-center page-header">
-                    <div>
-                        <img src="https://pbs.twimg.com/media/B6dVMHzCYAASEhm.jpg" />
+            <div class="col-xs-8 col-xs-offset-2">
+                <h1 class="text-center">Carson: The Issue Butler</h1>
+
+                <div class="listing">
+                    <div class="row">
+                        <div class="col-xs-6 text-center">
+                            <h3>Repository</h3>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <h3>Issue Links</h3>
+                        </div>
                     </div>
 
-                    <h1>Carson: The Issue Butler</h1>
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Repository</th>
-                                <th>Needs Review issues &amp; pull requests</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for repository in repositories %}
-                                <tr>
-                                    <td>{{ repository.vendor }}/{{ repository.name }}</td>
-                                    <td>
-                                        <a href="{{ repository.needsReviewUrl }}" class="btn btn-xs btn-default">Needs Review Issues</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    {% for repository in repositories %}
+                        <div class="row">
+                            <div class="col-xs-6 text-center">
+                                <a href="{{ repository.url }}">
+                                    {{ repository.vendor }}/<strong>{{ repository.name }}</strong>
+                                </a>
+                            </div>
+                            <div class="col-xs-6 text-center">
+                                <a href="{{ repository.openIssuesUrl }}" class="btn btn-xs btn-default">Open</a>
+                                <a href="{{ repository.closedIssuesUrl }}" class="btn btn-xs btn-default">Closed</a>
+                                <a href="{{ repository.needsReviewUrl }}" class="btn btn-xs btn-default">Needs Review</a>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
