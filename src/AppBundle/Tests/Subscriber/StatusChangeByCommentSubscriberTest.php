@@ -98,4 +98,35 @@ class StatusChangeByCommentSubscriberTest extends \PHPUnit_Framework_TestCase
             array('Before the ticket was in state "Status: reviewed", but then the status was changed', null),
         );
     }
+
+    /**
+     * @dataProvider getCommentsForStatusChange
+     */
+    public function testOnIssueCommentAuthorSelfReview()
+    {
+        $this->statusApi->expects($this->never())
+            ->method('setIssueStatus')
+        ;
+        
+        $user = array('login' => 'weaverryan');
+
+        $event = new GitHubEvent(array(
+            'issue' => array(
+                'number' => 1234,
+                'user' => $user,
+            ),
+            'comment' => array(
+                'body' => 'Status: reviewed',
+                'user' => $user,
+            ),
+        ), $this->repository);
+
+        self::$dispatcher->dispatch(GitHubEvents::ISSUE_COMMENT, $event);
+
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['issue']);
+        $this->assertNull($responseData['status_change']);
+    }
 }
