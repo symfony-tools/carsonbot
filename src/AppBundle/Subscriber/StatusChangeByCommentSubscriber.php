@@ -50,6 +50,15 @@ class StatusChangeByCommentSubscriber implements EventSubscriberInterface
             // Second subpattern = first status character
             $newStatus = static::$triggerWordToStatus[strtolower(end($matches[1]))];
 
+            if (Status::REVIEWED === $newStatus && false === $this->checkUserIsAllowedToReview($data)) {
+                $event->setResponseData(array(
+                    'issue' => $issueNumber,
+                    'status_change' => null,
+                ));
+
+                return;
+            }
+
             $this->logger->debug(sprintf('Setting issue number %s to status %s', $issueNumber, $newStatus));
             $this->statusApi->setIssueStatus($issueNumber, $newStatus, $repository);
         }
@@ -65,5 +74,10 @@ class StatusChangeByCommentSubscriber implements EventSubscriberInterface
         return array(
             GitHubEvents::ISSUE_COMMENT => 'onIssueComment',
         );
+    }
+
+    private function checkUserIsAllowedToReview(array $data)
+    {
+        return $data['issue']['user']['login'] !== $data['comment']['user']['login'];
     }
 }
