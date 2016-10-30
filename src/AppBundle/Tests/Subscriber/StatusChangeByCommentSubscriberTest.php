@@ -49,8 +49,8 @@ class StatusChangeByCommentSubscriberTest extends \PHPUnit_Framework_TestCase
         }
 
         $event = new GitHubEvent(array(
-            'issue' => array('number' => 1234),
-            'comment' => array('body' => $comment),
+            'issue' => array('number' => 1234, 'user' => ['login' => 'weaverryan']),
+            'comment' => array('body' => $comment, 'user' => ['login' => 'leannapelham']),
         ), $this->repository);
 
         self::$dispatcher->dispatch(GitHubEvents::ISSUE_COMMENT, $event);
