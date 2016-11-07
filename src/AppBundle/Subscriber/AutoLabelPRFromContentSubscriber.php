@@ -78,6 +78,11 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             );
 
             foreach ($matches['labels'] as $label) {
+                // it's common to use 'DI' for 'DependencyInjection'
+                if ('di' === strtolower($label)) {
+                    $label = 'DependencyInjection';
+                }
+                
                 // check case-insensitively, but the apply the correctly-cased label
                 if (isset($validLabels[strtolower($label)])) {
                     $labels[] = $validLabels[strtolower($label)];
