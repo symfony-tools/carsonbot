@@ -78,6 +78,8 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             );
 
             foreach ($matches['labels'] as $label) {
+                $label = $this->fixLabelName($label);
+
                 // check case-insensitively, but the apply the correctly-cased label
                 if (isset($validLabels[strtolower($label)])) {
                     $labels[] = $validLabels[strtolower($label)];
@@ -107,6 +109,27 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             'Unconfirmed', 'Validator', 'VarDumper', 'WebProfilerBundle', 'Workflow',
             'Yaml',
         );
+    }
+
+    /**
+     * It fixes common misspellings and aliases commonly used for label names
+     * (e.g. DI -> DependencyInjection).
+     */
+    private function fixLabelName($label)
+    {
+        $labelAliases = array(
+            'di' => 'DependencyInjection',
+            'bridge\twig' => 'TwigBridge',
+            'router' => 'Routing',
+            'translation' => 'Translator',
+            'twig bridge' => 'TwigBridge',
+        );
+
+        if (in_array(strtolower($label), $labelAliases)) {
+            return $labelAliases[strtolower($label)];
+        }
+
+        return $label;
     }
 
     public static function getSubscribedEvents()
