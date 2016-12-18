@@ -14,6 +14,14 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
 {
     private $labelsApi;
 
+    private static $labelAliases = [
+        'di' => 'DependencyInjection',
+        'bridge\twig' => 'TwigBridge',
+        'router' => 'Routing',
+        'translation' => 'Translator',
+        'twig bridge' => 'TwigBridge',
+    ];
+
     public function __construct(CachedLabelsApi $labelsApi)
     {
         $this->labelsApi = $labelsApi;
@@ -95,7 +103,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
      */
     private function getValidLabels()
     {
-        return array(
+        $realLabels = array(
             'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'ClassLoader',
             'Config', 'Console', 'Critical', 'CssSelector', 'Debug', 'DebugBundle',
             'DependencyInjection', 'Deprecation', 'Doctrine', 'DoctrineBridge',
@@ -109,6 +117,12 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             'Unconfirmed', 'Validator', 'VarDumper', 'WebProfilerBundle', 'Workflow',
             'Yaml',
         );
+
+        return array_merge(
+            $realLabels,
+            // also consider the "aliases" as valid, so they are used
+            array_keys(self::$labelAliases)
+        );
     }
 
     /**
@@ -117,15 +131,9 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
      */
     private function fixLabelName($label)
     {
-        $labelAliases = array(
-            'di' => 'DependencyInjection',
-            'bridge\twig' => 'TwigBridge',
-            'router' => 'Routing',
-            'translation' => 'Translator',
-            'twig bridge' => 'TwigBridge',
-        );
+        $labelAliases = self::$labelAliases;
 
-        if (in_array(strtolower($label), $labelAliases)) {
+        if (isset($labelAliases[strtolower($label)])) {
             return $labelAliases[strtolower($label)];
         }
 

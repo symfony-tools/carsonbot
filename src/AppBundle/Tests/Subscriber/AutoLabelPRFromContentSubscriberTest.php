@@ -150,6 +150,15 @@ EOF
             ['Asset', 'BC Break', 'Bug'],
         ];
 
+        // testing the fixLabelName: di -> DependencyInjection
+        $tests[] = [
+            '[di][Fake] Extracting from title [Bug]',
+            <<<EOF
+EOF
+            ,
+            ['DependencyInjection', 'Bug'],
+        ];
+
         return $tests;
     }
 }
