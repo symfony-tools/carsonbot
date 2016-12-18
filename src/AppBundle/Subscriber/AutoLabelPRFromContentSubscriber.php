@@ -20,6 +20,8 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         'router' => 'Routing',
         'translation' => 'Translator',
         'twig bridge' => 'TwigBridge',
+        'wdt' => 'WebProfilerBundle',
+        'profiler' => 'WebProfilerBundle',
     ];
 
     public function __construct(CachedLabelsApi $labelsApi)
