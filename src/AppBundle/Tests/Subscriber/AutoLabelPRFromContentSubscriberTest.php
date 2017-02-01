@@ -143,6 +143,27 @@ EOF
         ];
 
         $tests[] = [
+            '"yes/no" are not "yes"',
+            <<<EOF
+Well hi cool peeps!
+
+| Q             | A
+| ------------- | ---
+| Branch?       | master
+| Bug fix?      | yes
+| New feature?  | yes/no
+| BC breaks?    | yes/no
+| Deprecations? | yes/no
+| Tests pass?   | yes/no
+| Fixed tickets | n/a
+| License       | MIT
+| Doc PR        | n/a
+EOF
+            ,
+            ['Bug'],
+        ];
+
+        $tests[] = [
             '[Asset][bc Break][Fake] Extracting from title [Bug]',
             <<<EOF
 EOF
