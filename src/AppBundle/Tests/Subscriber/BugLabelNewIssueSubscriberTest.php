@@ -45,7 +45,7 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->statusApi->expects($this->once())
             ->method('setIssueStatus')
-            ->with(1234, Status::NEEDS_REVIEW);
+            ->with(1234, Status::UNCONFIRMED);
 
         $event = new GitHubEvent(array(
             'action' => 'labeled',
@@ -59,7 +59,7 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['issue']);
-        $this->assertSame(Status::NEEDS_REVIEW, $responseData['status_change']);
+        $this->assertSame(Status::UNCONFIRMED, $responseData['status_change']);
     }
 
     public function testOnIssuesLabeledBugIgnoresCase()
@@ -71,7 +71,7 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->statusApi->expects($this->once())
             ->method('setIssueStatus')
-            ->with(1234, Status::NEEDS_REVIEW);
+            ->with(1234, Status::UNCONFIRMED);
 
         $event = new GitHubEvent(array(
             'action' => 'labeled',
@@ -85,7 +85,7 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['issue']);
-        $this->assertSame(Status::NEEDS_REVIEW, $responseData['status_change']);
+        $this->assertSame(Status::UNCONFIRMED, $responseData['status_change']);
     }
 
     public function testOnIssuesIgnoresNonBugs()

@@ -39,7 +39,7 @@ class WebhookControllerTest extends WebTestCase
             'On issue labeled "bug"' => array(
                 'issues',
                 'issues.labeled.bug.json',
-                array('issue' => 5, 'status_change' => 'needs_review'),
+                array('issue' => 5, 'status_change' => 'unconfirmed'),
             ),
             'On issue labeled "feature"' => array(
                 'issues',
