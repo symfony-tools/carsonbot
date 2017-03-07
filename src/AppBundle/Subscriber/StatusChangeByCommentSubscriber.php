@@ -7,23 +7,14 @@ use AppBundle\GitHubEvents;
 use AppBundle\Issues\Status;
 use AppBundle\Issues\StatusApi;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class StatusChangeByCommentSubscriber implements EventSubscriberInterface
+class StatusChangeByCommentSubscriber extends AbstractStatusChangeSubscriber
 {
-    private static $triggerWordToStatus = [
-        'needs review' => Status::NEEDS_REVIEW,
-        'needs work' => Status::NEEDS_WORK,
-        'works for me' => Status::WORKS_FOR_ME,
-        'reviewed' => Status::REVIEWED,
-    ];
-
-    private $statusApi;
     private $logger;
 
     public function __construct(StatusApi $statusApi, LoggerInterface $logger)
     {
-        $this->statusApi = $statusApi;
+        parent::__construct($statusApi);
         $this->logger = $logger;
     }
 
@@ -37,36 +28,24 @@ class StatusChangeByCommentSubscriber implements EventSubscriberInterface
     {
         $data = $event->getData();
         $repository = $event->getRepository();
-        $newStatus = null;
         $issueNumber = $data['issue']['number'];
+        $newStatus = $this->parseStatusFromText($data['comment']['body']);
 
-        $triggerWord = implode('|', array_keys(static::$triggerWordToStatus));
-        $formatting = '[\\s\\*]*';
-        // Match first character after "status:"
-        // Case insensitive ("i"), ignores formatting with "*" before or after the ":"
-        $pattern = "~(?=\n|^)${formatting}status${formatting}:${formatting}[\"']?($triggerWord)[\"']?${formatting}[.!]?${formatting}(?<=\r\n|\n|$)~i";
-
-        if (preg_match_all($pattern, $data['comment']['body'], $matches)) {
-            // Second subpattern = first status character
-            $newStatus = static::$triggerWordToStatus[strtolower(end($matches[1]))];
-
-            if (Status::REVIEWED === $newStatus && false === $this->checkUserIsAllowedToReview($data)) {
-                $event->setResponseData(array(
-                    'issue' => $issueNumber,
-                    'status_change' => null,
-                ));
-
-                return;
-            }
-
-            $this->logger->debug(sprintf('Setting issue number %s to status %s', $issueNumber, $newStatus));
-            $this->statusApi->setIssueStatus($issueNumber, $newStatus, $repository);
+        if (Status::REVIEWED === $newStatus && false === $this->checkUserIsAllowedToReview($data)) {
+            $newStatus = null;
         }
 
         $event->setResponseData(array(
             'issue' => $issueNumber,
             'status_change' => $newStatus,
         ));
+
+        if (null === $newStatus) {
+            return;
+        }
+
+        $this->logger->debug(sprintf('Setting issue number %s to status %s', $issueNumber, $newStatus));
+        $this->statusApi->setIssueStatus($issueNumber, $newStatus, $repository);
     }
 
     public static function getSubscribedEvents()

@@ -53,6 +53,9 @@ final class GitHubEvents
     /** @Event('\AppBundle\Event\GitHubEvent') */
     const PR_REVIEW_COMMENT = 'github.pull_request_review_comment';
 
+    /** @Event('\AppBundle\Event\GithubEvent') */
+    const PULL_REQUEST_REVIEW = 'github.pull_request_review';
+
     /** @Event('\AppBundle\Event\GitHubEvent') */
     const PULL_REQUEST = 'github.pull_request';
 

@@ -26,12 +26,19 @@ services:
         arguments:
             - '@app.github.cached_labels_api'
 
+    app.subscriber.status_change_by_review_subscriber:
+        class: AppBundle\Subscriber\StatusChangeByReviewSubscriber
+        arguments:
+            - '@app.status_api'
+            - '@logger'
+
 parameters:
     # point to the main symfony repositories
     repositories:
         symfony/symfony:
             subscribers:
                 - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.status_change_by_review_subscriber
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
@@ -41,6 +48,7 @@ parameters:
             subscribers:
                 - app.subscriber.status_change_by_comment_subscriber
                 - app.subscriber.status_change_on_push_subscriber
+                - app.subscriber.status_change_by_review_subscriber
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
@@ -51,6 +59,7 @@ parameters:
             subscribers:
                 - app.subscriber.status_change_by_comment_subscriber
                 - app.subscriber.status_change_on_push_subscriber
+                - app.subscriber.status_change_by_review_subscriber
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
