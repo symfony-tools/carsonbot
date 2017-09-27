@@ -20,12 +20,7 @@ class StatusChangeByReviewSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EventDispatcher
      */
-    private static $dispatcher;
-
-    public static function setUpBeforeClass()
-    {
-        self::$dispatcher = new EventDispatcher();
-    }
+    private $dispatcher;
 
     protected function setUp()
     {
@@ -34,7 +29,8 @@ class StatusChangeByReviewSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->statusChangeSubscriber = new StatusChangeByReviewSubscriber($this->statusApi, $logger);
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
-        self::$dispatcher->addSubscriber($this->statusChangeSubscriber);
+        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher->addSubscriber($this->statusChangeSubscriber);
     }
 
     /**
@@ -54,7 +50,7 @@ class StatusChangeByReviewSubscriberTest extends \PHPUnit_Framework_TestCase
             'review' => array('state' => 'commented', 'body' => $comment, 'user' => ['login' => 'leannapelham']),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST_REVIEW, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST_REVIEW, $event);
 
         $responseData = $event->getResponseData();
 
@@ -100,9 +96,6 @@ class StatusChangeByReviewSubscriberTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @dataProvider getCommentsForStatusChange
-     */
     public function testOnIssueCommentAuthorSelfReview()
     {
         $this->statusApi->expects($this->never())
@@ -124,7 +117,7 @@ class StatusChangeByReviewSubscriberTest extends \PHPUnit_Framework_TestCase
             ),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST_REVIEW, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST_REVIEW, $event);
 
         $responseData = $event->getResponseData();
 
@@ -144,6 +137,6 @@ class StatusChangeByReviewSubscriberTest extends \PHPUnit_Framework_TestCase
             'pull_request' => array('number' => 1234)
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
     }
 }
