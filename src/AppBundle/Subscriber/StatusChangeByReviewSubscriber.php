@@ -54,10 +54,10 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
                 break;
             default:
                 $newStatus = $this->parseStatusFromText($data['review']['body']);
+        }
 
-                if (Status::REVIEWED === $newStatus && false === $this->checkUserIsAllowedToReview($data)) {
-                    $newStatus = null;
-                }
+        if (Status::REVIEWED === $newStatus && false === $this->isUserAllowedToReview($data)) {
+            $newStatus = null;
         }
 
         $event->setResponseData(array(
@@ -106,10 +106,5 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
             GitHubEvents::PULL_REQUEST_REVIEW => 'onReview',
             GitHubEvents::PULL_REQUEST => 'onReviewRequested',
         );
-    }
-
-    private function checkUserIsAllowedToReview(array $data)
-    {
-        return $data['pull_request']['user']['login'] !== $data['review']['user']['login'];
     }
 }

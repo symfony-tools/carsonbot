@@ -44,7 +44,7 @@ abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterfac
         }
     }
 
-    private function checkUserIsAllowedToReview(array $data)
+    protected function isUserAllowedToReview(array $data)
     {
         return $data['issue']['user']['login'] !== $data['comment']['user']['login'];
     }

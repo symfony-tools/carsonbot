@@ -31,7 +31,7 @@ class StatusChangeByCommentSubscriber extends AbstractStatusChangeSubscriber
         $issueNumber = $data['issue']['number'];
         $newStatus = $this->parseStatusFromText($data['comment']['body']);
 
-        if (Status::REVIEWED === $newStatus && false === $this->checkUserIsAllowedToReview($data)) {
+        if (Status::REVIEWED === $newStatus && false === $this->isUserAllowedToReview($data)) {
             $newStatus = null;
         }
 
@@ -53,10 +53,5 @@ class StatusChangeByCommentSubscriber extends AbstractStatusChangeSubscriber
         return array(
             GitHubEvents::ISSUE_COMMENT => 'onIssueComment',
         );
-    }
-
-    private function checkUserIsAllowedToReview(array $data)
-    {
-        return $data['issue']['user']['login'] !== $data['comment']['user']['login'];
     }
 }
