@@ -43,10 +43,5 @@ abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterfac
             return static::$triggerWordToStatus[strtolower(end($matches[1]))];
         }
     }
-
-    protected function isUserAllowedToReview(array $data)
-    {
-        return $data['issue']['user']['login'] !== $data['comment']['user']['login'];
-    }
 }
 

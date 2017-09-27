@@ -107,4 +107,9 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
             GitHubEvents::PULL_REQUEST => 'onReviewRequested',
         );
     }
+
+    private function isUserAllowedToReview(array $data)
+    {
+        return $data['pull_request']['user']['login'] !== $data['review']['user']['login'];
+    }
 }
