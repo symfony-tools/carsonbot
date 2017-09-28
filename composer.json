@@ -23,7 +23,8 @@
         "knplabs/github-api": "^1.4"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3"
+        "sensio/generator-bundle": "~2.3",
+        "phpunit/phpunit": "^5.0"
     },
     "scripts": {
         "post-root-package-install": [
