@@ -112,7 +112,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             'DomCrawler', 'Drupal related', 'DX', 'Easy Pick', 'Enhancement',
             'EventDispatcher', 'ExpressionLanguage', 'Feature', 'Filesystem',
             'Finder', 'Form', 'FrameworkBundle', 'HttpFoundation', 'HttpKernel',
-            'Intl', 'Ldap', 'Locale', 'MonologBridge', 'OptionsResolver',
+            'Intl', 'Ldap', 'Locale', 'Lock', 'Messenger', 'MonologBridge', 'OptionsResolver',
             'PhpUnitBridge', 'Process', 'PropertyAccess', 'PropertyInfo', 'Ready',
             'RFC', 'Routing', 'Security', 'SecurityBundle', 'Serializer',
             'Stopwatch', 'Templating', 'Translator', 'TwigBridge', 'TwigBundle',
