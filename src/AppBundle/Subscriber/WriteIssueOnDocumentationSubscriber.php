@@ -26,10 +26,20 @@ class WriteIssueOnDocumentationSubscriber implements EventSubscriberInterface
      */
     private $issueApi;
 
-    public function __construct(CachedLabelsApi $labelsApi, IssueApi $issueApi)
+    /**
+     * @var string "user/repository"
+     */
+    private $targetRepository;
+
+    public function __construct(CachedLabelsApi $labelsApi, IssueApi $issueApi, $targetRepository)
     {
         $this->labelsApi = $labelsApi;
-        $this->labelsApi = $issueApi;
+        $this->issueApi = $issueApi;
+        $this->targetRepository = $targetRepository;
+
+        if (false === strpos('/', $this->targetRepository)) {
+            throw new \LogicException('Third parameter of WriteIssueOnDocumentationSubscriber must be a repository on format "symfony/symfony-docs"');
+        }
     }
 
     public function onPullRequest(GitHubEvent $event)
@@ -41,10 +51,11 @@ class WriteIssueOnDocumentationSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Assert: PullRequest was merged.
+
         $repository = $event->getRepository();
         $pullRequestNumber = $data['pull_request']['number'];
 
-        // Assert: PullRequest was merged.
         if (!$this->hasFeatureLabel($repository, $pullRequestNumber)) {
             $event->setResponseData(array('unsupported_reason' => 'PR does not have "Feature" label.'));
 
@@ -52,9 +63,9 @@ class WriteIssueOnDocumentationSubscriber implements EventSubscriberInterface
         }
 
         // Parse PR body to see if there is a reference to docs
-        $body = $data['pull_request']['number'];
-        if (strstr($body, 'github.com/symfony/symfony-docs')) {
-            $event->setResponseData(array('unsupported_reason' => 'PR have a reference to github.com/symfony/symfony-docs.'));
+        $body = $data['pull_request']['body'];
+        if (strstr($body, $this->targetRepository)) {
+            $event->setResponseData(array('unsupported_reason' => 'PR have a reference to '.$this->targetRepository));
 
             return;
         }
@@ -62,11 +73,12 @@ class WriteIssueOnDocumentationSubscriber implements EventSubscriberInterface
         // Create issue
         $author = $data['pull_request']['user']['login'];
         $title = $data['pull_request']['title'];
-        $pullRequestUrl =  $data['pull_request']['url'];
+        $pullRequestUrl =  $data['pull_request']['html_url'];
         $issueContent = $this->getIssueContent($author, $pullRequestUrl);
+        list($targetUser, $targetRepo) = explode('/', $this->targetRepository, 2);
 
-        $issueData = $this->issueApi->create('symfony', 'symfony-docs', [
-            'title' => sprintf('Add docs for: %s', substr($title, 0, 55)),
+        $issueData = $this->issueApi->create($targetUser, $targetRepo, [
+            'title' => sprintf('Add docs for: %s', strlen($title) > 56 ? substr($title, 0, 55).'..' : $title),
             'body'=>
 <<<TEXT
 | Q          | A
@@ -82,7 +94,7 @@ TEXT,
 
         $event->setResponseData(array(
             'pull_request' => $pullRequestNumber,
-            'action' => 'Created issue on docs: '.$issueData['url'],
+            'action' => 'Created issue on docs: '.$issueData['html_url'],
         ));
     }
 
