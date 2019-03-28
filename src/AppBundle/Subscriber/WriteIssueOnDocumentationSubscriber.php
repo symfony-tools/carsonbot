@@ -37,7 +37,7 @@ class WriteIssueOnDocumentationSubscriber implements EventSubscriberInterface
         $this->issueApi = $issueApi;
         $this->targetRepository = $targetRepository;
 
-        if (false === strpos('/', $this->targetRepository)) {
+        if (false !== strpos('/', $this->targetRepository)) {
             throw new \LogicException('Third parameter of WriteIssueOnDocumentationSubscriber must be a repository on format "symfony/symfony-docs"');
         }
     }

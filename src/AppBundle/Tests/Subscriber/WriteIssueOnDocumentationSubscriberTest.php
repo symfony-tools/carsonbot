@@ -4,12 +4,11 @@ namespace AppBundle\Tests\Subscriber;
 
 use AppBundle\Event\GitHubEvent;
 use AppBundle\GitHubEvents;
-use AppBundle\Issues\Status;
 use AppBundle\Repository\Repository;
-use AppBundle\Subscriber\StatusChangeOnPushSubscriber;
+use AppBundle\Subscriber\WriteIssueOnDocumentationSubscriber;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class WiteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
+class WriteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
 {
     private $subscriber;
 
@@ -22,12 +21,8 @@ class WiteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EventDispatcher
      */
-    private static $dispatcher;
+    private $dispatcher;
 
-    public static function setUpBeforeClass()
-    {
-        self::$dispatcher = new EventDispatcher();
-    }
 
     protected function setUp()
     {
@@ -43,7 +38,8 @@ class WiteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->subscriber = new WriteIssueOnDocumentationSubscriber($this->labelsApi, $this->issueApi, 'symfony/symfony-docs');
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
-        self::$dispatcher->addSubscriber($this->subscriber);
+        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher->addSubscriber($this->subscriber);
     }
 
     public function testOnClose()
@@ -55,7 +51,7 @@ class WiteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
             )),
         ], $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 
@@ -72,12 +68,10 @@ class WiteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $event = new GitHubEvent([
             'action' => 'closed',
-            'pull_request' => $this->getPullRequestData(array(
-
-            )),
+            'pull_request' => $this->getPullRequestData(),
         ], $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 
@@ -99,7 +93,7 @@ class WiteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
             )),
         ], $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 
@@ -131,7 +125,7 @@ class WiteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
             )),
         ], $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 
@@ -141,7 +135,7 @@ class WiteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    private function getPullRequestData(array $data)
+    private function getPullRequestData(array $data = array())
     {
         return array_merge(array(
             'number' => 1234,
