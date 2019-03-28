@@ -5,10 +5,10 @@ namespace AppBundle\Tests\Subscriber;
 use AppBundle\Event\GitHubEvent;
 use AppBundle\GitHubEvents;
 use AppBundle\Repository\Repository;
-use AppBundle\Subscriber\WriteIssueOnDocumentationSubscriber;
+use AppBundle\Subscriber\WriteIssueOnMergedFeatureSubscriber;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class WriteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCase
+class WriteIssueOnMergedFeatureSubscriberTest extends \PHPUnit_Framework_TestCase
 {
     private $subscriber;
 
@@ -35,7 +35,7 @@ class WriteIssueOnDocumentationSubscriberTest extends \PHPUnit_Framework_TestCas
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->subscriber = new WriteIssueOnDocumentationSubscriber($this->labelsApi, $this->issueApi, 'symfony/symfony-docs');
+        $this->subscriber = new WriteIssueOnMergedFeatureSubscriber($this->labelsApi, $this->issueApi, 'symfony/symfony-docs');
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
         $this->dispatcher = new EventDispatcher();

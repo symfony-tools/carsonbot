@@ -12,9 +12,11 @@ use Github\Api\Issue as IssueApi;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
+ * Write an issue on the documentation repository when a PullRequest with label "Feature" is merged.
+ *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class WriteIssueOnDocumentationSubscriber implements EventSubscriberInterface
+class WriteIssueOnMergedFeatureSubscriber implements EventSubscriberInterface
 {
     /**
      * @var CachedLabelsApi
@@ -106,17 +108,23 @@ TEXT,
         $messages = [
             "Thank you @$author! Could you please add some documentation too?",
             "That feature looks great. Could you care to add some docs, please?",
-            'Do not forget to add documentation to your features.',
-            "I did a quick review on @$author's PR. I like it. But we should add some documentation, right?'",
-            'What is a great feature without documentation =)',
+            "Do not forget to add documentation to your features.",
+            "I did a quick review on @$author's PR. I like it. But we should add some documentation, right?",
+            "What is a great feature without documentation =)",
             "I saw [this]($url) and thought: \"This is great, lets make sure everybody knows about it\".",
             "@$author, You are the BEST! Could you also add some documentation to this feature?",
             "I really like $url, But I think it needs some documentation, right?",
             "This is just a reminder for @$author (or anyone) to create some documentation to this feature.",
             "I would really love to see this documented.",
-            'That feature would look better with some documentation',
-            "The only think that could make @$author's PR a little bit better is some documentation. Could someone please help out?'",
+            "That feature would look better with some documentation",
+            "The only thing that could make @$author's PR a little bit better is some documentation. Could someone please help out?'",
             "I like the work done in $url, but we should add some documentation about it",
+            "There is a rumor on the internet saying that @$author has created a really cool feature. We should add some docs about it.",
+            "Is there anyone that want to help with writing documentation for @$author's PR?",
+            "There are so many good things coming form @$author. We should not forget to write some documentation.",
+            "It is funny, just the other week I was thinking on a feature like [this]($url). Could we help adding some docs?",
+            "Wohoo, [this PR]($url) just got merged. We need to add a few lines in the docs, right?",
+            "Excellent work @$author. Lets keep it up by adding some docs. =)",
         ];
 
         $idx = rand(0, count($messages) - 1);

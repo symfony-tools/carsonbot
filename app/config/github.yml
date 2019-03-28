@@ -32,8 +32,8 @@ services:
             - '@app.status_api'
             - '@logger'
 
-    app.subscriber.write_issue_on_documentation:
-        class: AppBundle\Subscriber\WriteIssueOnDocumentationSubscriber
+    app.subscriber.write_issue_on_merged_feature:
+        class: AppBundle\Subscriber\WriteIssueOnMergedFeatureSubscriber
         arguments:
             - '@app.github.cached_labels_api'
             - '@app.github.issues_api'
@@ -49,7 +49,7 @@ parameters:
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
-                - app.subscriber.write_issue_on_documentation
+                - app.subscriber.write_issue_on_merged_feature
             # secret: change_me
 
         symfony/symfony-docs:
