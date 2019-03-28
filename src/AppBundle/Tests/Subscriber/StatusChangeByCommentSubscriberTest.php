@@ -20,12 +20,7 @@ class StatusChangeByCommentSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EventDispatcher
      */
-    private static $dispatcher;
-
-    public static function setUpBeforeClass()
-    {
-        self::$dispatcher = new EventDispatcher();
-    }
+    private $dispatcher;
 
     protected function setUp()
     {
@@ -34,7 +29,8 @@ class StatusChangeByCommentSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->statusChangeSubscriber = new StatusChangeByCommentSubscriber($this->statusApi, $logger);
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
-        self::$dispatcher->addSubscriber($this->statusChangeSubscriber);
+        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher->addSubscriber($this->statusChangeSubscriber);
     }
 
     /**
@@ -53,7 +49,7 @@ class StatusChangeByCommentSubscriberTest extends \PHPUnit_Framework_TestCase
             'comment' => array('body' => $comment, 'user' => ['login' => 'leannapelham']),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::ISSUE_COMMENT, $event);
+        $this->dispatcher->dispatch(GitHubEvents::ISSUE_COMMENT, $event);
 
         $responseData = $event->getResponseData();
 
@@ -121,7 +117,7 @@ class StatusChangeByCommentSubscriberTest extends \PHPUnit_Framework_TestCase
             ),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::ISSUE_COMMENT, $event);
+        $this->dispatcher->dispatch(GitHubEvents::ISSUE_COMMENT, $event);
 
         $responseData = $event->getResponseData();
 

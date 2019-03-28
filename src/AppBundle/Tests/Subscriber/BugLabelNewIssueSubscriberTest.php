@@ -20,12 +20,8 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EventDispatcher
      */
-    private static $dispatcher;
+    private $dispatcher;
 
-    public static function setUpBeforeClass()
-    {
-        self::$dispatcher = new EventDispatcher();
-    }
 
     protected function setUp()
     {
@@ -33,7 +29,8 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->bugLabelSubscriber = new BugLabelNewIssueSubscriber($this->statusApi);
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
-        self::$dispatcher->addSubscriber($this->bugLabelSubscriber);
+        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher->addSubscriber($this->bugLabelSubscriber);
     }
 
     public function testOnIssuesLabeledBug()
@@ -53,7 +50,7 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
             'label' => array('name' => 'bug'),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::ISSUES, $event);
+        $this->dispatcher->dispatch(GitHubEvents::ISSUES, $event);
 
         $responseData = $event->getResponseData();
 
@@ -79,7 +76,7 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
             'label' => array('name' => 'BUG'),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::ISSUES, $event);
+        $this->dispatcher->dispatch(GitHubEvents::ISSUES, $event);
 
         $responseData = $event->getResponseData();
 
@@ -102,7 +99,7 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
             'label' => array('name' => 'feature'),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::ISSUES, $event);
+        $this->dispatcher->dispatch(GitHubEvents::ISSUES, $event);
 
         $responseData = $event->getResponseData();
 
@@ -127,7 +124,7 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
             'label' => array('name' => 'bug'),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::ISSUES, $event);
+        $this->dispatcher->dispatch(GitHubEvents::ISSUES, $event);
 
         $responseData = $event->getResponseData();
 
@@ -150,7 +147,7 @@ class BugLabelNewIssueSubscriberTest extends \PHPUnit_Framework_TestCase
             'label' => array('name' => 'bug'),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::ISSUES, $event);
+        $this->dispatcher->dispatch(GitHubEvents::ISSUES, $event);
 
         $responseData = $event->getResponseData();
 

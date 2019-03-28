@@ -20,12 +20,7 @@ class NeedsReviewNewPRSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EventDispatcher
      */
-    private static $dispatcher;
-
-    public static function setUpBeforeClass()
-    {
-        self::$dispatcher = new EventDispatcher();
-    }
+    private $dispatcher;
 
     protected function setUp()
     {
@@ -33,7 +28,8 @@ class NeedsReviewNewPRSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->needsReviewSubscriber = new NeedsReviewNewPRSubscriber($this->statusApi);
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
-        self::$dispatcher->addSubscriber($this->needsReviewSubscriber);
+        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher->addSubscriber($this->needsReviewSubscriber);
     }
 
     public function testOnPullRequestOpen()
@@ -47,7 +43,7 @@ class NeedsReviewNewPRSubscriberTest extends \PHPUnit_Framework_TestCase
             'pull_request' => array('number' => 1234),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 
@@ -65,7 +61,7 @@ class NeedsReviewNewPRSubscriberTest extends \PHPUnit_Framework_TestCase
             'action' => 'close',
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 

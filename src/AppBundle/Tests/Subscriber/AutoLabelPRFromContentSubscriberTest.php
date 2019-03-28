@@ -19,12 +19,7 @@ class AutoLabelPRFromContentSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EventDispatcher
      */
-    private static $dispatcher;
-
-    public static function setUpBeforeClass()
-    {
-        self::$dispatcher = new EventDispatcher();
-    }
+    private $dispatcher;
 
     protected function setUp()
     {
@@ -34,7 +29,8 @@ class AutoLabelPRFromContentSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->autoLabelSubscriber = new AutoLabelPRFromContentSubscriber($this->labelsApi);
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
-        self::$dispatcher->addSubscriber($this->autoLabelSubscriber);
+        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher->addSubscriber($this->autoLabelSubscriber);
     }
 
     /**
@@ -56,7 +52,7 @@ class AutoLabelPRFromContentSubscriberTest extends \PHPUnit_Framework_TestCase
             ),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 
