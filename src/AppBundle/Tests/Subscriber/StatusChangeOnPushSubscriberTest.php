@@ -20,12 +20,8 @@ class StatusChangeOnPushSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EventDispatcher
      */
-    private static $dispatcher;
+    private $dispatcher;
 
-    public static function setUpBeforeClass()
-    {
-        self::$dispatcher = new EventDispatcher();
-    }
 
     protected function setUp()
     {
@@ -33,7 +29,8 @@ class StatusChangeOnPushSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->statusChangeSubscriber = new StatusChangeOnPushSubscriber($this->statusApi);
         $this->repository = new Repository('weaverryan', 'symfony', [], null);
 
-        self::$dispatcher->addSubscriber($this->statusChangeSubscriber);
+        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher->addSubscriber($this->statusChangeSubscriber);
     }
 
     /**
@@ -57,7 +54,7 @@ class StatusChangeOnPushSubscriberTest extends \PHPUnit_Framework_TestCase
             'pull_request' => $this->getPullRequestData(),
         ], $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 
@@ -88,7 +85,7 @@ class StatusChangeOnPushSubscriberTest extends \PHPUnit_Framework_TestCase
             'pull_request' => $this->getPullRequestData(),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 
@@ -108,7 +105,7 @@ class StatusChangeOnPushSubscriberTest extends \PHPUnit_Framework_TestCase
             'pull_request' => $this->getPullRequestData('[wip] needs some more work.'),
         ), $this->repository);
 
-        self::$dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
+        $this->dispatcher->dispatch(GitHubEvents::PULL_REQUEST, $event);
 
         $responseData = $event->getResponseData();
 
