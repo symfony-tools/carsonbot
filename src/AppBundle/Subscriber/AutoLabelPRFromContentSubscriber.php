@@ -109,15 +109,15 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'ClassLoader',
             'Config', 'Console', 'Critical', 'CssSelector', 'Debug', 'DebugBundle',
             'DependencyInjection', 'Deprecation', 'Doctrine', 'DoctrineBridge',
-            'DomCrawler', 'Drupal related', 'DX', 'Easy Pick', 'Enhancement',
+            'DomCrawler', 'Dotenv', 'Drupal related', 'DX', 'Easy Pick', 'Enhancement',
             'EventDispatcher', 'ExpressionLanguage', 'Feature', 'Filesystem',
             'Finder', 'Form', 'FrameworkBundle', 'HttpFoundation', 'HttpKernel',
-            'Intl', 'Ldap', 'Locale', 'Lock', 'Messenger', 'Mime', 'MonologBridge',
-            'OptionsResolver', 'PhpUnitBridge', 'Process', 'PropertyAccess', 'PropertyInfo',
-            'Ready', 'RFC', 'Routing', 'Security', 'SecurityBundle', 'Serializer',
+            'Inflector', 'Intl', 'Ldap', 'Locale', 'Lock', 'Messenger', 'Mime', 'MonologBridge', 'OptionsResolver',
+            'PhpUnitBridge', 'Process', 'PropertyAccess', 'PropertyInfo', 'Ready',
+            'RFC', 'Routing', 'Security', 'SecurityBundle', 'Serializer',
             'Stopwatch', 'Templating', 'Translator', 'TwigBridge', 'TwigBundle',
-            'Unconfirmed', 'Validator', 'VarDumper', 'WebProfilerBundle', 'Workflow',
-            'Yaml',
+            'Unconfirmed', 'Validator', 'VarDumper', 'WebProfilerBundle', 'WebServerBundle',
+            'Workflow', 'Yaml',
         );
 
         return array_merge(
