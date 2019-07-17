@@ -21,8 +21,8 @@ web:
 disk: 2048
 
 mounts:
-    "app/cache": { source: local, source_path: "var/cache" }
-    "app/logs": { source: local, source_path: "var/logs" }
+    "app/cache": { source: local, source_path: "app/cache" }
+    "app/logs": { source: local, source_path: "app/logs" }
 
 hooks:
     build: |
@@ -37,13 +37,13 @@ hooks:
 
         # Keep the cache in a persistent directory
         # If your cache can be read-only, you can skip this step
-        (>&2 mkdir -p tmp/cache && mv var/cache/prod tmp/cache/ && mv var/bootstrap.php.cache tmp/bootstrap.php.cache)
+        (>&2 mkdir -p tmp/cache && mv app/cache/prod tmp/cache/ && mv var/bootstrap.php.cache tmp/bootstrap.php.cache)
 
     deploy: |
         set -x -e
 
         # "install" cache
         # If your cache can be read-only, you can skip these steps
-        rm -rf var/cache/prod
+        rm -rf app/cache/prod
         cp -Rp tmp/bootstrap.php.cache var/bootstrap.php.cache
-        cp -Rp tmp/cache/prod var/cache/
+        cp -Rp tmp/cache/prod app/cache/
