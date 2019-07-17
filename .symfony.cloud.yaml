@@ -29,7 +29,7 @@ hooks:
         set -x -e
 
         # Remove the development front-controller if present
-        (>&2 rm web/app.php_dev.php)
+        (>&2 rm web/app_dev.php)
 
         SYMFONY_ENV=prod composer install --prefer-dist --optimize-autoloader --classmap-authoritative --no-progress --no-ansi --no-interaction --no-dev
         (>&2 SYMFONY_ENV=prod bin/console cache:clear --no-warmup)
