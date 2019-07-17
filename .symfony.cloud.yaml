@@ -1,0 +1,49 @@
+name: carson-bot
+
+type: php:7.3
+
+runtime:
+    extensions:
+        - apcu
+        - mbstring
+        
+
+build:
+    flavor: none
+
+web:
+    locations:
+        "/":
+            root: "web"
+            expires: 1h
+            passthru: "/app.php"
+
+disk: 2048
+
+mounts:
+    "app/cache": { source: local, source_path: "var/cache" }
+    "app/logs": { source: local, source_path: "var/logs" }
+
+hooks:
+    build: |
+        set -x -e
+
+        # Remove the development front-controller if present
+        (>&2 rm web/app.php_dev.php)
+
+        SYMFONY_ENV=prod composer install --prefer-dist --optimize-autoloader --classmap-authoritative --no-progress --no-ansi --no-interaction --no-dev
+        (>&2 SYMFONY_ENV=prod bin/console cache:clear --no-warmup)
+        (>&2 SYMFONY_ENV=prod bin/console cache:warmup)
+
+        # Keep the cache in a persistent directory
+        # If your cache can be read-only, you can skip this step
+        (>&2 mkdir -p tmp/cache && mv var/cache/prod tmp/cache/ && mv var/bootstrap.php.cache tmp/bootstrap.php.cache)
+
+    deploy: |
+        set -x -e
+
+        # "install" cache
+        # If your cache can be read-only, you can skip these steps
+        rm -rf var/cache/prod
+        cp -Rp tmp/bootstrap.php.cache var/bootstrap.php.cache
+        cp -Rp tmp/cache/prod var/cache/

@@ -1,0 +1,2 @@
+"https://{default}/": { type: upstream, upstream: "carson-bot:http" }
+"http://{default}/": { type: redirect, to: "https://{default}/" }
