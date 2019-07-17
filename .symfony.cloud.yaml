@@ -37,7 +37,7 @@ hooks:
 
         # Keep the cache in a persistent directory
         # If your cache can be read-only, you can skip this step
-        (>&2 mkdir -p tmp/cache && mv app/cache/prod tmp/cache/ && mv app/bootstrap.php.cache tmp/bootstrap.php.cache)
+        (>&2 mkdir -p tmp/cache && mv app/cache/prod tmp/cache/)
 
     deploy: |
         set -x -e
@@ -45,5 +45,5 @@ hooks:
         # "install" cache
         # If your cache can be read-only, you can skip these steps
         rm -rf app/cache/prod
-        cp -Rp tmp/bootstrap.php.cache app/bootstrap.php.cache
+        #cp -Rp tmp/bootstrap.php.cache app/bootstrap.php.cache
         cp -Rp tmp/cache/prod app/cache/
