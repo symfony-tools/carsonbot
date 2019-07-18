@@ -1,9 +1,9 @@
 <?php
 
-if (getenv('github_token')) {
-    $container->setParameter('github_token', getenv('github_token'));
+if (getenv('GITHUB_TOKEN')) {
+    $container->setParameter('github_token', getenv('GITHUB_TOKEN'));
 }
 
-if (getenv('symfony_docs_secret')) {
-    $container->setParameter('symfony_docs_secret', getenv('symfony_docs_secret'));
+if (getenv('SYMFONY_DOCS_SECRET')) {
+    $container->setParameter('symfony_docs_secret', getenv('SYMFONY_DOCS_SECRET'));
 }

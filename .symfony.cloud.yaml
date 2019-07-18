@@ -1,6 +1,6 @@
 name: carson-bot
 
-type: php:7.3
+type: php:7.2
 
 runtime:
     extensions:
@@ -35,8 +35,15 @@ hooks:
         (>&2 SYMFONY_ENV=prod app/console cache:clear --no-warmup)
         (>&2 SYMFONY_ENV=prod app/console cache:warmup)
 
+        # Keep the cache in a persistent directory
+        # If your cache can be read-only, you can skip this step
+        (>&2 mkdir -p tmp/cache && mv app/cache/prod tmp/cache/)
+
     deploy: |
         set -x -e
 
-        (>&2 SYMFONY_ENV=prod app/console cache:clear --no-warmup)
-        (>&2 SYMFONY_ENV=prod app/console cache:warmup)
+        # "install" cache
+        # If your cache can be read-only, you can skip these steps
+        rm -rf app/cache/prod
+        #cp -Rp tmp/bootstrap.php.cache app/bootstrap.php.cache
+        cp -Rp tmp/cache/prod app/cache/
