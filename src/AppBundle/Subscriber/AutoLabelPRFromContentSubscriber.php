@@ -115,7 +115,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             'Inflector', 'Intl', 'Ldap', 'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'OptionsResolver',
             'PhpUnitBridge', 'Process', 'PropertyAccess', 'PropertyInfo', 'Ready',
             'RFC', 'Routing', 'Security', 'SecurityBundle', 'Serializer',
-            'Stopwatch', 'Templating', 'Translator', 'TwigBridge', 'TwigBundle',
+            'Stopwatch', 'String', 'Templating', 'Translator', 'TwigBridge', 'TwigBundle',
             'Unconfirmed', 'Validator', 'VarDumper', 'WebProfilerBundle', 'WebServerBundle',
             'Workflow', 'Yaml',
         );
