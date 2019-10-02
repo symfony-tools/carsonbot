@@ -25,6 +25,26 @@ class CachedLabelsApi
         $this->labelsApi = $labelsApi;
     }
 
+    public function getRepoLabels(Repository $repository)
+    {
+        $key = $this->getCacheKey(null, $repository);
+
+        if (!isset($this->labelCache[$key])) {
+            $this->labelCache[$key] = [];
+
+            $labelsData = $this->labelsApi->all(
+                $repository->getVendor(),
+                $repository->getName()
+            );
+
+            foreach ($labelsData as $labelData) {
+                $this->labelCache[$key][$labelData['name']] = true;
+            }
+        }
+
+        return array_keys($this->labelCache[$key]);
+    }
+
     public function getIssueLabels($issueNumber, Repository $repository)
     {
         $key = $this->getCacheKey($issueNumber, $repository);

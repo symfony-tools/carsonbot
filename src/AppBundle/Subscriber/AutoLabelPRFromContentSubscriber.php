@@ -5,6 +5,7 @@ namespace AppBundle\Subscriber;
 use AppBundle\Event\GitHubEvent;
 use AppBundle\GitHubEvents;
 use AppBundle\Issues\GitHub\CachedLabelsApi;
+use AppBundle\Repository\Repository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -47,7 +48,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         $prLabels = array();
 
         // the PR title usually contains one or more labels
-        foreach ($this->extractLabels($prTitle) as $label) {
+        foreach ($this->extractLabels($prTitle, $event->getRepository()) as $label) {
             $prLabels[] = $label;
         }
 
@@ -73,18 +74,19 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         ));
     }
 
-    private function extractLabels($prTitle)
+    private function extractLabels($prTitle, Repository $repository)
     {
         $labels = array();
 
         // e.g. "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses"
         if (preg_match_all('/\[(?P<labels>.+)\]/U', $prTitle, $matches)) {
             // creates a key=>val array, but the key is lowercased
+            $validLabels = $this->getValidLabels($repository);
             $validLabels = array_combine(
                 array_map(function($s) {
                     return strtolower($s);
-                }, $this->getValidLabels()),
-                $this->getValidLabels()
+                }, $validLabels),
+                $validLabels
             );
 
             foreach ($matches['labels'] as $label) {
@@ -100,25 +102,9 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         return $labels;
     }
 
-    /**
-     * TODO: get valid labels from the repository via GitHub API.
-     */
-    private function getValidLabels()
+    private function getValidLabels(Repository $repository)
     {
-        $realLabels = array(
-            'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'ClassLoader',
-            'Config', 'Console', 'Critical', 'CssSelector', 'Debug', 'DebugBundle',
-            'DependencyInjection', 'Deprecation', 'Doctrine', 'DoctrineBridge',
-            'DomCrawler', 'Dotenv', 'Drupal related', 'DX', 'Easy Pick', 'Enhancement',
-            'ErrorHandler', 'ErrorRenderer', 'EventDispatcher', 'ExpressionLanguage', 'Feature', 'Filesystem',
-            'Finder', 'Form', 'FrameworkBundle', 'HttpClient', 'HttpFoundation', 'HttpKernel',
-            'Inflector', 'Intl', 'Ldap', 'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'OptionsResolver',
-            'PhpUnitBridge', 'Process', 'PropertyAccess', 'PropertyInfo', 'Ready',
-            'RFC', 'Routing', 'Security', 'SecurityBundle', 'Serializer',
-            'Stopwatch', 'Templating', 'Translator', 'TwigBridge', 'TwigBundle',
-            'Unconfirmed', 'Validator', 'VarDumper', 'WebProfilerBundle', 'WebServerBundle',
-            'Workflow', 'Yaml',
-        );
+        $realLabels = $this->labelsApi->getRepoLabels($repository);
 
         return array_merge(
             $realLabels,

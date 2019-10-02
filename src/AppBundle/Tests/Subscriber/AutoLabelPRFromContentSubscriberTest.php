@@ -38,6 +38,10 @@ class AutoLabelPRFromContentSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function testAutoLabel($prTitle, $prBody, array $expectedNewLabels)
     {
+        $this->labelsApi->method('getRepoLabels')
+            ->with($this->repository)
+            ->willReturn(['Asset', 'BC Break', 'Bug', 'Feature', 'Deprecation', 'DependencyInjection']);
+
         $this->labelsApi->expects($this->once())
             ->method('addIssueLabels')
             ->with(1234, $expectedNewLabels, $this->repository)
