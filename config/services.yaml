@@ -1,0 +1,121 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    # point to the main symfony repositories
+    repositories:
+        symfony/symfony:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.status_change_by_review_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+            # secret: change_me
+
+        symfony/symfony-docs:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+                - app.subscriber.status_change_by_review_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+            # secret: %symfony_docs_secret%
+
+        # used in a functional test
+        weaverryan/symfony:
+            subscribers:
+                - app.subscriber.status_change_by_comment_subscriber
+                - app.subscriber.status_change_on_push_subscriber
+                - app.subscriber.status_change_by_review_subscriber
+                - app.subscriber.needs_review_new_pr_subscriber
+                - app.subscriber.bug_label_new_issue_subscriber
+                - app.subscriber.auto_label_pr_from_content_subscriber
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    Github\Client:
+        arguments: []
+        calls:
+            - method: authenticate
+              arguments:
+                  - http_token
+                  - '%env(GITHUB_TOKEN)%'
+
+    Github\Api\Issue:
+        factory: ['@Github\Client', api]
+        arguments: [issue]
+
+    Github\Api\Issue\Labels:
+        factory: ['@Github\Api\Issue', labels]
+
+    App\Issues\GitHub\CachedLabelsApi:
+        arguments: ['@Github\Api\Issue\Labels']
+
+    App\Issues\GitHub\GitHubStatusApi:
+        arguments: ['@App\Issues\GitHub\CachedLabelsApi', '@logger']
+
+    App\Issues\StatusApi: '@App\Issues\GitHub\GitHubStatusApi'
+
+    App\Repository\Provider\InMemoryRepositoryProvider:
+        arguments: [ '%repositories%' ]
+
+    app.subscriber.status_change_by_comment_subscriber:
+        class: App\Subscriber\StatusChangeByCommentSubscriber
+        arguments:
+            - '@App\Issues\GitHub\GitHubStatusApi'
+            - '@logger'
+        public: true
+
+    app.subscriber.status_change_on_push_subscriber:
+        class: App\Subscriber\StatusChangeOnPushSubscriber
+        arguments:
+            - '@App\Issues\GitHub\GitHubStatusApi'
+        public: true
+
+    app.subscriber.needs_review_new_pr_subscriber:
+        class: App\Subscriber\NeedsReviewNewPRSubscriber
+        arguments:
+            - '@App\Issues\GitHub\GitHubStatusApi'
+        public: true
+
+    app.subscriber.bug_label_new_issue_subscriber:
+        class: App\Subscriber\BugLabelNewIssueSubscriber
+        arguments:
+            - '@App\Issues\GitHub\GitHubStatusApi'
+        public: true
+
+    app.subscriber.auto_label_pr_from_content_subscriber:
+        class: App\Subscriber\AutoLabelPRFromContentSubscriber
+        arguments:
+            - '@App\Issues\GitHub\CachedLabelsApi'
+        public: true
+
+    app.subscriber.status_change_by_review_subscriber:
+        class: App\Subscriber\StatusChangeByReviewSubscriber
+        arguments:
+            - '@App\Issues\GitHub\GitHubStatusApi'
+            - '@logger'
+        public: true
