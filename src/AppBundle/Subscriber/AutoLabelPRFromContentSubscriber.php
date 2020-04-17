@@ -106,18 +106,19 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
     private function getValidLabels()
     {
         $realLabels = array(
-            'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'ClassLoader',
-            'Config', 'Console', 'Critical', 'CssSelector', 'Debug', 'DebugBundle',
-            'DependencyInjection', 'Deprecation', 'Doctrine', 'DoctrineBridge',
-            'DomCrawler', 'Dotenv', 'Drupal related', 'DX', 'Easy Pick', 'Enhancement',
-            'ErrorHandler', 'ErrorRenderer', 'EventDispatcher', 'ExpressionLanguage', 'Feature', 'Filesystem',
-            'Finder', 'Form', 'FrameworkBundle', 'HttpClient', 'HttpFoundation', 'HttpKernel',
-            'Inflector', 'Intl', 'Ldap', 'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'OptionsResolver',
-            'PhpUnitBridge', 'Process', 'PropertyAccess', 'PropertyInfo', 'Ready',
-            'RFC', 'Routing', 'Security', 'SecurityBundle', 'Serializer',
-            'Stopwatch', 'Templating', 'Translator', 'TwigBridge', 'TwigBundle',
-            'Unconfirmed', 'Validator', 'VarDumper', 'WebProfilerBundle', 'WebServerBundle',
-            'Workflow', 'Yaml',
+            'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'Config', 'Console',
+            'Contracts', 'Critical', 'CssSelector', 'Debug', 'DebugBundle', 'DependencyInjection',
+            'Deprecation', 'Doctrine', 'DoctrineBridge', 'DomCrawler', 'Dotenv',
+            'DX', 'Enhancement', 'ErrorHandler', 'EventDispatcher', 'ExpressionLanguage',
+            'Feature', 'Filesystem', 'Finder', 'Form', 'FrameworkBundle', 'Hack Day',
+            'HttpClient', 'HttpFoundation', 'HttpKernel', 'Inflector', 'Intl', 'Ldap',
+            'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'Notifier',
+            'OptionsResolver', 'Performance', 'PhpUnitBridge', 'Process', 'PropertyAccess',
+            'PropertyInfo', 'ProxyManagerBridge', 'RFC', 'Routing', 'Security',
+            'SecurityBundle', 'Serializer', 'Stopwatch', 'String', 'Templating',
+            'Translator', 'TwigBridge', 'TwigBundle', 'Uid', 'Validator', 'VarDumper',
+            'VarExporter', 'WebLink', 'WebProfilerBundle', 'WebServerBundle', 'Workflow',
+            'Yaml',
         );
 
         return array_merge(
