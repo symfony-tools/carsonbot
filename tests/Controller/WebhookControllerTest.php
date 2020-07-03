@@ -2,16 +2,38 @@
 
 namespace App\Tests\Controller;
 
+use App\Issues\StatusApi;
+use App\Repository\Provider\RepositoryProviderInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class WebhookControllerTest extends WebTestCase
 {
+    private $client;
+
+    public function setup()
+    {
+        if ($this->client) {
+            return;
+        }
+
+        $this->client = $this->createClient();
+        $repository = self::$container->get(RepositoryProviderInterface::class);
+        $statusApi = self::$container->get(StatusApi::class);
+
+        // the labels need to be off this issue for one test to pass
+        $statusApi->setIssueStatus(
+            5,
+            null,
+            $repository->getRepository('weaverryan/symfony')
+        );
+    }
+
     /**
      * @dataProvider getTests
      */
     public function testIssueComment($eventHeader, $payloadFilename, $expectedResponse)
     {
-        $client = $this->createClient();
+        $client = $this->client;
         $body = file_get_contents(__DIR__.'/../webhook_examples/'.$payloadFilename);
         $client->request('POST', '/webhooks/github', [], [], ['HTTP_X-Github-Event' => $eventHeader], $body);
         $response = $client->getResponse();
@@ -36,7 +58,7 @@ class WebhookControllerTest extends WebTestCase
                 'pull_request.opened.json',
                 ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Bug']],
             ],
-            'On issue labeled "bug"' => [
+            'On issue labeled bug' => [
                 'issues',
                 'issues.labeled.bug.json',
                 ['issue' => 5, 'status_change' => 'needs_review'],
