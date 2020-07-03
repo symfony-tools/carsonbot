@@ -30,8 +30,6 @@ class BugLabelNewIssueSubscriber implements EventSubscriberInterface
         $data = $event->getData();
         $repository = $event->getRepository();
         if ('labeled' !== $action = $data['action']) {
-            $event->setResponseData(array('unsupported_action' => $action));
-
             return;
         }
 

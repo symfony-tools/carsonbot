@@ -81,6 +81,10 @@ class GitHubRequestHandler
 
         $responseData = $event->getResponseData();
 
+        if (empty($responseData)) {
+            $responseData['unsupported_action'] = $eventName;
+        }
+
         return $responseData;
     }
 

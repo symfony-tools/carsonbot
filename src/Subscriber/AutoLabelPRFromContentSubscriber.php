@@ -36,8 +36,6 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
     {
         $data = $event->getData();
         if ('opened' !== $action = $data['action']) {
-            $event->setResponseData(array('unsupported_action' => $action));
-
             return;
         }
 

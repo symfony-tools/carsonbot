@@ -67,7 +67,6 @@ class NeedsReviewNewPRSubscriberTest extends TestCase
 
         $responseData = $event->getResponseData();
 
-        $this->assertCount(1, $responseData);
-        $this->assertSame('close', $responseData['unsupported_action']);
+        $this->assertEmpty($responseData);
     }
 }

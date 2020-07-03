@@ -27,8 +27,6 @@ class NeedsReviewNewPRSubscriber implements EventSubscriberInterface
         $data = $event->getData();
         $repository = $event->getRepository();
         if ('opened' !== $action = $data['action']) {
-            $event->setResponseData(array('unsupported_action' => $action));
-
             return;
         }
 

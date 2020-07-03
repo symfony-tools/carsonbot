@@ -91,8 +91,7 @@ class StatusChangeOnPushSubscriberTest extends TestCase
 
         $responseData = $event->getResponseData();
 
-        $this->assertCount(1, $responseData);
-        $this->assertSame('labeled', $responseData['unsupported_action']);
+        $this->assertEmpty($responseData);
     }
 
     public function testWipPullRequest()

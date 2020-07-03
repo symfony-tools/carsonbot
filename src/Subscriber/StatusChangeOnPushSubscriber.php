@@ -27,8 +27,6 @@ class StatusChangeOnPushSubscriber implements EventSubscriberInterface
     {
         $data = $event->getData();
         if ('synchronize' !== $data['action']) {
-            $event->setResponseData(array('unsupported_action' => $data['action']));
-
             return;
         }
 

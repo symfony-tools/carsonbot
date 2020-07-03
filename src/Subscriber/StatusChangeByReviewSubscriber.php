@@ -33,8 +33,6 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
     {
         $data = $event->getData();
         if ('submitted' !== $data['action']) {
-            $event->setResponseData(array('unsupported_action' => $data['action']));
-
             return;
         }
 
@@ -82,8 +80,6 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
     {
         $data = $event->getData();
         if ('review_requested' !== $data['action']) {
-            $event->setResponseData(array('unsupported_action' => $data['action']));
-
             return;
         }
 
