@@ -20,57 +20,35 @@ class Repository
     private $name;
 
     /**
-     * An array of subscriber service ids.
-     *
-     * @var array
-     */
-    private $subscribers;
-
-    /**
      * The webhook secret used by GitHub.
      *
      * @var string
      */
     private $secret;
 
-    public function __construct($vendor, $name, array $subscribers, $secret)
+    public function __construct(string $vendor, string $name, ?string $secret = null)
     {
         $this->vendor = $vendor;
         $this->name = $name;
-        $this->subscribers = $subscribers;
         $this->secret = $secret;
     }
 
-    /**
-     * @return string
-     */
-    public function getVendor()
+    public function getVendor(): string
     {
         return $this->vendor;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getSubscribers()
-    {
-        return $this->subscribers;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSecret()
+    public function getSecret(): ?string
     {
         return $this->secret;
     }
 
-    public function getNeedsReviewUrl()
+    public function getNeedsReviewUrl(): string
     {
         return sprintf(
             'https://github.com/%s/%s/labels/%s',
@@ -80,8 +58,13 @@ class Repository
         );
     }
 
-    public function getFullName()
+    public function getFullName(): string
     {
         return sprintf('%s/%s', $this->getVendor(), $this->getName());
+    }
+
+    public function __toString(): string
+    {
+        return $this->getFullName();
     }
 }

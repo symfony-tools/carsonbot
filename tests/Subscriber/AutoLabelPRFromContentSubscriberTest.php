@@ -29,7 +29,7 @@ class AutoLabelPRFromContentSubscriberTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->autoLabelSubscriber = new AutoLabelPRFromContentSubscriber($this->labelsApi);
-        $this->repository = new Repository('weaverryan', 'symfony', [], null);
+        $this->repository = new Repository('weaverryan', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber($this->autoLabelSubscriber);

@@ -20,21 +20,10 @@ class InMemoryRepositoryProvider implements RepositoryProviderInterface
 
             list($vendorName, $repositoryName) = explode('/', $repositoryFullName);
 
-            if (!isset($repositoryData['subscribers'])) {
-                throw new \InvalidArgumentException(sprintf('The repository %s is missing a subscribers key!', $repositoryFullName));
-            }
-
-            if (empty($repositoryData['subscribers'])) {
-                throw new \InvalidArgumentException(sprintf('The repository "%s" has no subscribers configured.', $repositoryFullName));
-            }
-
-            $secret = isset($repositoryData['secret']) ? $repositoryData['secret'] : null;
-
             $this->addRepository(new Repository(
                 $vendorName,
                 $repositoryName,
-                $repositoryData['subscribers'],
-                $secret
+                $repositoryData['secret'] ?? null
             ));
         }
     }
@@ -43,7 +32,7 @@ class InMemoryRepositoryProvider implements RepositoryProviderInterface
     {
         $repository = strtolower($repositoryName);
 
-        return isset($this->repositories[$repository]) ? $this->repositories[$repository] : null;
+        return $this->repositories[$repository] ?? null;
     }
 
     public function getAllRepositories()

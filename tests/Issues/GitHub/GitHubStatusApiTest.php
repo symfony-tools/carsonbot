@@ -46,7 +46,6 @@ class GitHubStatusApiTest extends TestCase
         $this->repository = new Repository(
             self::USER_NAME,
             self::REPO_NAME,
-            [],
             null
         );
     }

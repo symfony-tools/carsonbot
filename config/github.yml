@@ -1,67 +1,41 @@
-# listener services that you can opt into for a repository
 services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: false
 
-    app.subscriber.status_change_by_comment_subscriber:
-        class: App\Subscriber\StatusChangeByCommentSubscriber
-        public: true
-
-    app.subscriber.status_change_on_push_subscriber:
-        class: App\Subscriber\StatusChangeOnPushSubscriber
-        public: true
-
-    app.subscriber.needs_review_new_pr_subscriber:
-        class: App\Subscriber\NeedsReviewNewPRSubscriber
-        public: true
-
-    app.subscriber.milestone_new_pr_subscriber:
-        class: App\Subscriber\MilestoneNewPRSubscriber
-        public: true
-
-    app.subscriber.bug_label_new_issue_subscriber:
-        class: App\Subscriber\BugLabelNewIssueSubscriber
-        public: true
-
-    app.subscriber.auto_label_pr_from_content_subscriber:
-        class: App\Subscriber\AutoLabelPRFromContentSubscriber
-        public: true
-
-    app.subscriber.status_change_by_review_subscriber:
-        class: App\Subscriber\StatusChangeByReviewSubscriber
-        public: true
+    App\Subscriber\:
+        resource: '../src/Subscriber/*'
 
 parameters:
+    env(SYMFONY_DOCS_SECRET): ''
+    env(SYMFONY_SECRET): ''
     # point to the main symfony repositories
     repositories:
         symfony/symfony:
             subscribers:
-                - app.subscriber.status_change_by_comment_subscriber
-                - app.subscriber.status_change_by_review_subscriber
-                - app.subscriber.needs_review_new_pr_subscriber
-                - app.subscriber.bug_label_new_issue_subscriber
-                - app.subscriber.auto_label_pr_from_content_subscriber
-                - app.subscriber.milestone_new_pr_subscriber
-            # secret: change_me
+                - 'App\Subscriber\StatusChangeByCommentSubscriber'
+                - 'App\Subscriber\StatusChangeByReviewSubscriber'
+                - 'App\Subscriber\NeedsReviewNewPRSubscriber'
+                - 'App\Subscriber\BugLabelNewIssueSubscriber'
+                - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+            secret: '%env(SYMFONY_SECRET)%'
 
         symfony/symfony-docs:
             subscribers:
-                - app.subscriber.status_change_by_comment_subscriber
-                - app.subscriber.status_change_on_push_subscriber
-                - app.subscriber.status_change_by_review_subscriber
-                - app.subscriber.needs_review_new_pr_subscriber
-                - app.subscriber.bug_label_new_issue_subscriber
-                - app.subscriber.auto_label_pr_from_content_subscriber
-                - app.subscriber.milestone_new_pr_subscriber
-            # secret: %symfony_docs_secret%
+                - 'App\Subscriber\StatusChangeByCommentSubscriber'
+                - 'App\Subscriber\StatusChangeOnPushSubscriber'
+                - 'App\Subscriber\StatusChangeByReviewSubscriber'
+                - 'App\Subscriber\NeedsReviewNewPRSubscriber'
+                - 'App\Subscriber\BugLabelNewIssueSubscriber'
+                - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+            secret: '%env(SYMFONY_DOCS_SECRET)%'
 
         # used in a functional test
         weaverryan/symfony:
             subscribers:
-                - app.subscriber.status_change_by_comment_subscriber
-                - app.subscriber.status_change_on_push_subscriber
-                - app.subscriber.status_change_by_review_subscriber
-                - app.subscriber.needs_review_new_pr_subscriber
-                - app.subscriber.bug_label_new_issue_subscriber
-                - app.subscriber.auto_label_pr_from_content_subscriber
-                - app.subscriber.milestone_new_pr_subscriber
+                - 'App\Subscriber\StatusChangeByCommentSubscriber'
+                - 'App\Subscriber\StatusChangeOnPushSubscriber'
+                - 'App\Subscriber\StatusChangeByReviewSubscriber'
+                - 'App\Subscriber\NeedsReviewNewPRSubscriber'
+                - 'App\Subscriber\BugLabelNewIssueSubscriber'
+                - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
