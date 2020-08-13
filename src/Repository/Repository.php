@@ -62,9 +62,4 @@ class Repository
     {
         return sprintf('%s/%s', $this->getVendor(), $this->getName());
     }
-
-    public function __toString(): string
-    {
-        return $this->getFullName();
-    }
 }

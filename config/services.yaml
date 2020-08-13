@@ -1,5 +1,33 @@
-imports:
-    - { resource: github.yml }
+parameters:
+    repositories:
+        symfony/symfony:
+            subscribers:
+                - 'App\Subscriber\StatusChangeByCommentSubscriber'
+                - 'App\Subscriber\StatusChangeByReviewSubscriber'
+                - 'App\Subscriber\NeedsReviewNewPRSubscriber'
+                - 'App\Subscriber\BugLabelNewIssueSubscriber'
+                - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+            secret: '%env(SYMFONY_SECRET)%'
+
+        symfony/symfony-docs:
+            subscribers:
+                - 'App\Subscriber\StatusChangeByCommentSubscriber'
+                - 'App\Subscriber\StatusChangeOnPushSubscriber'
+                - 'App\Subscriber\StatusChangeByReviewSubscriber'
+                - 'App\Subscriber\NeedsReviewNewPRSubscriber'
+                - 'App\Subscriber\BugLabelNewIssueSubscriber'
+                - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+            secret: '%env(SYMFONY_DOCS_SECRET)%'
+
+        # used in a functional test
+        weaverryan/symfony:
+            subscribers:
+                - 'App\Subscriber\StatusChangeByCommentSubscriber'
+                - 'App\Subscriber\StatusChangeOnPushSubscriber'
+                - 'App\Subscriber\StatusChangeByReviewSubscriber'
+                - 'App\Subscriber\NeedsReviewNewPRSubscriber'
+                - 'App\Subscriber\BugLabelNewIssueSubscriber'
+                - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
 
 services:
     _defaults:
@@ -13,6 +41,10 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\Subscriber\:
+        resource: '../src/Subscriber/*'
+        autoconfigure: false
 
     Github\Api\Issue:
         factory: ['@Github\Client', api]
