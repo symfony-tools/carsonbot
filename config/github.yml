@@ -15,6 +15,10 @@ services:
         class: App\Subscriber\NeedsReviewNewPRSubscriber
         public: true
 
+    app.subscriber.milestone_new_pr_subscriber:
+        class: App\Subscriber\MilestoneNewPRSubscriber
+        public: true
+
     app.subscriber.bug_label_new_issue_subscriber:
         class: App\Subscriber\BugLabelNewIssueSubscriber
         public: true
@@ -37,6 +41,7 @@ parameters:
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.milestone_new_pr_subscriber
             # secret: change_me
 
         symfony/symfony-docs:
@@ -47,6 +52,7 @@ parameters:
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.milestone_new_pr_subscriber
             # secret: %symfony_docs_secret%
 
         # used in a functional test
@@ -58,3 +64,4 @@ parameters:
                 - app.subscriber.needs_review_new_pr_subscriber
                 - app.subscriber.bug_label_new_issue_subscriber
                 - app.subscriber.auto_label_pr_from_content_subscriber
+                - app.subscriber.milestone_new_pr_subscriber
