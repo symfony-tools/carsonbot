@@ -8,7 +8,6 @@ use Github\Api\Issue\Labels;
 use Github\Api\Issue\Milestones;
 
 /**
- *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
 class MilestonesApi
@@ -50,7 +49,7 @@ class MilestonesApi
         return $this->cache[$key];
     }
 
-    public function updateMilestone(Repository $repository, int $issueNumber,  string $milestoneName)
+    public function updateMilestone(Repository $repository, int $issueNumber, string $milestoneName)
     {
         $milestoneNumber = null;
         foreach ($this->getMilestones($repository) as $milestone) {

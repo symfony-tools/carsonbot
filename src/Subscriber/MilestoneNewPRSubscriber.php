@@ -23,7 +23,7 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Adds a "Needs Review" label to new PRs.
+     * Sets milestone on PRs that target non-default branch.
      *
      * @param GitHubEvent $event
      */
