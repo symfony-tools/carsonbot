@@ -58,6 +58,11 @@ class WebhookControllerTest extends WebTestCase
                 'pull_request.opened.json',
                 ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Bug']],
             ],
+            'On pull request opened with target branch' => [
+                'pull_request',
+                'pull_request.opened_target_branch.json',
+                ['pull_request' => 5, 'status_change' => 'needs_review', 'pr_labels' => ['Bug'], 'milestone'=>'4.4'],
+            ],
             'On issue labeled bug' => [
                 'issues',
                 'issues.labeled.bug.json',

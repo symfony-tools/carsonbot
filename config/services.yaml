@@ -37,9 +37,14 @@ services:
     Github\Api\Issue\Labels:
         factory: ['@Github\Api\Issue', labels]
 
+    Github\Api\Issue\Milestones:
+        factory: ['@Github\Api\Issue', milestones]
+
     App\Issues\GitHub\CachedLabelsApi: ~
 
     App\Issues\GitHub\GitHubStatusApi: ~
+
+    App\Issues\GitHub\MilestonesApi: ~
 
     App\Issues\StatusApi:
         alias: App\Issues\GitHub\GitHubStatusApi
