@@ -33,7 +33,7 @@
       "type": "User",
       "site_admin": false
     },
-    "body": "| Q             | A\r\n| ------------- | ---\r\n| Branch?       | 4.4\r\n| Bug fix?      | true\r\n| New feature?  | yes/no <!-- don't forget to update src/**/CHANGELOG.md files -->\r\n| BC breaks?    | no     <!-- see https://symfony.com/bc -->\r\n| Deprecations? | yes/no <!-- don't forget to update UPGRADE-*.md and src/**/CHANGELOG.md files -->\r\n| Tests pass?   | yes    <!-- please add some, will be required by reviewers -->\r\n| Fixed tickets | #...   <!-- #-prefixed issue number(s), if any -->\r\n| License       | MIT\r\n| Doc PR        | symfony/symfony-docs#... <!-- required for new features -->\r\n\r\ntest\r\n",
+    "body": "Testing PR - | Bug fix? | yes",
     "created_at": "2020-10-26T17:15:31Z",
     "updated_at": "2020-10-26T17:15:31Z",
     "closed_at": null,
