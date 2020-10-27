@@ -70,7 +70,7 @@ class MilestonesApi
     /**
      * @return bool
      */
-    public function exits(Repository $repository, string $milestoneName)
+    public function exists(Repository $repository, string $milestoneName)
     {
         foreach ($this->getMilestones($repository) as $milestone) {
             if ($milestone['name'] === $milestoneName) {

@@ -31,7 +31,7 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
     {
         $data = $event->getData();
         $repository = $event->getRepository();
-        if ('opened' !== $action = $data['action']) {
+        if ('opened' !== $data['action']) {
             return;
         }
 
@@ -40,7 +40,7 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (!$this->milestonesApi->exits($repository, $targetBranch)) {
+        if (!$this->milestonesApi->exists($repository, $targetBranch)) {
             return;
         }
 

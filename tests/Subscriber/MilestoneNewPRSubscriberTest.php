@@ -39,7 +39,7 @@ class MilestoneNewPRSubscriberTest extends TestCase
     public function testOnPullRequestOpen()
     {
         $this->milestonesApi->expects($this->once())
-            ->method('exits')
+            ->method('exists')
             ->with($this->repository, '4.4')
             ->willReturn(true);
 
@@ -90,7 +90,7 @@ class MilestoneNewPRSubscriberTest extends TestCase
     public function testOnPullRequestOpenMilestoneNotExist()
     {
         $this->milestonesApi->expects($this->once())
-            ->method('exits')
+            ->method('exists')
             ->with($this->repository, '4.4')
             ->willReturn(false);
 
