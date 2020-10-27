@@ -53,7 +53,7 @@ class MilestonesApi
     {
         $milestoneNumber = null;
         foreach ($this->getMilestones($repository) as $milestone) {
-            if ($milestone['name'] === $milestoneName) {
+            if ($milestone['title'] === $milestoneName) {
                 $milestoneNumber = $milestone['number'];
             }
         }
@@ -73,7 +73,7 @@ class MilestonesApi
     public function exists(Repository $repository, string $milestoneName)
     {
         foreach ($this->getMilestones($repository) as $milestone) {
-            if ($milestone['name'] === $milestoneName) {
+            if ($milestone['title'] === $milestoneName) {
                 return true;
             }
         }
