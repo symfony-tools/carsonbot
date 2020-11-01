@@ -22,9 +22,9 @@ class WebhookControllerTest extends WebTestCase
 
         // the labels need to be off this issue for one test to pass
         $statusApi->setIssueStatus(
-            5,
+            2,
             null,
-            $repository->getRepository('weaverryan/symfony')
+            $repository->getRepository('carsonbot-playground/symfony')
         );
     }
 
@@ -61,17 +61,17 @@ class WebhookControllerTest extends WebTestCase
             'On pull request opened with target branch' => [
                 'pull_request',
                 'pull_request.opened_target_branch.json',
-                ['pull_request' => 5, 'status_change' => 'needs_review', 'pr_labels' => ['Bug'], 'milestone' => '4.4'],
+                ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Bug'], 'milestone' => '4.4'],
             ],
             'On issue labeled bug' => [
                 'issues',
                 'issues.labeled.bug.json',
-                ['issue' => 5, 'status_change' => 'needs_review'],
+                ['issue' => 2, 'status_change' => 'needs_review'],
             ],
             'On issue labeled "feature"' => [
                 'issues',
                 'issues.labeled.feature.json',
-                ['issue' => 5, 'status_change' => null],
+                ['issue' => 2, 'status_change' => null],
             ],
         ];
     }

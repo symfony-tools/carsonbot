@@ -3,7 +3,7 @@ services:
         arguments:
             - '@Github\HttpClient\Builder'
         calls:
-            - ['authenticate', ['%env(GITHUB_TOKEN)%', 'http_token']]
+            - ['authenticate', ['%env(GITHUB_TOKEN)%', null, 'access_token_header']]
 
     Github\HttpClient\Builder:
         arguments:
