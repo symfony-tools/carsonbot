@@ -42,6 +42,8 @@ abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterfac
             // Second subpattern = first status character
             return static::$triggerWordToStatus[strtolower(end($matches[1]))];
         }
+
+        return null;
     }
 }
 
