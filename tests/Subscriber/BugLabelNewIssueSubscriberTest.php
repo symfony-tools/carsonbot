@@ -5,11 +5,11 @@ namespace App\Tests\Subscriber;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Issues\Status;
+use App\Issues\StatusApi;
 use App\Repository\Repository;
 use App\Subscriber\BugLabelNewIssueSubscriber;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use App\Issues\StatusApi;
 
 class BugLabelNewIssueSubscriberTest extends TestCase
 {
@@ -23,7 +23,6 @@ class BugLabelNewIssueSubscriberTest extends TestCase
      * @var EventDispatcher
      */
     private $dispatcher;
-
 
     protected function setUp()
     {

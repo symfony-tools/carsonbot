@@ -5,12 +5,12 @@ namespace App\Tests\Subscriber;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Issues\Status;
+use App\Issues\StatusApi;
 use App\Repository\Repository;
 use App\Subscriber\StatusChangeByReviewSubscriber;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use App\Issues\StatusApi;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class StatusChangeByReviewSubscriberTest extends TestCase
 {
@@ -137,7 +137,7 @@ class StatusChangeByReviewSubscriberTest extends TestCase
 
         $event = new GitHubEvent([
             'action' => 'review_requested',
-            'pull_request' => ['number' => 1234]
+            'pull_request' => ['number' => 1234],
         ], $this->repository);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);

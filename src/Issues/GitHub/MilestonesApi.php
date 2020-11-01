@@ -4,7 +4,6 @@ namespace App\Issues\GitHub;
 
 use App\Repository\Repository;
 use Github\Api\Issue;
-use Github\Api\Issue\Labels;
 use Github\Api\Issue\Milestones;
 
 /**
@@ -58,7 +57,7 @@ class MilestonesApi
             }
         }
 
-        if ($milestoneNumber === null) {
+        if (null === $milestoneNumber) {
             throw new \LogicException(\sprintf('Milestone "%s" does not exist', $milestoneName));
         }
 

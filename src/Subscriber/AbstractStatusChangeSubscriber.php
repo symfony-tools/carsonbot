@@ -28,7 +28,7 @@ abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterfac
      *
      * @param string $body
      *
-     * @return null|string
+     * @return string|null
      */
     protected function parseStatusFromText($body)
     {
@@ -46,4 +46,3 @@ abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterfac
         return null;
     }
 }
-

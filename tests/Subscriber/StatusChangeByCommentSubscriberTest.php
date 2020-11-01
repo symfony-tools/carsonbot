@@ -5,12 +5,12 @@ namespace App\Tests\Subscriber;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Issues\Status;
+use App\Issues\StatusApi;
 use App\Repository\Repository;
 use App\Subscriber\StatusChangeByCommentSubscriber;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use App\Issues\StatusApi;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class StatusChangeByCommentSubscriberTest extends TestCase
 {

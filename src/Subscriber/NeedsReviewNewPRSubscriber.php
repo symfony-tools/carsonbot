@@ -19,8 +19,6 @@ class NeedsReviewNewPRSubscriber implements EventSubscriberInterface
 
     /**
      * Adds a "Needs Review" label to new PRs.
-     *
-     * @param GitHubEvent $event
      */
     public function onPullRequest(GitHubEvent $event)
     {
@@ -35,16 +33,16 @@ class NeedsReviewNewPRSubscriber implements EventSubscriberInterface
 
         $this->statusApi->setIssueStatus($pullRequestNumber, $newStatus, $repository);
 
-        $event->setResponseData(array(
+        $event->setResponseData([
             'pull_request' => $pullRequestNumber,
             'status_change' => $newStatus,
-        ));
+        ]);
     }
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',
-        );
+        ];
     }
 }

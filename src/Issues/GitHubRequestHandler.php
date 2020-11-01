@@ -33,8 +33,6 @@ class GitHubRequestHandler
     }
 
     /**
-     * @param Request $request
-     *
      * @return array The response data
      */
     public function handle(Request $request)

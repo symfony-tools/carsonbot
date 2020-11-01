@@ -32,7 +32,7 @@ class StatusChangeOnPushSubscriber implements EventSubscriberInterface
 
         $repository = $event->getRepository();
         $pullRequestNumber = $data['pull_request']['number'];
-        $responseData = array('pull_request' => $pullRequestNumber);
+        $responseData = ['pull_request' => $pullRequestNumber];
         $currentStatus = $this->statusApi->getIssueStatus($pullRequestNumber, $repository);
         $pullRequestTitle = $data['pull_request']['title'];
 
@@ -53,8 +53,8 @@ class StatusChangeOnPushSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',
-        );
+        ];
     }
 }
