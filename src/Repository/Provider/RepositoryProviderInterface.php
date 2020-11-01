@@ -12,7 +12,7 @@ interface RepositoryProviderInterface
     /**
      * @param string $repositoryName e.g. symfony/symfony-docs
      *
-     * @return Repository
+     * @return Repository|null
      */
     public function getRepository($repositoryName);
 

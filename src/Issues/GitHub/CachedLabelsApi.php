@@ -16,7 +16,7 @@ class CachedLabelsApi
     private $labelsApi;
 
     /**
-     * @var string[][]
+     * @var array<array-key, array<array-key, bool>>
      */
     private $labelCache = [];
 

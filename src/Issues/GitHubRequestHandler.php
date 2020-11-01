@@ -7,6 +7,7 @@ use App\Repository\Provider\RepositoryProviderInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
@@ -39,7 +40,7 @@ class GitHubRequestHandler
      */
     public function handle(Request $request)
     {
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode((string) $request->getContent(), true);
         if (null === $data) {
             throw new BadRequestHttpException('Invalid JSON body!');
         }
@@ -67,7 +68,12 @@ class GitHubRequestHandler
         }
 
         foreach ($repository->getSubscribers() as $subscriberId) {
-            $this->dispatcher->addSubscriber($this->container->get($subscriberId));
+            $subscriber = $this->container->get($subscriberId);
+            if (!$subscriber instanceof EventSubscriberInterface) {
+                throw new \LogicException(sprintf('Service "%s" is not an instance of "%s"', $subscriberId, EventSubscriberInterface::class));
+            }
+
+            $this->dispatcher->addSubscriber($subscriber);
         }
 
         $event = new GitHubEvent($data, $repository);
@@ -76,7 +82,7 @@ class GitHubRequestHandler
         try {
             $this->dispatcher->dispatch($event, 'github.'.$eventName);
         } catch (\Exception $e) {
-            throw new \RuntimeException(sprintf('Failed dispatching "%s" event for "%s" repository.', $eventName, $repository->getFullName()), 0, $e);
+            throw new \RuntimeException(sprintf('Failed dispatching "%s" event for "%s" repository.', (string) $eventName, $repository->getFullName()), 0, $e);
         }
 
         $responseData = $event->getResponseData();
