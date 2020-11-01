@@ -6,11 +6,12 @@ use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Issues\GitHub\CachedLabelsApi;
 use App\Repository\Repository;
-use App\Subscriber\AutoLabelPRFromContentSubscriber;
+use App\Subscriber\AutoLabelFromContentSubscriber;
+use App\Tests\Service\Issues\Github\FakedCachedLabelApi;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class AutoLabelPRFromContentSubscriberTest extends TestCase
+class AutoLabelFromContentSubscriberTest extends TestCase
 {
     private $autoLabelSubscriber;
 
@@ -25,20 +26,46 @@ class AutoLabelPRFromContentSubscriberTest extends TestCase
 
     protected function setUp()
     {
-        $this->labelsApi = $this->getMockBuilder(CachedLabelsApi::class)
+        $this->labelsApi = $this->getMockBuilder(FakedCachedLabelApi::class)
             ->disableOriginalConstructor()
+            ->setMethods(['addIssueLabels'])
             ->getMock();
-        $this->autoLabelSubscriber = new AutoLabelPRFromContentSubscriber($this->labelsApi);
+        $this->autoLabelSubscriber = new AutoLabelFromContentSubscriber($this->labelsApi);
         $this->repository = new Repository('weaverryan', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber($this->autoLabelSubscriber);
     }
 
+    public function testAutoLabelIssue()
+    {
+        $this->labelsApi->expects($this->once())
+            ->method('addIssueLabels')
+            ->with(1234, ['Messenger'], $this->repository)
+            ->willReturn(null);
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'issue' => [
+                'number' => 1234,
+                'title' => '[Messenger] Foobar',
+                'body' => 'Some content',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::ISSUES);
+
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['issue']);
+        $this->assertSame(['Messenger'], $responseData['issue_labels']);
+    }
+
     /**
      * @dataProvider getPRTests
      */
-    public function testAutoLabel($prTitle, $prBody, array $expectedNewLabels)
+    public function testAutoLabelPR($prTitle, $prBody, array $expectedNewLabels)
     {
         $this->labelsApi->expects($this->once())
             ->method('addIssueLabels')

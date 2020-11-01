@@ -4,6 +4,8 @@ namespace App\Issues\GitHub;
 
 use App\Repository\Repository;
 use Github\Api\Issue\Labels;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -16,13 +18,20 @@ class CachedLabelsApi
     private $labelsApi;
 
     /**
+     * In memory cache for specific issues
      * @var array<array-key, array<array-key, bool>>
      */
     private $labelCache = [];
 
-    public function __construct(Labels $labelsApi)
+    /**
+     * @var CacheInterface
+     */
+    private $cache;
+
+    public function __construct(Labels $labelsApi, CacheInterface $cache)
     {
         $this->labelsApi = $labelsApi;
+        $this->cache = $cache;
     }
 
     public function getIssueLabels($issueNumber, Repository $repository)
@@ -92,6 +101,21 @@ class CachedLabelsApi
         foreach ($labels as $label) {
             $this->addIssueLabel($issueNumber, $label, $repository);
         }
+    }
+
+
+    /**
+     * @return string[]
+     */
+    public function getAllLabelsForRepository(Repository $repository): array
+    {
+        $key = 'labels'.sha1($repository->getFullName());
+        return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
+            $labels = $this->labelsApi->all($repository->getVendor(), $repository->getName());
+            $item->expiresAfter(36000);
+
+            return array_column($labels, 'name');
+        });
     }
 
     private function getCacheKey($issueNumber, Repository $repository)

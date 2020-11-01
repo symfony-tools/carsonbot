@@ -1,0 +1,3 @@
+serivices:
+  App\Issues\GitHub\CachedLabelsApi:
+    class: App\Tests\Service\Issues\Github\FakedCachedLabelApi
