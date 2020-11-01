@@ -22,8 +22,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Download dependencies
-        run: |
-          composer update --no-interaction --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --optimize-autoloader
 
       - name: PHPStan
         uses: docker://oskarstark/phpstan-ga:0.12.48
