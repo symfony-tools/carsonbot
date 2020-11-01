@@ -7,6 +7,26 @@ services:
 
     Github\HttpClient\Builder:
         arguments:
-            - '@?Http\Client\HttpClient'
-            - '@?Http\Message\RequestFactory'
-            - '@?Http\Message\StreamFactory'
+            - '@github.httplug_client'
+            - '@Http\Message\RequestFactory'
+            - '@Http\Message\StreamFactory'
+
+    github.httplug_client:
+        class: Symfony\Component\HttpClient\HttplugClient
+        arguments:
+            - '@github.retryable_client'
+            - '@Psr\Http\Message\ResponseFactoryInterface'
+            - '@Psr\Http\Message\StreamFactoryInterface'
+
+    github.retryable_client:
+        class: Symfony\Component\HttpClient\RetryableHttpClient
+        arguments:
+            - '@http_client'
+            - '@github.retry_strategy'
+            - 2
+            - '@logger'
+
+    github.retry_strategy:
+        class: Symfony\Component\HttpClient\Retry\GenericRetryStrategy
+        arguments:
+            - [0, 404, 423, 425, 429, 500, 502, 503, 504, 507, 510]

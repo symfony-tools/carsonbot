@@ -45,20 +45,12 @@ class GitHubStatusApi implements StatusApi
         }
 
         $newLabel = null === $newStatus ? null : self::$statusToLabel[$newStatus];
-        $this->logger->info(sprintf(
-            'Fetching issue labels for issue %s, repository %s',
-            $issueNumber,
-            $repository->getFullName()
-        ));
+        $this->logger->info(sprintf('Fetching issue labels for issue %s, repository %s', $issueNumber, $repository->getFullName()));
         $currentLabels = $this->labelsApi->getIssueLabels($issueNumber, $repository);
 
-        $this->logger->info(sprintf(
-            'Fetched the following labels: %s',
-            implode(', ', $currentLabels)
-        ));
+        $this->logger->info(sprintf('Fetched the following labels: %s', implode(', ', $currentLabels)));
 
         $addLabel = true;
-
         foreach ($currentLabels as $label) {
             // Ignore non-status, except when the bug is reviewed
             // but still marked as unconfirmed.
@@ -75,23 +67,13 @@ class GitHubStatusApi implements StatusApi
             }
 
             // Remove other statuses
-            $this->logger->debug(sprintf(
-                'Removing label %s from issue %s on repository %s',
-                $label,
-                $issueNumber,
-                $repository->getFullName()
-            ));
+            $this->logger->debug(sprintf('Removing label %s from issue %s on repository %s', $label, $issueNumber, $repository->getFullName()));
             $this->labelsApi->removeIssueLabel($issueNumber, $label, $repository);
         }
 
         // Ignored if the label is already set
         if ($addLabel && $newLabel) {
-            $this->logger->debug(sprintf(
-                'Adding label "%s" to issue %s on repository %s',
-                $newLabel,
-                $issueNumber,
-                $repository->getFullName()
-            ));
+            $this->logger->debug(sprintf('Adding label "%s" to issue %s on repository %s', $newLabel, $issueNumber, $repository->getFullName()));
             $this->labelsApi->addIssueLabel($issueNumber, $newLabel, $repository);
             $this->logger->debug('Label added!');
         }
@@ -108,7 +90,7 @@ class GitHubStatusApi implements StatusApi
         }
 
         // No status set
-        return;
+        return null;
     }
 
     public static function getNeedsReviewLabel()
