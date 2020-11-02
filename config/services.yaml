@@ -6,7 +6,7 @@ parameters:
                 - 'App\Subscriber\StatusChangeByReviewSubscriber'
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
-                - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+                - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
             secret: '%env(SYMFONY_SECRET)%'
 
@@ -17,7 +17,7 @@ parameters:
                 - 'App\Subscriber\StatusChangeByReviewSubscriber'
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
-                - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+                - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
             secret: '%env(SYMFONY_DOCS_SECRET)%'
 
@@ -29,7 +29,7 @@ parameters:
                 - 'App\Subscriber\StatusChangeByReviewSubscriber'
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
-                - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+                - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
 
 services:
