@@ -61,6 +61,9 @@ services:
     Github\Api\Issue\Milestones:
         factory: ['@Github\Api\Issue', milestones]
 
+    Github\Api\Issue\Comments:
+        factory: ['@Github\Api\Issue', comments]
+
     App\Issues\StatusApi: '@App\Issues\GitHub\GitHubStatusApi'
     App\Issues\CommentsApiInterface: '@App\Issues\GitHub\GithubCommentsApi'
 
