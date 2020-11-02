@@ -5,12 +5,13 @@ namespace App\Subscriber;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Issues\GitHub\CachedLabelsApi;
+use App\Repository\Repository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Looks at new pull requests and auto-labels based on text.
  */
-class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
+class AutoLabelFromContentSubscriber implements EventSubscriberInterface
 {
     private $labelsApi;
 
@@ -35,6 +36,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         if ('opened' !== $action = $data['action']) {
             return;
         }
+        $repository = $event->getRepository();
 
         $prNumber = $data['pull_request']['number'];
         $prTitle = $data['pull_request']['title'];
@@ -42,7 +44,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         $prLabels = [];
 
         // the PR title usually contains one or more labels
-        foreach ($this->extractLabels($prTitle) as $label) {
+        foreach ($this->extractLabels($prTitle, $repository) as $label) {
             $prLabels[] = $label;
         }
 
@@ -60,7 +62,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             $prLabels[] = 'Deprecation';
         }
 
-        $this->labelsApi->addIssueLabels($prNumber, $prLabels, $event->getRepository());
+        $this->labelsApi->addIssueLabels($prNumber, $prLabels, $repository);
 
         $event->setResponseData([
             'pull_request' => $prNumber,
@@ -68,18 +70,44 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    private function extractLabels($prTitle)
+    public function onIssue(GitHubEvent $event)
+    {
+        $data = $event->getData();
+        if ('opened' !== $action = $data['action']) {
+            return;
+        }
+        $repository = $event->getRepository();
+
+        $issueNumber = $data['issue']['number'];
+        $prTitle = $data['issue']['title'];
+        $labels = [];
+
+        // the issue title usually contains one or more labels
+        foreach ($this->extractLabels($prTitle, $repository) as $label) {
+            $labels[] = $label;
+        }
+
+        $this->labelsApi->addIssueLabels($issueNumber, $labels, $repository);
+
+        $event->setResponseData([
+            'issue' => $issueNumber,
+            'issue_labels' => $labels,
+        ]);
+    }
+
+    private function extractLabels($title, Repository $repository)
     {
         $labels = [];
 
         // e.g. "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses"
-        if (preg_match_all('/\[(?P<labels>.+)\]/U', $prTitle, $matches)) {
+        if (preg_match_all('/\[(?P<labels>.+)\]/U', $title, $matches)) {
             // creates a key=>val array, but the key is lowercased
+            $allLabels = $this->labelsApi->getAllLabelsForRepository($repository);
             $validLabels = array_combine(
                 array_map(function ($s) {
                     return strtolower($s);
-                }, $this->getValidLabels()),
-                $this->getValidLabels()
+                }, $allLabels),
+                $allLabels
             );
 
             foreach ($matches['labels'] as $label) {
@@ -93,34 +121,6 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         }
 
         return $labels;
-    }
-
-    /**
-     * TODO: get valid labels from the repository via GitHub API.
-     */
-    private function getValidLabels()
-    {
-        $realLabels = [
-            'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'Config', 'Console',
-            'Contracts', 'Critical', 'CssSelector', 'Debug', 'DebugBundle', 'DependencyInjection',
-            'Deprecation', 'Doctrine', 'DoctrineBridge', 'DomCrawler', 'Dotenv',
-            'DX', 'Enhancement', 'ErrorHandler', 'EventDispatcher', 'ExpressionLanguage',
-            'Feature', 'Filesystem', 'Finder', 'Form', 'FrameworkBundle', 'Hack Day',
-            'HttpClient', 'HttpFoundation', 'HttpKernel', 'Inflector', 'Intl', 'Ldap',
-            'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'Notifier',
-            'OptionsResolver', 'Performance', 'PhpUnitBridge', 'Process', 'PropertyAccess',
-            'PropertyInfo', 'ProxyManagerBridge', 'RFC', 'Routing', 'Security',
-            'SecurityBundle', 'Serializer', 'Stopwatch', 'String', 'Templating',
-            'Translator', 'TwigBridge', 'TwigBundle', 'Uid', 'Validator', 'VarDumper',
-            'VarExporter', 'WebLink', 'WebProfilerBundle', 'WebServerBundle', 'Workflow',
-            'Yaml',
-        ];
-
-        return array_merge(
-            $realLabels,
-            // also consider the "aliases" as valid, so they are used
-            array_keys(self::$labelAliases)
-        );
     }
 
     /**
@@ -142,6 +142,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',
+            GitHubEvents::ISSUES => 'onIssue',
         ];
     }
 }

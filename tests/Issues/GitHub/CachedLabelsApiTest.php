@@ -7,6 +7,7 @@ use App\Repository\Repository;
 use Github\Api\Issue\Labels;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Cache\Adapter\NullAdapter;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -34,7 +35,7 @@ class CachedLabelsApiTest extends TestCase
         $this->backendApi = $this->getMockBuilder(Labels::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->api = new CachedLabelsApi($this->backendApi);
+        $this->api = new CachedLabelsApi($this->backendApi, new NullAdapter());
         $this->repository = new Repository(
             self::USER_NAME,
             self::REPO_NAME,
