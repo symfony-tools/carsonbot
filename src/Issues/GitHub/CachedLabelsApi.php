@@ -18,7 +18,8 @@ class CachedLabelsApi
     private $labelsApi;
 
     /**
-     * In memory cache for specific issues
+     * In memory cache for specific issues.
+     *
      * @var array<array-key, array<array-key, bool>>
      */
     private $labelCache = [];
@@ -103,13 +104,13 @@ class CachedLabelsApi
         }
     }
 
-
     /**
      * @return string[]
      */
     public function getAllLabelsForRepository(Repository $repository): array
     {
         $key = 'labels'.sha1($repository->getFullName());
+
         return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
             $labels = $this->labelsApi->all($repository->getVendor(), $repository->getName());
             $item->expiresAfter(36000);

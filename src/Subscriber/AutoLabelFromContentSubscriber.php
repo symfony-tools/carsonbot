@@ -70,9 +70,6 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    /**
-     * @param GitHubEvent $event
-     */
     public function onIssue(GitHubEvent $event)
     {
         $data = $event->getData();
@@ -83,7 +80,7 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
 
         $issueNumber = $data['issue']['number'];
         $prTitle = $data['issue']['title'];
-        $labels = array();
+        $labels = [];
 
         // the issue title usually contains one or more labels
         foreach ($this->extractLabels($prTitle, $repository) as $label) {
@@ -92,10 +89,10 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
 
         $this->labelsApi->addIssueLabels($issueNumber, $labels, $repository);
 
-        $event->setResponseData(array(
+        $event->setResponseData([
             'issue' => $issueNumber,
             'issue_labels' => $labels,
-        ));
+        ]);
     }
 
     private function extractLabels($title, Repository $repository)

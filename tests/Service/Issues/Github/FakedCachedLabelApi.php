@@ -11,7 +11,7 @@ class FakedCachedLabelApi extends CachedLabelsApi
 {
     public function getAllLabelsForRepository(Repository $repository): array
     {
-        return array(
+        return [
             'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'Config', 'Console',
             'Contracts', 'Critical', 'CssSelector', 'Debug', 'DebugBundle', 'DependencyInjection',
             'Deprecation', 'Doctrine', 'DoctrineBridge', 'DomCrawler', 'Dotenv',
@@ -25,6 +25,6 @@ class FakedCachedLabelApi extends CachedLabelsApi
             'Translator', 'TwigBridge', 'TwigBundle', 'Uid', 'Validator', 'VarDumper',
             'VarExporter', 'WebLink', 'WebProfilerBundle', 'WebServerBundle', 'Workflow',
             'Yaml',
-        );
+        ];
     }
 }

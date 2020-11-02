@@ -4,7 +4,6 @@ namespace App\Tests\Subscriber;
 
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Issues\GitHub\CachedLabelsApi;
 use App\Repository\Repository;
 use App\Subscriber\AutoLabelFromContentSubscriber;
 use App\Tests\Service\Issues\Github\FakedCachedLabelApi;
