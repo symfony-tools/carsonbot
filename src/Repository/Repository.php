@@ -22,7 +22,7 @@ class Repository
     /**
      * The webhook secret used by GitHub.
      *
-     * @var string
+     * @var string|null
      */
     private $secret;
 

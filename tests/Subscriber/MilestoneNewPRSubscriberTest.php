@@ -27,7 +27,7 @@ class MilestoneNewPRSubscriberTest extends TestCase
     {
         $this->milestonesApi = $this->createMock(MilestonesApi::class);
         $this->subscriber = new MilestoneNewPRSubscriber($this->milestonesApi);
-        $this->repository = new Repository('nyholm', 'symfony', [], null);
+        $this->repository = new Repository('nyholm', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber($this->subscriber);
