@@ -29,9 +29,6 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         $this->labelsApi = $labelsApi;
     }
 
-    /**
-     * @param GitHubEvent $event
-     */
     public function onPullRequest(GitHubEvent $event)
     {
         $data = $event->getData();
@@ -42,7 +39,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
         $prNumber = $data['pull_request']['number'];
         $prTitle = $data['pull_request']['title'];
         $prBody = $data['pull_request']['body'];
-        $prLabels = array();
+        $prLabels = [];
 
         // the PR title usually contains one or more labels
         foreach ($this->extractLabels($prTitle) as $label) {
@@ -65,21 +62,21 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
 
         $this->labelsApi->addIssueLabels($prNumber, $prLabels, $event->getRepository());
 
-        $event->setResponseData(array(
+        $event->setResponseData([
             'pull_request' => $prNumber,
             'pr_labels' => $prLabels,
-        ));
+        ]);
     }
 
     private function extractLabels($prTitle)
     {
-        $labels = array();
+        $labels = [];
 
         // e.g. "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses"
         if (preg_match_all('/\[(?P<labels>.+)\]/U', $prTitle, $matches)) {
             // creates a key=>val array, but the key is lowercased
             $validLabels = array_combine(
-                array_map(function($s) {
+                array_map(function ($s) {
                     return strtolower($s);
                 }, $this->getValidLabels()),
                 $this->getValidLabels()
@@ -103,7 +100,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
      */
     private function getValidLabels()
     {
-        $realLabels = array(
+        $realLabels = [
             'Asset', 'BC Break', 'BrowserKit', 'Bug', 'Cache', 'Config', 'Console',
             'Contracts', 'Critical', 'CssSelector', 'Debug', 'DebugBundle', 'DependencyInjection',
             'Deprecation', 'Doctrine', 'DoctrineBridge', 'DomCrawler', 'Dotenv',
@@ -117,7 +114,7 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
             'Translator', 'TwigBridge', 'TwigBundle', 'Uid', 'Validator', 'VarDumper',
             'VarExporter', 'WebLink', 'WebProfilerBundle', 'WebServerBundle', 'Workflow',
             'Yaml',
-        );
+        ];
 
         return array_merge(
             $realLabels,
@@ -143,8 +140,8 @@ class AutoLabelPRFromContentSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',
-        );
+        ];
     }
 }

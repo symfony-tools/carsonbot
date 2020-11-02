@@ -21,8 +21,6 @@ class StatusChangeByCommentSubscriber extends AbstractStatusChangeSubscriber
     /**
      * Parses the text of the comment and looks for keywords to see
      * if this should cause any status change.
-     *
-     * @param GitHubEvent $event
      */
     public function onIssueComment(GitHubEvent $event)
     {
@@ -35,10 +33,10 @@ class StatusChangeByCommentSubscriber extends AbstractStatusChangeSubscriber
             $newStatus = null;
         }
 
-        $event->setResponseData(array(
+        $event->setResponseData([
             'issue' => $issueNumber,
             'status_change' => $newStatus,
-        ));
+        ]);
 
         if (null === $newStatus) {
             return;
@@ -50,9 +48,9 @@ class StatusChangeByCommentSubscriber extends AbstractStatusChangeSubscriber
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             GitHubEvents::ISSUE_COMMENT => 'onIssueComment',
-        );
+        ];
     }
 
     private function isUserAllowedToReview(array $data)

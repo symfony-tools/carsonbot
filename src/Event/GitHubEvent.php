@@ -12,7 +12,7 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class GitHubEvent extends Event
 {
-    protected $responseData = array();
+    protected $responseData = [];
 
     private $data;
     private $repository;

@@ -9,7 +9,7 @@ use App\Repository\Repository;
  */
 class InMemoryRepositoryProvider implements RepositoryProviderInterface
 {
-    private $repositories = array();
+    private $repositories = [];
 
     public function __construct(array $repositories)
     {

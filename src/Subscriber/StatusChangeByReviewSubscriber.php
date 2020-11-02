@@ -26,8 +26,6 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
     /**
      * Sets the status based on the review state (approved/changes requested)
      * or the review body (using the Status: keyword).
-     *
-     * @param GithubEvent $event
      */
     public function onReview(GitHubEvent $event)
     {
@@ -58,10 +56,10 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
             $newStatus = null;
         }
 
-        $event->setResponseData(array(
+        $event->setResponseData([
             'pull_request' => $pullRequestNumber,
             'status_change' => $newStatus,
-        ));
+        ]);
 
         if (null === $newStatus) {
             return;
@@ -73,8 +71,6 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
 
     /**
      * Sets the status to needs review when a review is requested.
-     *
-     * @param GithubEvent $event
      */
     public function onReviewRequested(GithubEvent $event)
     {
@@ -90,18 +86,18 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
         $this->logger->debug(sprintf('Setting issue number %s to status %s', $pullRequestNumber, $newStatus));
         $this->statusApi->setIssueStatus($pullRequestNumber, $newStatus, $repository);
 
-        $event->setResponseData(array(
+        $event->setResponseData([
             'pull_request' => $pullRequestNumber,
             'status_change' => $newStatus,
-        ));
+        ]);
     }
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             GitHubEvents::PULL_REQUEST_REVIEW => 'onReview',
             GitHubEvents::PULL_REQUEST => 'onReviewRequested',
-        );
+        ];
     }
 
     private function isUserAllowedToReview(array $data)

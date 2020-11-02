@@ -22,8 +22,6 @@ class BugLabelNewIssueSubscriber implements EventSubscriberInterface
 
     /**
      * Changes "Bug" issues to "Needs Review".
-     *
-     * @param GitHubEvent $event
      */
     public function onIssues(GitHubEvent $event)
     {
@@ -33,7 +31,7 @@ class BugLabelNewIssueSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $responseData = array('issue' => $issueNumber = $data['issue']['number']);
+        $responseData = ['issue' => $issueNumber = $data['issue']['number']];
         // Ignore non-bugs or issue which already has a status
         if ('bug' !== strtolower($data['label']['name']) || null !== $this->statusApi->getIssueStatus($issueNumber, $repository)) {
             $responseData['status_change'] = null;
@@ -52,8 +50,8 @@ class BugLabelNewIssueSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             GitHubEvents::ISSUES => 'onIssues',
-        );
+        ];
     }
 }

@@ -35,9 +35,8 @@ class GitHubStatusApi implements StatusApi
     }
 
     /**
-     * @param int        $issueNumber The GitHub issue number
+     * @param int         $issueNumber The GitHub issue number
      * @param string|null $newStatus   A Status::* constant
-     * @param Repository $repository
      */
     public function setIssueStatus($issueNumber, $newStatus, Repository $repository)
     {
@@ -45,7 +44,7 @@ class GitHubStatusApi implements StatusApi
             throw new \InvalidArgumentException(sprintf('Invalid status "%s"', $newStatus));
         }
 
-        $newLabel = $newStatus === null ? null : self::$statusToLabel[$newStatus];
+        $newLabel = null === $newStatus ? null : self::$statusToLabel[$newStatus];
         $this->logger->info(sprintf(
             'Fetching issue labels for issue %s, repository %s',
             $issueNumber,

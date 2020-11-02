@@ -4,11 +4,11 @@ namespace App\Tests\Subscriber;
 
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
+use App\Issues\GitHub\CachedLabelsApi;
 use App\Repository\Repository;
 use App\Subscriber\AutoLabelPRFromContentSubscriber;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use App\Issues\GitHub\CachedLabelsApi;
 
 class AutoLabelPRFromContentSubscriberTest extends TestCase
 {

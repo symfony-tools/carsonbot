@@ -4,10 +4,7 @@ namespace App\Subscriber;
 
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Issues\GitHub\CachedMilestonesApi;
 use App\Issues\GitHub\MilestonesApi;
-use App\Issues\Status;
-use App\Issues\StatusApi;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -24,8 +21,6 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
 
     /**
      * Sets milestone on PRs that target non-default branch.
-     *
-     * @param GitHubEvent $event
      */
     public function onPullRequest(GitHubEvent $event)
     {
@@ -47,16 +42,16 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
         $pullRequestNumber = $data['pull_request']['number'];
         $this->milestonesApi->updateMilestone($repository, $pullRequestNumber, $targetBranch);
 
-        $event->setResponseData(array(
+        $event->setResponseData([
             'pull_request' => $pullRequestNumber,
             'milestone' => $targetBranch,
-        ));
+        ]);
     }
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',
-        );
+        ];
     }
 }
