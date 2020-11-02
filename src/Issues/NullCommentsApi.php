@@ -9,5 +9,4 @@ class NullCommentsApi implements CommentsApiInterface
     public function commentOnIssue(Repository $repository, $issueNumber, $commentBody)
     {
     }
-
 }

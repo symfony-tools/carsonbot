@@ -5,8 +5,6 @@ namespace App\Subscriber;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Issues\CommentsApiInterface;
-use App\Issues\GitHub\CachedLabelsApi;
-use App\Repository\Repository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -18,9 +16,9 @@ class WelcomeFirstTimeContributorSubscriber implements EventSubscriberInterface
 
     public function __construct(CommentsApiInterface $commentsApi)
     {
-
         $this->commentsApi = $commentsApi;
     }
+
     public function onPullRequest(GitHubEvent $event)
     {
         $data = $event->getData();

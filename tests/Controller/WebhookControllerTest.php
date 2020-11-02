@@ -76,7 +76,7 @@ class WebhookControllerTest extends WebTestCase
             'Welcome first users' => [
                 'pull_request',
                 'pull_request.new_contributor.json',
-                ['pull_request' => 4, 'status_change' => 'needs_review',  'pr_labels' => [],'new_contributor' => true, ],
+                ['pull_request' => 4, 'status_change' => 'needs_review',  'pr_labels' => [], 'new_contributor' => true],
             ],
         ];
     }
