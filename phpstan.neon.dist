@@ -2,3 +2,15 @@ parameters:
     level: 5
     paths:
         - src
+
+    ignoreErrors:
+        -
+            message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+            count: 1
+            path: src/Event/EventDispatcher.php
+
+        -
+            message: "#^Call to an undefined method Symfony\\\\Component\\\\DependencyInjection\\\\Loader\\\\Configurator\\\\ContainerConfigurator\\:\\:withPath\\(\\)\\.$#"
+            count: 1
+            path: src/Kernel.php
+
