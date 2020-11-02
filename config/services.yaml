@@ -22,7 +22,7 @@ parameters:
             secret: '%env(SYMFONY_DOCS_SECRET)%'
 
         # used in a functional test
-        weaverryan/symfony:
+        carsonbot-playground/symfony:
             subscribers:
                 - 'App\Subscriber\StatusChangeByCommentSubscriber'
                 - 'App\Subscriber\StatusChangeOnPushSubscriber'

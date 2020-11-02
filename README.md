@@ -1,6 +1,8 @@
 The Carson Issue Butler
 =======================
 
+![CI](https://github.com/carsonbot/carsonbot/workflows/CI/badge.svg)
+
 Carson is a bot that currently runs on the [symfony/symfony](https://github.com/symfony/symfony)
 repository. His job is to help automate different issue and pull request
 workflows.

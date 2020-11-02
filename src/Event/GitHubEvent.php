@@ -6,8 +6,6 @@ use App\Repository\Repository;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * GitHubEvent.
- *
  * @author Jules Pietri <jules@heahprod.com>
  */
 class GitHubEvent extends Event

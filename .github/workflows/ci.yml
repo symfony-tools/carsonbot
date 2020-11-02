@@ -8,8 +8,8 @@ on:
 
 jobs:
 
-  build:
-    name: Build
+  test:
+    name: Test
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -24,6 +24,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-7.4-${{ hashFiles('composer.*') }}
+          restore-keys: |
+            composer-${{ runner.os }}-7.4-
+            composer-${{ runner.os }}-
+            composer-
+
       - name: Download dependencies
         run: |
           composer install --no-interaction --optimize-autoloader
@@ -31,7 +45,9 @@ jobs:
 
       - name: Run tests
         env:
-          SYMFONY_REQUIRE: 4.4.*
           GITHUB_TOKEN: ${{ secrets.CARSONTEST_GITHUB_TOKEN }}
         run: |
-          ./vendor/bin/simple-phpunit
+          if [ ! -z $GITHUB_TOKEN ]; then
+              ./vendor/bin/simple-phpunit --testsuite Functional
+          fi
+          ./vendor/bin/simple-phpunit --testsuite Unit
