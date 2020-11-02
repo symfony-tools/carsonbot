@@ -5,3 +5,6 @@ services:
 
     App\Issues\GitHub\CachedLabelsApi:
         class: App\Tests\Service\Issues\Github\FakedCachedLabelApi
+
+    App\Issues\StatusApi: '@App\Issues\NullStatusApi'
+    App\Issues\CommentsApiInterface: '@App\Issues\NullCommentsApi'

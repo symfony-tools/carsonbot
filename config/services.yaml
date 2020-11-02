@@ -8,6 +8,7 @@ parameters:
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
+                - 'App\Subscriber\WelcomeFirstTimeContributorSubscriber'
             secret: '%env(SYMFONY_SECRET)%'
 
         symfony/symfony-docs:
@@ -31,6 +32,7 @@ parameters:
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
+                - 'App\Subscriber\WelcomeFirstTimeContributorSubscriber'
 
 services:
     _defaults:
@@ -60,6 +62,7 @@ services:
         factory: ['@Github\Api\Issue', milestones]
 
     App\Issues\StatusApi: '@App\Issues\GitHub\GitHubStatusApi'
+    App\Issues\CommentsApiInterface: '@App\Issues\GitHub\GithubCommentsApi'
 
     App\Repository\Provider\InMemoryRepositoryProvider:
         arguments: [ '%repositories%' ]
