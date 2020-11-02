@@ -2,35 +2,32 @@
 
 namespace App\Issues;
 
+use App\Event\EventDispatcher;
 use App\Event\GitHubEvent;
 use App\Repository\Provider\RepositoryProviderInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Handles GitHub webhook requests.
  *
  * @author Jules Pietri <jules@heahprod.com>
  */
-class GitHubRequestHandler
+class GitHubRequestHandler implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
     private $dispatcher;
     private $repositoryProvider;
     private $container;
-    private $logger;
 
-    public function __construct(EventDispatcherInterface $dispatcher, RepositoryProviderInterface $repositoryProvider, ContainerInterface $container, LoggerInterface $logger)
+    public function __construct(EventDispatcher $dispatcher, RepositoryProviderInterface $repositoryProvider)
     {
         $this->dispatcher = $dispatcher;
         $this->repositoryProvider = $repositoryProvider;
-        $this->container = $container;
-        $this->logger = $logger;
     }
 
     /**
@@ -56,22 +53,13 @@ class GitHubRequestHandler
             throw new PreconditionFailedHttpException(sprintf('Unsupported repository "%s".', $repositoryFullName));
         }
 
-        if ($repository->getSecret()) {
+        if (!empty($repository->getSecret())) {
             if (!$request->headers->has('X-Hub-Signature')) {
-                throw new AccessDeniedException('The request is not secured.');
+                throw new AccessDeniedHttpException('The request is not secured.');
             }
             if (!$this->authenticate($request->headers->get('X-Hub-Signature'), $repository->getSecret(), $request->getContent())) {
-                throw new AccessDeniedException('Invalid signature.');
+                throw new AccessDeniedHttpException('Invalid signature.');
             }
-        }
-
-        foreach ($repository->getSubscribers() as $subscriberId) {
-            $subscriber = $this->container->get($subscriberId);
-            if (!$subscriber instanceof EventSubscriberInterface) {
-                throw new \LogicException(sprintf('Service "%s" is not an instance of "%s"', $subscriberId, EventSubscriberInterface::class));
-            }
-
-            $this->dispatcher->addSubscriber($subscriber);
         }
 
         $event = new GitHubEvent($data, $repository);

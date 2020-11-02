@@ -30,7 +30,7 @@ class StatusChangeByCommentSubscriberTest extends TestCase
         $this->statusApi = $this->createMock(StatusApi::class);
         $logger = $this->createMock(LoggerInterface::class);
         $this->statusChangeSubscriber = new StatusChangeByCommentSubscriber($this->statusApi, $logger);
-        $this->repository = new Repository('weaverryan', 'symfony', [], null);
+        $this->repository = new Repository('weaverryan', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber($this->statusChangeSubscriber);

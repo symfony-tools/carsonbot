@@ -28,7 +28,7 @@ class BugLabelNewIssueSubscriberTest extends TestCase
     {
         $this->statusApi = $this->createMock(StatusApi::class);
         $this->bugLabelSubscriber = new BugLabelNewIssueSubscriber($this->statusApi);
-        $this->repository = new Repository('weaverryan', 'symfony', [], null);
+        $this->repository = new Repository('weaverryan', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber($this->bugLabelSubscriber);
