@@ -2,6 +2,7 @@ parameters:
     repositories:
         symfony/symfony:
             subscribers:
+                - 'App\Subscriber\AutoUpdateTitleWithLabelSubscriber'
                 - 'App\Subscriber\StatusChangeByCommentSubscriber'
                 - 'App\Subscriber\StatusChangeByReviewSubscriber'
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
@@ -12,6 +13,7 @@ parameters:
 
         symfony/symfony-docs:
             subscribers:
+                - 'App\Subscriber\AutoUpdateTitleWithLabelSubscriber'
                 - 'App\Subscriber\StatusChangeByCommentSubscriber'
                 - 'App\Subscriber\StatusChangeOnPushSubscriber'
                 - 'App\Subscriber\StatusChangeByReviewSubscriber'
@@ -24,6 +26,7 @@ parameters:
         # used in a functional test
         carsonbot-playground/symfony:
             subscribers:
+                - 'App\Subscriber\AutoUpdateTitleWithLabelSubscriber'
                 - 'App\Subscriber\StatusChangeByCommentSubscriber'
                 - 'App\Subscriber\StatusChangeOnPushSubscriber'
                 - 'App\Subscriber\StatusChangeByReviewSubscriber'
@@ -52,6 +55,10 @@ services:
     Github\Api\Issue:
         factory: ['@Github\Client', api]
         arguments: [issue]
+
+    Github\Api\PullRequest:
+        factory: ['@Github\Client', api]
+        arguments: [pullRequest]
 
     Github\Api\Issue\Labels:
         factory: ['@Github\Api\Issue', labels]

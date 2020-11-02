@@ -5,7 +5,7 @@ namespace App\Subscriber;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Issues\GitHub\CachedLabelsApi;
-use App\Repository\Repository;
+use App\Service\LabelNameExtractor;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -15,19 +15,12 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
 {
     private $labelsApi;
 
-    private static $labelAliases = [
-        'di' => 'DependencyInjection',
-        'bridge\twig' => 'TwigBridge',
-        'router' => 'Routing',
-        'translation' => 'Translator',
-        'twig bridge' => 'TwigBridge',
-        'wdt' => 'WebProfilerBundle',
-        'profiler' => 'WebProfilerBundle',
-    ];
+    private $labelExtractor;
 
-    public function __construct(CachedLabelsApi $labelsApi)
+    public function __construct(CachedLabelsApi $labelsApi, LabelNameExtractor $labelExtractor)
     {
         $this->labelsApi = $labelsApi;
+        $this->labelExtractor = $labelExtractor;
     }
 
     public function onPullRequest(GitHubEvent $event)
@@ -44,7 +37,7 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
         $prLabels = [];
 
         // the PR title usually contains one or more labels
-        foreach ($this->extractLabels($prTitle, $repository) as $label) {
+        foreach ($this->labelExtractor->extractLabels($prTitle, $repository) as $label) {
             $prLabels[] = $label;
         }
 
@@ -83,7 +76,7 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
         $labels = [];
 
         // the issue title usually contains one or more labels
-        foreach ($this->extractLabels($prTitle, $repository) as $label) {
+        foreach ($this->labelExtractor->extractLabels($prTitle, $repository) as $label) {
             $labels[] = $label;
         }
 
@@ -93,49 +86,6 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
             'issue' => $issueNumber,
             'issue_labels' => $labels,
         ]);
-    }
-
-    private function extractLabels($title, Repository $repository)
-    {
-        $labels = [];
-
-        // e.g. "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses"
-        if (preg_match_all('/\[(?P<labels>.+)\]/U', $title, $matches)) {
-            // creates a key=>val array, but the key is lowercased
-            $allLabels = $this->labelsApi->getAllLabelsForRepository($repository);
-            $validLabels = array_combine(
-                array_map(function ($s) {
-                    return strtolower($s);
-                }, $allLabels),
-                $allLabels
-            );
-
-            foreach ($matches['labels'] as $label) {
-                $label = $this->fixLabelName($label);
-
-                // check case-insensitively, but the apply the correctly-cased label
-                if (isset($validLabels[strtolower($label)])) {
-                    $labels[] = $validLabels[strtolower($label)];
-                }
-            }
-        }
-
-        return $labels;
-    }
-
-    /**
-     * It fixes common misspellings and aliases commonly used for label names
-     * (e.g. DI -> DependencyInjection).
-     */
-    private function fixLabelName($label)
-    {
-        $labelAliases = self::$labelAliases;
-
-        if (isset($labelAliases[strtolower($label)])) {
-            return $labelAliases[strtolower($label)];
-        }
-
-        return $label;
     }
 
     public static function getSubscribedEvents()
