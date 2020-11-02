@@ -7,6 +7,7 @@ parameters:
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
                 - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+                - 'App\Subscriber\MilestoneNewPRSubscriber'
             secret: '%env(SYMFONY_SECRET)%'
 
         symfony/symfony-docs:
@@ -17,6 +18,7 @@ parameters:
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
                 - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+                - 'App\Subscriber\MilestoneNewPRSubscriber'
             secret: '%env(SYMFONY_DOCS_SECRET)%'
 
         # used in a functional test
@@ -28,6 +30,7 @@ parameters:
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
                 - 'App\Subscriber\AutoLabelPRFromContentSubscriber'
+                - 'App\Subscriber\MilestoneNewPRSubscriber'
 
 services:
     _defaults:
