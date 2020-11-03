@@ -31,3 +31,8 @@ hooks:
     deploy: |
         set -x -e
         (>&2 symfony-deploy)
+
+crons:
+    run_Tasks:
+        spec: */5 * * * *
+        cmd: croncape bin/console app:task:run

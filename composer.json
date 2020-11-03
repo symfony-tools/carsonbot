@@ -4,6 +4,10 @@
     "license": "MIT",
     "require": {
         "php": ">=7.2",
+        "composer/package-versions-deprecated": "^1.11",
+        "doctrine/doctrine-bundle": "^2.1",
+        "doctrine/doctrine-migrations-bundle": "^3.0",
+        "doctrine/orm": "^2.7",
         "incenteev/composer-parameter-handler": "~2.0",
         "knplabs/github-api": "^2.1",
         "nyholm/psr7": "^1.3",
