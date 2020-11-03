@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-6 col-xs-offset-3">
-                <div class="text-center page-header">
-                    <div>
-                        <img src="https://pbs.twimg.com/media/B6dVMHzCYAASEhm.jpg" />
+    <main role="main" class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-xl-7">
+                <div class="page-header">
+                    <div class="my-4">
+                        <img style="width: 100%" src="https://pbs.twimg.com/media/B6dVMHzCYAASEhm.jpg" />
                     </div>
 
-                    <h1>Carson: The Issue Butler</h1>
+                    <h1 class="mt-5 text-center">Carson: The Issue Butler</h1>
 
-                    <table class="table">
+                    <table class="table mt-3">
                         <thead>
                             <tr>
                                 <th>Repository</th>
@@ -23,15 +23,15 @@
                                 <tr>
                                     <td>{{ repository.vendor }}/{{ repository.name }}</td>
                                     <td>
-                                        <a href="{{ repository.needsReviewUrl }}" class="btn btn-xs btn-default">Needs Review Issues</a>
+                                        <a href="{{ repository.needsReviewUrl }}" class="btn btn-sm btn-link">Needs Review Issues</a>
                                     </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                <footer style="margin: 20px; text-align: center;">Deployed proudly on <a href="https://symfony.com/cloud/">SymfonyCloud</a></footer>
+                <footer class="mt-5 text-center">Deployed proudly on <a href="https://symfony.com/cloud/">SymfonyCloud</a></footer>
             </div>
         </div>
-    </div>
+    </main>
 {% endblock %}
