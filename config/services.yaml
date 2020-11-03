@@ -20,7 +20,6 @@ parameters:
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
-                - 'App\Subscriber\WelcomeFirstTimeContributorSubscriber'
             secret: '%env(SYMFONY_DOCS_SECRET)%'
 
         # used in a functional test
