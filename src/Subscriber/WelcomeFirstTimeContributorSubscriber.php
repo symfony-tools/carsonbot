@@ -43,7 +43,7 @@ Symfony has a [contribution guide](https://symfony.com/doc/current/contributing/
 In short:
 - Always add tests and ensure they pass.
 - Never break backward compatibility (see https://symfony.com/bc).
-- Bug fixes must be submitted against the lowest maintained branch where they apply
+- Bug fixes must be submitted against the lowest maintained branch where they apply (see https://symfony.com/releases)
 - Features and deprecations must be submitted against branch $defaultBranch.
 
 The Fabbot status check will help you to make sure everything looks good. If other CI is failing, try to see if they are failing because of this change.
