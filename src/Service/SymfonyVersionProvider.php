@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Sercice;
+namespace App\Service;
 
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -28,7 +28,6 @@ class SymfonyVersionProvider
 
     public function getCurrentVersion()
     {
-        /** @var $httpClient */
         $httpClient = $this->httpClient;
 
         return $this->cache->get('symfony_version', function (ItemInterface $item) use ($httpClient) {
