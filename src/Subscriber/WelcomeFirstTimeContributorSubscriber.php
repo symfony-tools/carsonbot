@@ -38,7 +38,7 @@ Hey,
 
 I see that this is your first PR. That is great! Thank you.
 
-Symfony has a [contribution guide](https://symfony.com/doc/current/contributing/index.html) which I would suggestion you to read.
+Symfony has a [contribution guide](https://symfony.com/doc/current/contributing/index.html) which I suggest you to read.
 
 In short:
 - Always add tests and ensure they pass.
