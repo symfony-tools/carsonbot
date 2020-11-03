@@ -18,7 +18,7 @@ parameters:
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
-                - 'App\Subscriber\MilestoneNewPRSubscriber'
+                - 'subscriber.symfony_docs.milestone'
             secret: '%env(SYMFONY_DOCS_SECRET)%'
 
         # used in a functional test
@@ -65,3 +65,8 @@ services:
         arguments: [ '%repositories%' ]
 
     App\Repository\Provider\RepositoryProviderInterface: '@App\Repository\Provider\InMemoryRepositoryProvider'
+
+    subscriber.symfony_docs.milestone:
+        class: App\Subscriber\MilestoneNewPRSubscriber
+        arguments:
+            $ignoreCurrentVersion: true
