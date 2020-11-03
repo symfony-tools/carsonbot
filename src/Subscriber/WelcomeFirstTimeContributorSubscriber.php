@@ -32,11 +32,25 @@ class WelcomeFirstTimeContributorSubscriber implements EventSubscriberInterface
 
         $repository = $event->getRepository();
         $pullRequestNumber = $data['pull_request']['number'];
+        $defaultBranch = $data['repository']['default_branch'];
         $this->commentsApi->commentOnIssue($repository, $pullRequestNumber, <<<TXT
 Hey,
 
-I see that this is your first PR, I just wanted to say that you are awesome. <3
+I see that this is your first PR. That is great! Thank you.
 
+Symfony has a [contribution guide](https://symfony.com/doc/current/contributing/index.html) which I would suggestion you to read.
+
+In short:
+- Always add tests and ensure they pass.
+- Never break backward compatibility (see https://symfony.com/bc).
+- Bug fixes must be submitted against the lowest maintained branch where they apply
+- Features and deprecations must be submitted against branch $defaultBranch.
+
+The Fabbot status check will help you to make sure everything looks good. If other CI is failing, try to see if they are failing because of this change.
+
+When two Symfony core team members approved this change, it will be merged and you have become an official Symfony contributor.
+
+I am going to sit back now and wait for the reviews.
 TXT
 );
 
