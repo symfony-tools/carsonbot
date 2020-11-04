@@ -15,13 +15,22 @@ class LabelNameExtractor
     private $labelsApi;
 
     private static $labelAliases = [
-        'di' => 'DependencyInjection',
+        'bridge\doctrine' => 'DoctrineBridge',
+        'bridge/doctrine' => 'DoctrineBridge',
+        'bridge\monolog' => 'MonologBridge',
+        'bridge/monolog' => 'MonologBridge',
+        'bridge\phpunit' => 'PhpUnitBridge',
+        'bridge/phpunit' => 'PhpUnitBridge',
+        'bridge\proxymanager' => 'ProxyManagerBridge',
+        'bridge/proxymanager' => 'ProxyManagerBridge',
         'bridge\twig' => 'TwigBridge',
+        'bridge/twig' => 'TwigBridge',
+        'di' => 'DependencyInjection',
+        'fwb' => 'FrameworkBundle',
+        'profiler' => 'WebProfilerBundle',
         'router' => 'Routing',
         'translation' => 'Translator',
-        'twig bridge' => 'TwigBridge',
         'wdt' => 'WebProfilerBundle',
-        'profiler' => 'WebProfilerBundle',
     ];
 
     public function __construct(CachedLabelsApi $labelsApi)
