@@ -34,9 +34,9 @@ class WelcomeFirstTimeContributorSubscriber implements EventSubscriberInterface
         $pullRequestNumber = $data['pull_request']['number'];
         $defaultBranch = $data['repository']['default_branch'];
         $this->commentsApi->commentOnIssue($repository, $pullRequestNumber, <<<TXT
-Hey,
+Hey!
 
-I see that this is your first PR. That is great! Thank you.
+I see that this is your first PR. That is great! Welcome!
 
 Symfony has a [contribution guide](https://symfony.com/doc/current/contributing/index.html) which I suggest you to read.
 
@@ -48,11 +48,13 @@ In short:
 
 Review the GitHub status checks of your pull request and try to solve the reported issues. If some tests are failing, try to see if they are failing because of this change.
 
-When two Symfony core team members approve this change, it will be merged and you have become an official Symfony contributor.
+When two Symfony core team members approve this change, it will be merged and you will become an official Symfony contributor!
 
 I am going to sit back now and wait for the reviews.
 
-// Carsonbot
+Cheers!
+
+Carsonbot
 TXT
 );
 
