@@ -44,7 +44,7 @@ In short:
 - Always add tests
 - Keep backward compatibility (see https://symfony.com/bc).
 - Bug fixes must be submitted against the lowest maintained branch where they apply (see https://symfony.com/releases)
-- Features and deprecations must be submitted against branch $defaultBranch.
+- Features and deprecations must be submitted against the $defaultBranch branch.
 
 Review the GitHub status checks of your pull request and try to solve the reported issues. If some tests are failing, try to see if they are failing because of this change.
 
