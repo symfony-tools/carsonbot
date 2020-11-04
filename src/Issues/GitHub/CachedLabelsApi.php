@@ -131,7 +131,7 @@ class CachedLabelsApi
             $item->expiresAfter(36000);
             $componentLabels = [];
             foreach ($labels as $label) {
-                if ($label['color'] === 'dddddd') {
+                if ('dddddd' === $label['color']) {
                     $componentLabels[] = $label['name'];
                 }
             }
