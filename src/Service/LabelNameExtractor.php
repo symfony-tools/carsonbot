@@ -40,22 +40,13 @@ class LabelNameExtractor
 
     /**
      * Get labels from title string.
+     * Example title: "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses".
      */
     public function extractLabels($title, Repository $repository)
     {
         $labels = [];
-
-        // e.g. "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses"
         if (preg_match_all('/\[(?P<labels>.+)\]/U', $title, $matches)) {
-            // creates a key=>val array, but the key is lowercased
-            $allLabels = $this->labelsApi->getAllLabelsForRepository($repository);
-            $validLabels = array_combine(
-                array_map(function ($s) {
-                    return strtolower($s);
-                }, $allLabels),
-                $allLabels
-            );
-
+            $validLabels = $this->getLabels($repository);
             foreach ($matches['labels'] as $label) {
                 $label = $this->fixLabelName($label);
 
@@ -67,6 +58,21 @@ class LabelNameExtractor
         }
 
         return $labels;
+    }
+
+    /**
+     * Creates a key=>val array, but the key is lowercased.
+     *
+     * @return array
+     */
+    private function getLabels(Repository $repository)
+    {
+        $allLabels = $this->labelsApi->getAllLabelsForRepository($repository);
+        $closure = function ($s) {
+            return strtolower($s);
+        };
+
+        return array_combine(array_map($closure, $allLabels), $allLabels);
     }
 
     /**
