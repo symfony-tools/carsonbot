@@ -67,7 +67,7 @@ class LabelNameExtractor
      */
     private function getLabels(Repository $repository)
     {
-        $allLabels = $this->labelsApi->getComponentLabelsForRepository($repository);
+        $allLabels = $this->labelsApi->getAllLabelsForRepository($repository);
         $closure = function ($s) {
             return strtolower($s);
         };

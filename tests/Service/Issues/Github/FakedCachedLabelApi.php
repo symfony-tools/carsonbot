@@ -31,7 +31,7 @@ class FakedCachedLabelApi extends CachedLabelsApi
     public function getAllLabelsForRepository(Repository $repository): array
     {
         $labels = $this->getComponentLabelsForRepository($repository);
-        $labels[] = 'Bc Break';
+        $labels[] = 'BC Break';
         $labels[] = 'Bug';
         $labels[] = 'Critical';
         $labels[] = 'Hack Day';
