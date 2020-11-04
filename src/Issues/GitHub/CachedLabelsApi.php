@@ -112,10 +112,31 @@ class CachedLabelsApi
         $key = 'labels'.sha1($repository->getFullName());
 
         return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
-            $labels = $this->labelsApi->all($repository->getVendor(), $repository->getName());
+            $labels = $this->labelsApi->all($repository->getVendor(), $repository->getName()) ?? [];
             $item->expiresAfter(36000);
 
             return array_column($labels, 'name');
+        });
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getComponentLabelsForRepository(Repository $repository): array
+    {
+        $key = 'component_labels'.sha1($repository->getFullName());
+
+        return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
+            $labels = $this->labelsApi->all($repository->getVendor(), $repository->getName()) ?? [];
+            $item->expiresAfter(36000);
+            $componentLabels = [];
+            foreach ($labels as $label) {
+                if ($label['color'] === 'dddddd') {
+                    $componentLabels[] = $label['name'];
+                }
+            }
+
+            return $componentLabels;
         });
     }
 
