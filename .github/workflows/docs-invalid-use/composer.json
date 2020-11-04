@@ -1,0 +1,24 @@
+{
+    "name": "tobias/docs-checker",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Nyholm",
+            "email": "tobias.nyholm@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/filesystem": "^5.1",
+        "symfony/finder": "^5.1",
+        "symfony/phpunit-bridge": "^5.1",
+        "phpunit/phpunit": "^9.4",
+        "defuse/php-encryption": "^2.2",
+        "sensiolabs/ansi-to-html": "^1.2",
+        "twig/twig": "^3.0",
+        "symfony/mercure": "^0.4.0",
+        "lcobucci/jwt": "^3.3",
+        "symfony/psr-http-message-bridge": "^2.0",
+        "ramsey/uuid": "^4.1",
+        "twig/cssinliner-extra": "^3.0"
+    }
+}

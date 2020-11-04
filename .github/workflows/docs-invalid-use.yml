@@ -1,0 +1,70 @@
+name: Verify docs
+
+on:
+  schedule:
+    - cron: '58 6 * * *'
+
+jobs:
+  use:
+    name: Invalid use statements
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@2.7.0
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Checkout Symfony repo
+        run: git clone https://github.com/symfony/symfony .github/workflows/docs-invalid-use/symfony
+
+      - name: Checkout Symfony Docs repo
+        run: git clone https://github.com/symfony/symfony-docs .github/workflows/docs-invalid-use/docs
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-7.4-${{ hashFiles('composer.*') }}
+          restore-keys: |
+            composer-${{ runner.os }}-7.4-
+            composer-${{ runner.os }}-
+            composer-
+
+      - name: Download dependencies
+        run: |
+          composer install --no-interaction --optimize-autoloader
+          cd .github/workflows/docs-invalid-use
+          composer update --prefer-stable --no-interaction --optimize-autoloader
+          cd symfony
+          composer update --prefer-stable --no-interaction --optimize-autoloader
+
+      - name: Verify docs
+        run: |
+          cd .github/workflows/docs-invalid-use
+          ./run.php `pwd`/docs `pwd`/symfony > output.txt
+          cat output.txt
+
+      - name: Open issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.CARSONPROD_GITHUB_TOKEN }}
+        run: |
+          if [ ! -s .github/workflows/docs-invalid-use/output.txt ]; then
+            echo "No issues to report"
+            exit 0
+          fi
+
+          echo -e "I've found some pages that have invalid class references. This is a list of use statements that I couldn't find the correct class to: \n\n\`\`\`" > issue.txt
+          cat .github/workflows/docs-invalid-use/output.txt >> issue.txt
+          echo -e "\n\`\`\`\n\nCould someone please verify these?" >> issue.txt
+          bin/console app:issue:open symfony/symfony-docs "Invalid use statements" `pwd`/issue.txt
