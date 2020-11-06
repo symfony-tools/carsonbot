@@ -46,6 +46,11 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
                 $validLabels[] = $label['name'];
                 // Remove label name from title
                 $prTitle = str_replace('['.$label['name'].']', '', $prTitle);
+
+                // Remove label aliases from title
+                foreach ($this->labelExtractor->getAliasesForLabel($label['name']) as $alias) {
+                    $prTitle = str_replace('['.$alias.']', '', $prTitle);
+                }
             }
         }
 

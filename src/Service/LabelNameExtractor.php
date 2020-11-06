@@ -60,6 +60,15 @@ class LabelNameExtractor
         return $labels;
     }
 
+    public function getAliasesForLabel($label)
+    {
+        foreach (self::$labelAliases as $alias => $name) {
+            if ($name === $label) {
+                yield $alias;
+            }
+        }
+    }
+
     /**
      * Creates a key=>val array, but the key is lowercased.
      *
