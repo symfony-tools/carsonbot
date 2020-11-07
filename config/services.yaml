@@ -73,7 +73,7 @@ services:
 
     App\Api\Issue\IssueApi: '@App\Api\Issue\GithubIssueApi'
     App\Api\Label\LabelApi: '@App\Api\Label\GithubLabelApi'
-    App\Api\Milestone\MilestonesApi: '@App\Api\Issue\GithubIssueApi'
+    App\Api\Milestone\MilestonesApi: '@App\Api\Milestone\GithubMilestonesApi'
     App\Api\Status\StatusApi: '@App\Api\Status\GitHubStatusApi'
 
     App\Service\RepositoryProvider:

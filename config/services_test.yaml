@@ -5,5 +5,5 @@ services:
 
     App\Api\Issue\IssueApi: '@App\Api\Issue\NullIssueApi'
     App\Api\Label\LabelApi: '@App\Api\Label\StaticLabelApi'
-    App\Api\Milestone\MilestonesApi: '@App\Api\Issue\NullIssueApi'
+    App\Api\Milestone\MilestonesApi: '@App\Api\Milestone\StaticMilestoneApi'
     App\Api\Status\StatusApi: '@App\Api\Status\NullStatusApi'
