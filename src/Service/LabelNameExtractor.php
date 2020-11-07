@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Api\Label\CachedLabelsApi;
+use App\Api\Label\LabelApi;
 use App\Model\Repository;
 
 /**
@@ -33,7 +33,7 @@ class LabelNameExtractor
         'wdt' => 'WebProfilerBundle',
     ];
 
-    public function __construct(CachedLabelsApi $labelsApi)
+    public function __construct(LabelApi $labelsApi)
     {
         $this->labelsApi = $labelsApi;
     }

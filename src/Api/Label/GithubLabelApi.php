@@ -10,7 +10,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class CachedLabelsApi
+class GithubLabelApi implements LabelApi
 {
     /**
      * @var Labels
@@ -35,7 +35,7 @@ class CachedLabelsApi
         $this->cache = $cache;
     }
 
-    public function getIssueLabels($issueNumber, Repository $repository)
+    public function getIssueLabels($issueNumber, Repository $repository): array
     {
         $key = $this->getCacheKey($issueNumber, $repository);
         if (!isset($this->labelCache[$key])) {

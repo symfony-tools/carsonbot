@@ -5,7 +5,7 @@ namespace App\Api\Issue;
 use App\Model\Repository;
 use Github\Api\Issue\Comments;
 
-class GithubCommentsApi implements CommentsApiInterface
+class GithubIssueApi implements IssueApi
 {
     private $issueCommentApi;
 

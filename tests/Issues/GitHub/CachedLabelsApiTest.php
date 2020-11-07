@@ -2,7 +2,7 @@
 
 namespace App\Tests\Issues\GitHub;
 
-use App\Api\Label\CachedLabelsApi;
+use App\Api\Label\GithubLabelApi;
 use App\Model\Repository;
 use Github\Api\Issue\Labels;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -24,7 +24,7 @@ class CachedLabelsApiTest extends TestCase
     private $backendApi;
 
     /**
-     * @var CachedLabelsApi
+     * @var GithubLabelApi
      */
     private $api;
 
@@ -35,7 +35,7 @@ class CachedLabelsApiTest extends TestCase
         $this->backendApi = $this->getMockBuilder(Labels::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->api = new CachedLabelsApi($this->backendApi, new NullAdapter());
+        $this->api = new GithubLabelApi($this->backendApi, new NullAdapter());
         $this->repository = new Repository(
             self::USER_NAME,
             self::REPO_NAME,

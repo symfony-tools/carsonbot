@@ -2,6 +2,7 @@
 
 namespace App\Subscriber;
 
+use App\Api\Milestone\GithubMilestonesApi;
 use App\Api\Milestone\MilestonesApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;

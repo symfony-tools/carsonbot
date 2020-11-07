@@ -2,7 +2,7 @@
 
 namespace App\Tests\Subscriber;
 
-use App\Api\Milestone\MilestonesApi;
+use App\Api\Milestone\GithubMilestonesApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
@@ -26,7 +26,7 @@ class MilestoneNewPRSubscriberTest extends TestCase
 
     protected function setUp()
     {
-        $this->milestonesApi = $this->createMock(MilestonesApi::class);
+        $this->milestonesApi = $this->createMock(GithubMilestonesApi::class);
         $symfonyVersionProvider = $this->getMockBuilder(SymfonyVersionProvider::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCurrentVersion'])

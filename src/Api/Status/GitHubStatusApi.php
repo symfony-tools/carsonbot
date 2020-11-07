@@ -2,7 +2,7 @@
 
 namespace App\Api\Status;
 
-use App\Api\Label\CachedLabelsApi;
+use App\Api\Label\GithubLabelApi;
 use App\Model\Repository;
 use Psr\Log\LoggerInterface;
 
@@ -18,7 +18,7 @@ class GitHubStatusApi implements StatusApi
     private $labelToStatus = [];
 
     /**
-     * @var CachedLabelsApi
+     * @var GithubLabelApi
      */
     private $labelsApi;
     /**
@@ -26,7 +26,7 @@ class GitHubStatusApi implements StatusApi
      */
     private $logger;
 
-    public function __construct(CachedLabelsApi $labelsApi, LoggerInterface $logger)
+    public function __construct(GithubLabelApi $labelsApi, LoggerInterface $logger)
     {
         $this->labelsApi = $labelsApi;
         $this->labelToStatus = array_flip(self::$statusToLabel);

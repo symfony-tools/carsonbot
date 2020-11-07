@@ -2,11 +2,14 @@
 
 namespace App\Api\Label;
 
-
-
 use App\Model\Repository;
 
-class FakedCachedLabelApi extends CachedLabelsApi
+/**
+ * Dont fetch data from external source.
+ *
+ * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ */
+class StaticLabelApi extends NullLabelApi
 {
     public function getComponentLabelsForRepository(Repository $repository): array
     {
@@ -40,5 +43,10 @@ class FakedCachedLabelApi extends CachedLabelsApi
         $labels[] = 'Deprecation';
 
         return $labels;
+    }
+
+    public function getIssueLabels($issueNumber, Repository $repository): array
+    {
+        return [];
     }
 }

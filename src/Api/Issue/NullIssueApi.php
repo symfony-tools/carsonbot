@@ -4,7 +4,7 @@ namespace App\Api\Issue;
 
 use App\Model\Repository;
 
-class NullCommentsApi implements CommentsApiInterface
+class NullIssueApi implements IssueApi
 {
     public function commentOnIssue(Repository $repository, $issueNumber, $commentBody)
     {

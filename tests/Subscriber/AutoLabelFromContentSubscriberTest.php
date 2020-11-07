@@ -2,7 +2,7 @@
 
 namespace App\Tests\Subscriber;
 
-use App\Api\Label\FakedCachedLabelApi;
+use App\Api\Label\StaticLabelApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
@@ -26,7 +26,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
 
     protected function setUp()
     {
-        $this->labelsApi = $this->getMockBuilder(FakedCachedLabelApi::class)
+        $this->labelsApi = $this->getMockBuilder(StaticLabelApi::class)
             ->disableOriginalConstructor()
             ->setMethods(['addIssueLabels'])
             ->getMock();

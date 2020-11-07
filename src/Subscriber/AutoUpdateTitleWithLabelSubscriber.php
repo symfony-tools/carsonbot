@@ -2,7 +2,8 @@
 
 namespace App\Subscriber;
 
-use App\Api\Label\CachedLabelsApi;
+use App\Api\Label\GithubLabelApi;
+use App\Api\Label\LabelApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Service\LabelNameExtractor;
@@ -21,7 +22,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
     private $labelExtractor;
     private $pullRequestApi;
 
-    public function __construct(CachedLabelsApi $labelsApi, LabelNameExtractor $labelExtractor, PullRequest $pullRequestApi)
+    public function __construct(LabelApi $labelsApi, LabelNameExtractor $labelExtractor, PullRequest $pullRequestApi)
     {
         $this->labelsApi = $labelsApi;
         $this->labelExtractor = $labelExtractor;
