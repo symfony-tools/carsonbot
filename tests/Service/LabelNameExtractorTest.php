@@ -2,9 +2,9 @@
 
 namespace App\Tests\Service;
 
+use App\Api\Label\StaticLabelApi;
 use App\Model\Repository;
 use App\Service\LabelNameExtractor;
-use App\Api\Label\StaticLabelApi;
 use Github\Api\Issue\Labels;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\NullAdapter;

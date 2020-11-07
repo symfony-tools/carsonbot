@@ -56,7 +56,7 @@ class GithubLabelApi implements LabelApi
         return array_keys($this->labelCache[$key]);
     }
 
-    public function addIssueLabel($issueNumber, $label, Repository $repository)
+    public function addIssueLabel($issueNumber, string $label, Repository $repository)
     {
         $key = $this->getCacheKey($issueNumber, $repository);
 
@@ -77,7 +77,7 @@ class GithubLabelApi implements LabelApi
         }
     }
 
-    public function removeIssueLabel($issueNumber, $label, Repository $repository)
+    public function removeIssueLabel($issueNumber, string $label, Repository $repository)
     {
         $key = $this->getCacheKey($issueNumber, $repository);
         if (isset($this->labelCache[$key]) && !isset($this->labelCache[$key][$label])) {

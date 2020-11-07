@@ -3,8 +3,7 @@ services:
         autowire: true
         autoconfigure: true
 
-    App\Api\Issue\CachedLabelsApi:
-        class: App\Api\Issue\FakedCachedLabelApi
-
-    App\Api\Status\StatusApi: '@App\Issues\NullStatusApi'
-    App\Api\Issue\CommentsApiInterface: '@App\Api\Issue\NullCommentsApi'
+    App\Api\Issue\IssueApi: '@App\Api\Issue\NullIssueApi'
+    App\Api\Label\LabelApi: '@App\Api\Label\StaticLabelApi'
+    App\Api\Milestone\MilestonesApi: '@App\Api\Issue\NullIssueApi'
+    App\Api\Status\StatusApi: '@App\Api\Status\NullStatusApi'

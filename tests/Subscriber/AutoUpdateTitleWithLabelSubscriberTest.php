@@ -2,12 +2,12 @@
 
 namespace App\Tests\Subscriber;
 
+use App\Api\Label\StaticLabelApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
 use App\Service\LabelNameExtractor;
 use App\Subscriber\AutoUpdateTitleWithLabelSubscriber;
-use App\Api\Label\StaticLabelApi;
 use Github\Api\Issue\Labels;
 use Github\Api\PullRequest;
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,6 @@
 
 namespace App\Subscriber;
 
-use App\Api\Label\GithubLabelApi;
 use App\Api\Label\LabelApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;

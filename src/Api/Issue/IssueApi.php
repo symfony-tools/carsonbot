@@ -12,5 +12,5 @@ use App\Model\Repository;
  */
 interface IssueApi
 {
-    public function commentOnIssue(Repository $repository, $issueNumber, $commentBody);
+    public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody);
 }

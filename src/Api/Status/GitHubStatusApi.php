@@ -2,7 +2,7 @@
 
 namespace App\Api\Status;
 
-use App\Api\Label\GithubLabelApi;
+use App\Api\Label\LabelApi;
 use App\Model\Repository;
 use Psr\Log\LoggerInterface;
 
@@ -18,7 +18,7 @@ class GitHubStatusApi implements StatusApi
     private $labelToStatus = [];
 
     /**
-     * @var GithubLabelApi
+     * @var LabelApi
      */
     private $labelsApi;
     /**
@@ -26,7 +26,7 @@ class GitHubStatusApi implements StatusApi
      */
     private $logger;
 
-    public function __construct(GithubLabelApi $labelsApi, LoggerInterface $logger)
+    public function __construct(LabelApi $labelsApi, LoggerInterface $logger)
     {
         $this->labelsApi = $labelsApi;
         $this->labelToStatus = array_flip(self::$statusToLabel);
@@ -37,7 +37,7 @@ class GitHubStatusApi implements StatusApi
      * @param int         $issueNumber The GitHub issue number
      * @param string|null $newStatus   A Status::* constant
      */
-    public function setIssueStatus($issueNumber, $newStatus, Repository $repository)
+    public function setIssueStatus($issueNumber, ?string $newStatus, Repository $repository)
     {
         if (null !== $newStatus && !isset(self::$statusToLabel[$newStatus])) {
             throw new \InvalidArgumentException(sprintf('Invalid status "%s"', $newStatus));
@@ -78,7 +78,7 @@ class GitHubStatusApi implements StatusApi
         }
     }
 
-    public function getIssueStatus($issueNumber, Repository $repository)
+    public function getIssueStatus($issueNumber, Repository $repository): ?string
     {
         $currentLabels = $this->labelsApi->getIssueLabels($issueNumber, $repository);
 

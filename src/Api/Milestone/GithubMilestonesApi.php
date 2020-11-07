@@ -66,9 +66,6 @@ class GithubMilestonesApi implements MilestonesApi
         ]);
     }
 
-    /**
-     * @return bool
-     */
     public function exists(Repository $repository, string $milestoneName): bool
     {
         foreach ($this->getMilestones($repository) as $milestone) {

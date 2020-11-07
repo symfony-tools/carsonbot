@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Event\EventDispatcher;
 use App\Event\GitHubEvent;
-use App\Service\RepositoryProvider;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;

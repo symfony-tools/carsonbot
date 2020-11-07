@@ -2,7 +2,6 @@
 
 namespace App\Tests\Issues\GitHub;
 
-
 use App\Api\Label\GithubLabelApi;
 use App\Api\Status\GitHubStatusApi;
 use App\Api\Status\Status;

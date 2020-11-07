@@ -17,7 +17,7 @@ class GithubIssueApi implements IssueApi
     /**
      * This will comment on both Issues and Pull Requests.
      */
-    public function commentOnIssue(Repository $repository, $issueNumber, $commentBody)
+    public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody)
     {
         $this->issueCommentApi->create(
             $repository->getVendor(),

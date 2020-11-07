@@ -6,7 +6,6 @@ use App\Api\Status\Status;
 use App\Api\Status\StatusApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-
 use Psr\Log\LoggerInterface;
 
 class StatusChangeByCommentSubscriber extends AbstractStatusChangeSubscriber

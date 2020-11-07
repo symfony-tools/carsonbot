@@ -71,8 +71,10 @@ services:
     Github\Api\Issue\Comments:
         factory: ['@Github\Api\Issue', comments]
 
+    App\Api\Issue\IssueApi: '@App\Api\Issue\GithubIssueApi'
+    App\Api\Label\LabelApi: '@App\Api\Label\GithubLabelApi'
+    App\Api\Milestone\MilestonesApi: '@App\Api\Issue\GithubIssueApi'
     App\Api\Status\StatusApi: '@App\Api\Status\GitHubStatusApi'
-    App\Api\Issue\CommentsApiInterface: '@App\Api\Issue\GithubCommentsApi'
 
     App\Service\RepositoryProvider:
         arguments: [ '%repositories%' ]

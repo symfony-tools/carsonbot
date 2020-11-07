@@ -13,11 +13,11 @@ class NullLabelApi implements LabelApi
         return [];
     }
 
-    public function addIssueLabel($issueNumber, $label, Repository $repository)
+    public function addIssueLabel($issueNumber, string $label, Repository $repository)
     {
     }
 
-    public function removeIssueLabel($issueNumber, $label, Repository $repository)
+    public function removeIssueLabel($issueNumber, string $label, Repository $repository)
     {
     }
 
