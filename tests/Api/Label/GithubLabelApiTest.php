@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Issues\GitHub;
+namespace App\Tests\Api\Label;
 
 use App\Api\Label\GithubLabelApi;
 use App\Model\Repository;
@@ -12,7 +12,7 @@ use Symfony\Component\Cache\Adapter\NullAdapter;
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class CachedLabelsApiTest extends TestCase
+class GithubLabelApiTest extends TestCase
 {
     const USER_NAME = 'weaverryan';
 

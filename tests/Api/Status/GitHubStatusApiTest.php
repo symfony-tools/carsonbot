@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Issues\GitHub;
+namespace App\Tests\Api\Status;
 
 use App\Api\Label\GithubLabelApi;
 use App\Api\Status\GitHubStatusApi;

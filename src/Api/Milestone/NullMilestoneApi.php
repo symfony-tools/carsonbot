@@ -6,7 +6,7 @@ namespace App\Api\Milestone;
 
 use App\Model\Repository;
 
-class NullMilestoneApi implements MilestonesApi
+class NullMilestoneApi implements MilestoneApi
 {
     public function updateMilestone(Repository $repository, int $issueNumber, string $milestoneName)
     {

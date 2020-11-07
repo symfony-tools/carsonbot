@@ -2,7 +2,7 @@
 
 namespace App\Subscriber;
 
-use App\Api\Milestone\MilestonesApi;
+use App\Api\Milestone\MilestoneApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Service\SymfonyVersionProvider;
@@ -17,7 +17,7 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
     private $symfonyVersionProvider;
     private $ignoreCurrentVersion;
 
-    public function __construct(MilestonesApi $milestonesApi, SymfonyVersionProvider $symfonyVersionProvider, $ignoreCurrentVersion = false)
+    public function __construct(MilestoneApi $milestonesApi, SymfonyVersionProvider $symfonyVersionProvider, $ignoreCurrentVersion = false)
     {
         $this->milestonesApi = $milestonesApi;
         $this->symfonyVersionProvider = $symfonyVersionProvider;

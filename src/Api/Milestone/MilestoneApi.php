@@ -7,7 +7,7 @@ use App\Model\Repository;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-interface MilestonesApi
+interface MilestoneApi
 {
     public function updateMilestone(Repository $repository, int $issueNumber, string $milestoneName);
 

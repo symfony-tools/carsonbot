@@ -9,7 +9,7 @@ use Github\Api\Issue\Milestones;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class GithubMilestonesApi implements MilestonesApi
+class GithubMilestoneApi implements MilestoneApi
 {
     /**
      * @var Milestones
