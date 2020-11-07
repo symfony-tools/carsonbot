@@ -26,7 +26,8 @@ class WelcomeFirstTimeContributorSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ('NONE' !== ($data['pull_request']['author_association'] ?? '')) {
+        $association = $data['pull_request']['author_association'] ?? '';
+        if (!in_array($association, ['NONE', 'FIRST_TIMER', 'FIRST_TIME_CONTRIBUTOR'])) {
             return;
         }
 
