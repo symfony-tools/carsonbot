@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Issues\GitHub\CachedLabelsApi;
+use App\Api\Label\CachedLabelsApi;
 use App\Model\Repository;
 
 /**

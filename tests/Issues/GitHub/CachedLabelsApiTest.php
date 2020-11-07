@@ -2,8 +2,8 @@
 
 namespace App\Tests\Issues\GitHub;
 
-use App\Issues\GitHub\CachedLabelsApi;
-use App\Repository\Repository;
+use App\Api\Label\CachedLabelsApi;
+use App\Model\Repository;
 use Github\Api\Issue\Labels;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

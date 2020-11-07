@@ -2,10 +2,11 @@
 
 namespace App\Tests\Issues\GitHub;
 
-use App\Issues\GitHub\CachedLabelsApi;
-use App\Issues\GitHub\GitHubStatusApi;
-use App\Issues\Status;
-use App\Repository\Repository;
+
+use App\Api\Label\CachedLabelsApi;
+use App\Api\Status\GitHubStatusApi;
+use App\Api\Status\Status;
+use App\Model\Repository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

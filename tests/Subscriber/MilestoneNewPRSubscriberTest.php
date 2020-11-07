@@ -2,10 +2,10 @@
 
 namespace App\Tests\Subscriber;
 
+use App\Api\Milestone\MilestonesApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Issues\GitHub\MilestonesApi;
-use App\Repository\Repository;
+use App\Model\Repository;
 use App\Service\SymfonyVersionProvider;
 use App\Subscriber\MilestoneNewPRSubscriber;
 use PHPUnit\Framework\TestCase;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Issues;
+namespace App\Service;
 
 use App\Event\EventDispatcher;
 use App\Event\GitHubEvent;

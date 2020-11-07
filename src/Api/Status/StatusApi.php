@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Issues;
+namespace App\Api\Status;
 
 use App\Model\Repository;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Issues;
+namespace App\Api\Status;
 
 /**
  * The possible statuses of an issue.

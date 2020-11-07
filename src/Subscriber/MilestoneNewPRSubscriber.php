@@ -2,9 +2,9 @@
 
 namespace App\Subscriber;
 
+use App\Api\Milestone\MilestonesApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Issues\GitHub\MilestonesApi;
 use App\Service\SymfonyVersionProvider;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

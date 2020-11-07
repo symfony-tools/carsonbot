@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Issues\GitHub;
+namespace App\Api\Label;
 
 use App\Model\Repository;
 use Github\Api\Issue\Labels;

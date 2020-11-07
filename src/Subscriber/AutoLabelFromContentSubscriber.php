@@ -2,9 +2,9 @@
 
 namespace App\Subscriber;
 
+use App\Api\Label\CachedLabelsApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Issues\GitHub\CachedLabelsApi;
 use App\Service\LabelNameExtractor;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

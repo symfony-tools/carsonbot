@@ -4,10 +4,10 @@ namespace App\Tests\Subscriber;
 
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Repository\Repository;
+use App\Model\Repository;
 use App\Service\LabelNameExtractor;
 use App\Subscriber\AutoUpdateTitleWithLabelSubscriber;
-use App\Tests\Service\Issues\Github\FakedCachedLabelApi;
+use App\Api\Label\FakedCachedLabelApi;
 use Github\Api\Issue\Labels;
 use Github\Api\PullRequest;
 use PHPUnit\Framework\TestCase;

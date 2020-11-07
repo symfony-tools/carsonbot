@@ -71,8 +71,8 @@ services:
     Github\Api\Issue\Comments:
         factory: ['@Github\Api\Issue', comments]
 
-    App\Issues\StatusApi: '@App\Issues\GitHub\GitHubStatusApi'
-    App\Issues\CommentsApiInterface: '@App\Issues\GitHub\GithubCommentsApi'
+    App\Api\Status\StatusApi: '@App\Api\Status\GitHubStatusApi'
+    App\Api\Issue\CommentsApiInterface: '@App\Api\Issue\GithubCommentsApi'
 
     App\Service\RepositoryProvider:
         arguments: [ '%repositories%' ]

@@ -1,11 +1,10 @@
 <?php
 
-declare(strict_types=1);
+namespace App\Api\Label;
 
-namespace App\Tests\Service\Issues\Github;
 
-use App\Issues\GitHub\CachedLabelsApi;
-use App\Repository\Repository;
+
+use App\Model\Repository;
 
 class FakedCachedLabelApi extends CachedLabelsApi
 {

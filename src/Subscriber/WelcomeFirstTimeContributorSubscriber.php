@@ -2,9 +2,9 @@
 
 namespace App\Subscriber;
 
+use App\Api\Issue\CommentsApiInterface;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Issues\CommentsApiInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

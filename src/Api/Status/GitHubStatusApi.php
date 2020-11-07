@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Issues\GitHub;
+namespace App\Api\Status;
 
-use App\Issues\Status;
-use App\Issues\StatusApi;
+use App\Api\Label\CachedLabelsApi;
 use App\Model\Repository;
 use Psr\Log\LoggerInterface;
 

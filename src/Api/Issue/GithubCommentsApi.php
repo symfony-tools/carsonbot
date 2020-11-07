@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Issues\GitHub;
+namespace App\Api\Issue;
 
-use App\Issues\CommentsApiInterface;
 use App\Model\Repository;
 use Github\Api\Issue\Comments;
 

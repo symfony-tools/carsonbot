@@ -3,8 +3,8 @@ services:
         autowire: true
         autoconfigure: true
 
-    App\Issues\GitHub\CachedLabelsApi:
-        class: App\Tests\Service\Issues\Github\FakedCachedLabelApi
+    App\Api\Issue\CachedLabelsApi:
+        class: App\Api\Issue\FakedCachedLabelApi
 
-    App\Issues\StatusApi: '@App\Issues\NullStatusApi'
-    App\Issues\CommentsApiInterface: '@App\Issues\NullCommentsApi'
+    App\Api\Status\StatusApi: '@App\Issues\NullStatusApi'
+    App\Api\Issue\CommentsApiInterface: '@App\Api\Issue\NullCommentsApi'

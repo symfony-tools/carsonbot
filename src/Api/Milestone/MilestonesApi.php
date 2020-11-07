@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Issues\GitHub;
+namespace App\Api\Milestone;
 
 use App\Model\Repository;
 use Github\Api\Issue;

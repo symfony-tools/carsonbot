@@ -2,11 +2,11 @@
 
 namespace App\Tests\Subscriber;
 
+use App\Api\Status\Status;
+use App\Api\Status\StatusApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Issues\Status;
-use App\Issues\StatusApi;
-use App\Repository\Repository;
+use App\Model\Repository;
 use App\Subscriber\NeedsReviewNewPRSubscriber;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
