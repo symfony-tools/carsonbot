@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Issues\GitHub;
+namespace App\Tests\Api\Status;
 
-use App\Issues\GitHub\CachedLabelsApi;
-use App\Issues\GitHub\GitHubStatusApi;
-use App\Issues\Status;
-use App\Repository\Repository;
+use App\Api\Label\GithubLabelApi;
+use App\Api\Status\GitHubStatusApi;
+use App\Api\Status\Status;
+use App\Model\Repository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -20,7 +20,7 @@ class GitHubStatusApiTest extends TestCase
     const REPO_NAME = 'carson';
 
     /**
-     * @var CachedLabelsApi|MockObject
+     * @var GithubLabelApi|MockObject
      */
     private $labelsApi;
 
@@ -36,7 +36,7 @@ class GitHubStatusApiTest extends TestCase
 
     protected function setUp()
     {
-        $this->labelsApi = $this->getMockBuilder(CachedLabelsApi::class)
+        $this->labelsApi = $this->getMockBuilder(GithubLabelApi::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger = $this->getMockBuilder(LoggerInterface::class)

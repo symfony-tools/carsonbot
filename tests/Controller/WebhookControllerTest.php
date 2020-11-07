@@ -2,8 +2,8 @@
 
 namespace App\Tests\Controller;
 
-use App\Issues\StatusApi;
-use App\Repository\Provider\RepositoryProviderInterface;
+use App\Api\Status\StatusApi;
+use App\Service\RepositoryProvider;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class WebhookControllerTest extends WebTestCase
@@ -17,7 +17,7 @@ class WebhookControllerTest extends WebTestCase
         }
 
         $this->client = $this->createClient();
-        $repository = self::$container->get(RepositoryProviderInterface::class);
+        $repository = self::$container->get(RepositoryProvider::class);
         $statusApi = self::$container->get(StatusApi::class);
 
         // the labels need to be off this issue for one test to pass

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace App\Model;
 
-use App\Issues\GitHub\GitHubStatusApi;
+use App\Api\Status\GitHubStatusApi;
 
 /**
  * @author Ener-Getick <egetick@gmail.com>

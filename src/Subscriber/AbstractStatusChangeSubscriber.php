@@ -2,8 +2,8 @@
 
 namespace App\Subscriber;
 
-use App\Issues\Status;
-use App\Issues\StatusApi;
+use App\Api\Status\Status;
+use App\Api\Status\StatusApi;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterface

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\Provider\RepositoryProviderInterface;
+use App\Service\RepositoryProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -11,7 +11,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/")
      */
-    public function index(RepositoryProviderInterface $repositoryProvider)
+    public function index(RepositoryProvider $repositoryProvider)
     {
         $repositories = $repositoryProvider->getAllRepositories();
 

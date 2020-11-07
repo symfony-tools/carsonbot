@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Issues\GitHub;
+namespace App\Api\Milestone;
 
-use App\Repository\Repository;
+use App\Model\Repository;
 use Github\Api\Issue;
 use Github\Api\Issue\Milestones;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class MilestonesApi
+class GithubMilestoneApi implements MilestoneApi
 {
     /**
      * @var Milestones
@@ -32,7 +32,7 @@ class MilestonesApi
         $this->issuesApi = $issuesApi;
     }
 
-    private function getMilestones(Repository $repository)
+    private function getMilestones(Repository $repository): array
     {
         $key = $this->getCacheKey($repository);
         if (!isset($this->cache[$key])) {
@@ -66,10 +66,7 @@ class MilestonesApi
         ]);
     }
 
-    /**
-     * @return bool
-     */
-    public function exists(Repository $repository, string $milestoneName)
+    public function exists(Repository $repository, string $milestoneName): bool
     {
         foreach ($this->getMilestones($repository) as $milestone) {
             if ($milestone['title'] === $milestoneName) {

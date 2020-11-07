@@ -3,8 +3,7 @@ services:
         autowire: true
         autoconfigure: true
 
-    App\Issues\GitHub\CachedLabelsApi:
-        class: App\Tests\Service\Issues\Github\FakedCachedLabelApi
-
-    App\Issues\StatusApi: '@App\Issues\NullStatusApi'
-    App\Issues\CommentsApiInterface: '@App\Issues\NullCommentsApi'
+    App\Api\Issue\IssueApi: '@App\Api\Issue\NullIssueApi'
+    App\Api\Label\LabelApi: '@App\Api\Label\StaticLabelApi'
+    App\Api\Milestone\MilestoneApi: '@App\Api\Milestone\StaticMilestoneApi'
+    App\Api\Status\StatusApi: '@App\Api\Status\NullStatusApi'

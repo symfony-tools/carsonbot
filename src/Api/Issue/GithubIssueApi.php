@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Issues\GitHub;
+namespace App\Api\Issue;
 
-use App\Issues\CommentsApiInterface;
-use App\Repository\Repository;
+use App\Model\Repository;
 use Github\Api\Issue\Comments;
 
-class GithubCommentsApi implements CommentsApiInterface
+class GithubIssueApi implements IssueApi
 {
     private $issueCommentApi;
 
@@ -18,7 +17,7 @@ class GithubCommentsApi implements CommentsApiInterface
     /**
      * This will comment on both Issues and Pull Requests.
      */
-    public function commentOnIssue(Repository $repository, $issueNumber, $commentBody)
+    public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody)
     {
         $this->issueCommentApi->create(
             $repository->getVendor(),

@@ -2,9 +2,9 @@
 
 namespace App\Subscriber;
 
+use App\Api\Issue\IssueApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Issues\CommentsApiInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -14,7 +14,7 @@ class WelcomeFirstTimeContributorSubscriber implements EventSubscriberInterface
 {
     private $commentsApi;
 
-    public function __construct(CommentsApiInterface $commentsApi)
+    public function __construct(IssueApi $commentsApi)
     {
         $this->commentsApi = $commentsApi;
     }

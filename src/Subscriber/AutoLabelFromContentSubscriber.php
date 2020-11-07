@@ -2,9 +2,9 @@
 
 namespace App\Subscriber;
 
+use App\Api\Label\LabelApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Issues\GitHub\CachedLabelsApi;
 use App\Service\LabelNameExtractor;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -17,7 +17,7 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
 
     private $labelExtractor;
 
-    public function __construct(CachedLabelsApi $labelsApi, LabelNameExtractor $labelExtractor)
+    public function __construct(LabelApi $labelsApi, LabelNameExtractor $labelExtractor)
     {
         $this->labelsApi = $labelsApi;
         $this->labelExtractor = $labelExtractor;

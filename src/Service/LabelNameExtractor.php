@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Issues\GitHub\CachedLabelsApi;
-use App\Repository\Repository;
+use App\Api\Label\LabelApi;
+use App\Model\Repository;
 
 /**
  * Extract label name from a PR/Issue.
@@ -33,7 +33,7 @@ class LabelNameExtractor
         'wdt' => 'WebProfilerBundle',
     ];
 
-    public function __construct(CachedLabelsApi $labelsApi)
+    public function __construct(LabelApi $labelsApi)
     {
         $this->labelsApi = $labelsApi;
     }

@@ -2,12 +2,12 @@
 
 namespace App\Tests\Subscriber;
 
+use App\Api\Label\StaticLabelApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Repository\Repository;
+use App\Model\Repository;
 use App\Service\LabelNameExtractor;
 use App\Subscriber\AutoUpdateTitleWithLabelSubscriber;
-use App\Tests\Service\Issues\Github\FakedCachedLabelApi;
 use Github\Api\Issue\Labels;
 use Github\Api\PullRequest;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $backendApi = $this->getMockBuilder(Labels::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $labelsApi = new FakedCachedLabelApi($backendApi, new NullAdapter());
+        $labelsApi = new StaticLabelApi($backendApi, new NullAdapter());
         $this->pullRequestApi = $this->getMockBuilder(PullRequest::class)
             ->disableOriginalConstructor()
             ->setMethods(['update'])

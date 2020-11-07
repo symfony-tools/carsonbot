@@ -71,13 +71,13 @@ services:
     Github\Api\Issue\Comments:
         factory: ['@Github\Api\Issue', comments]
 
-    App\Issues\StatusApi: '@App\Issues\GitHub\GitHubStatusApi'
-    App\Issues\CommentsApiInterface: '@App\Issues\GitHub\GithubCommentsApi'
+    App\Api\Issue\IssueApi: '@App\Api\Issue\GithubIssueApi'
+    App\Api\Label\LabelApi: '@App\Api\Label\GithubLabelApi'
+    App\Api\Milestone\MilestoneApi: '@App\Api\Milestone\GithubMilestoneApi'
+    App\Api\Status\StatusApi: '@App\Api\Status\GitHubStatusApi'
 
-    App\Repository\Provider\InMemoryRepositoryProvider:
+    App\Service\RepositoryProvider:
         arguments: [ '%repositories%' ]
-
-    App\Repository\Provider\RepositoryProviderInterface: '@App\Repository\Provider\InMemoryRepositoryProvider'
 
     subscriber.symfony_docs.milestone:
         class: App\Subscriber\MilestoneNewPRSubscriber

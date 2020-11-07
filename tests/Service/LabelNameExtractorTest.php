@@ -2,9 +2,9 @@
 
 namespace App\Tests\Service;
 
-use App\Repository\Repository;
+use App\Api\Label\StaticLabelApi;
+use App\Model\Repository;
 use App\Service\LabelNameExtractor;
-use App\Tests\Service\Issues\Github\FakedCachedLabelApi;
 use Github\Api\Issue\Labels;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\NullAdapter;
@@ -16,7 +16,7 @@ class LabelNameExtractorTest extends TestCase
         $backendApi = $this->getMockBuilder(Labels::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $api = new FakedCachedLabelApi($backendApi, new NullAdapter());
+        $api = new StaticLabelApi($backendApi, new NullAdapter());
         $extractor = new LabelNameExtractor($api);
         $repo = new Repository('carson-playground', 'symfony');
 

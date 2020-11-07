@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Issues;
+namespace App\Service;
 
 use App\Event\EventDispatcher;
 use App\Event\GitHubEvent;
-use App\Repository\Provider\RepositoryProviderInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +23,7 @@ class GitHubRequestHandler implements LoggerAwareInterface
     private $repositoryProvider;
     private $container;
 
-    public function __construct(EventDispatcher $dispatcher, RepositoryProviderInterface $repositoryProvider)
+    public function __construct(EventDispatcher $dispatcher, RepositoryProvider $repositoryProvider)
     {
         $this->dispatcher = $dispatcher;
         $this->repositoryProvider = $repositoryProvider;

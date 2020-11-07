@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Issues\GitHub;
+namespace App\Tests\Api\Label;
 
-use App\Issues\GitHub\CachedLabelsApi;
-use App\Repository\Repository;
+use App\Api\Label\GithubLabelApi;
+use App\Model\Repository;
 use Github\Api\Issue\Labels;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +12,7 @@ use Symfony\Component\Cache\Adapter\NullAdapter;
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class CachedLabelsApiTest extends TestCase
+class GithubLabelApiTest extends TestCase
 {
     const USER_NAME = 'weaverryan';
 
@@ -24,7 +24,7 @@ class CachedLabelsApiTest extends TestCase
     private $backendApi;
 
     /**
-     * @var CachedLabelsApi
+     * @var GithubLabelApi
      */
     private $api;
 
@@ -35,7 +35,7 @@ class CachedLabelsApiTest extends TestCase
         $this->backendApi = $this->getMockBuilder(Labels::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->api = new CachedLabelsApi($this->backendApi, new NullAdapter());
+        $this->api = new GithubLabelApi($this->backendApi, new NullAdapter());
         $this->repository = new Repository(
             self::USER_NAME,
             self::REPO_NAME,
