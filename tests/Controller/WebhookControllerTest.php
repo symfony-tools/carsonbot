@@ -73,6 +73,11 @@ class WebhookControllerTest extends WebTestCase
                 'issues.labeled.feature.json',
                 ['issue' => 2, 'status_change' => null],
             ],
+            'Welcome first users' => [
+                'pull_request',
+                'pull_request.new_contributor.json',
+                ['pull_request' => 4, 'status_change' => 'needs_review',  'pr_labels' => [], 'new_contributor' => true],
+            ],
         ];
     }
 }

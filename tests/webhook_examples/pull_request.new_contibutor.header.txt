@@ -1,0 +1,10 @@
+Request URL: https://nyholm.tech:
+Request method: POST
+Accept: */*
+content-type: application/x-www-form-urlencoded
+User-Agent: GitHub-Hookshot/888f7f5
+X-GitHub-Delivery: 47beb300-1d19-11eb-818f-ace469801400
+X-GitHub-Event: pull_request
+X-GitHub-Hook-ID: 259877073
+X-GitHub-Hook-Installation-Target-ID: 309178226
+X-GitHub-Hook-Installation-Target-Type: repository
