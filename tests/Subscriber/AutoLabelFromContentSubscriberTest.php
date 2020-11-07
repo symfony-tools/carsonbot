@@ -5,6 +5,7 @@ namespace App\Tests\Subscriber;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Repository\Repository;
+use App\Service\LabelNameExtractor;
 use App\Subscriber\AutoLabelFromContentSubscriber;
 use App\Tests\Service\Issues\Github\FakedCachedLabelApi;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +30,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['addIssueLabels'])
             ->getMock();
-        $this->autoLabelSubscriber = new AutoLabelFromContentSubscriber($this->labelsApi);
+        $this->autoLabelSubscriber = new AutoLabelFromContentSubscriber($this->labelsApi, new LabelNameExtractor($this->labelsApi));
         $this->repository = new Repository('weaverryan', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
