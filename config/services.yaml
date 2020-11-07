@@ -11,6 +11,7 @@ parameters:
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
                 - 'App\Subscriber\WelcomeFirstTimeContributorSubscriber'
                 - 'App\Subscriber\CloseDraftPRSubscriber'
+                - 'App\Subscriber\RemoveStaledLabelOnCommentSubscriber'
             secret: '%env(SYMFONY_SECRET)%'
 
         symfony/symfony-docs:
@@ -23,6 +24,7 @@ parameters:
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'subscriber.symfony_docs.milestone'
+                - 'App\Subscriber\RemoveStaledLabelOnCommentSubscriber'
             secret: '%env(SYMFONY_DOCS_SECRET)%'
 
         # used in a functional test
@@ -38,6 +40,7 @@ parameters:
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
                 - 'App\Subscriber\WelcomeFirstTimeContributorSubscriber'
                 - 'App\Subscriber\CloseDraftPRSubscriber'
+                - 'App\Subscriber\RemoveStaledLabelOnCommentSubscriber'
 
 services:
     _defaults:

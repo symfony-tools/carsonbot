@@ -38,5 +38,13 @@ crons:
         spec: '*/5 * * * *'
         cmd: croncape bin/console app:task:run
 
+    stale_issues_symfony:
+        spec: '58 12 * * *'
+        cmd: croncape bin/console app:issue:ping-stale symfony/symfony
+
+    stale_issues_docs:
+        spec: '48 12 * * *'
+        cmd: croncape bin/console app:issue:ping-stale symfony/symfony-docs
+
 relationships:
     database: "mydatabase:postgresql"

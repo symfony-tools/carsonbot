@@ -31,8 +31,8 @@ class GithubIssueApi implements IssueApi
         ];
 
         $issueNumber = null;
-        $exitingIssues = $this->searchApi->issues(sprintf('repo:%s "%s" is:open author:%s', $repository->getFullName(), $title, $this->botUsername));
-        foreach ($exitingIssues['items'] ?? [] as $issue) {
+        $existingIssues = $this->searchApi->issues(sprintf('repo:%s "%s" is:open author:%s', $repository->getFullName(), $title, $this->botUsername));
+        foreach ($existingIssues['items'] ?? [] as $issue) {
             $issueNumber = $issue['number'];
         }
 
@@ -42,6 +42,14 @@ class GithubIssueApi implements IssueApi
             unset($params['labels']);
             $this->issueApi->update($repository->getVendor(), $repository->getName(), $issueNumber, $params);
         }
+    }
+
+    public function lastCommentWasMadeByBot(Repository $repository, $number): bool
+    {
+        $allComments = $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $number);
+        $lastComment = $allComments[count($allComments) - 1] ?? [];
+
+        return $this->botUsername === ($lastComment['user']['login'] ?? null);
     }
 
     public function show(Repository $repository, $issueNumber): array
@@ -65,5 +73,12 @@ class GithubIssueApi implements IssueApi
             $issueNumber,
             ['body' => $commentBody]
         );
+    }
+
+    public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): array
+    {
+        $issues = $this->searchApi->issues(sprintf('repo:%s is:issue -linked:pr -label:"Keep open" is:open updated:<%s', $repository->getFullName(), $noUpdateAfter->format('Y-m-d')));
+
+        return $issues['items'] ?? [];
     }
 }
