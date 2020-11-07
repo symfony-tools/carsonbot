@@ -2,7 +2,7 @@
 
 namespace App\Issues\GitHub;
 
-use App\Repository\Repository;
+use App\Model\Repository;
 use Github\Api\Issue;
 use Github\Api\Issue\Milestones;
 

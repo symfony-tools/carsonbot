@@ -4,7 +4,7 @@ namespace App\Issues\GitHub;
 
 use App\Issues\Status;
 use App\Issues\StatusApi;
-use App\Repository\Repository;
+use App\Model\Repository;
 use Psr\Log\LoggerInterface;
 
 class GitHubStatusApi implements StatusApi

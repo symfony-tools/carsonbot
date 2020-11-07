@@ -2,7 +2,7 @@
 
 namespace App\Issues;
 
-use App\Repository\Repository;
+use App\Model\Repository;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>

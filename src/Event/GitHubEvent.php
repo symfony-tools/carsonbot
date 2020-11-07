@@ -2,7 +2,7 @@
 
 namespace App\Event;
 
-use App\Repository\Repository;
+use App\Model\Repository;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**

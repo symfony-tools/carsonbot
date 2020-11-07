@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Issues\GitHub\CachedLabelsApi;
-use App\Repository\Repository;
+use App\Model\Repository;
 
 /**
  * Extract label name from a PR/Issue.

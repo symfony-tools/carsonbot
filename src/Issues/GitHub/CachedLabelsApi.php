@@ -2,7 +2,7 @@
 
 namespace App\Issues\GitHub;
 
-use App\Repository\Repository;
+use App\Model\Repository;
 use Github\Api\Issue\Labels;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;

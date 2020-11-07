@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Repository\Provider;
+namespace App\Service;
 
-use App\Repository\Repository;
+use App\Model\Repository;
 
 /**
  * @author Ener-Getick <egetick@gmail.com>
  */
-class InMemoryRepositoryProvider implements RepositoryProviderInterface
+class RepositoryProvider
 {
     private $repositories = [];
 

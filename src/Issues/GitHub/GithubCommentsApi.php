@@ -3,7 +3,7 @@
 namespace App\Issues\GitHub;
 
 use App\Issues\CommentsApiInterface;
-use App\Repository\Repository;
+use App\Model\Repository;
 use Github\Api\Issue\Comments;
 
 class GithubCommentsApi implements CommentsApiInterface

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Model;
 
 use App\Issues\GitHub\GitHubStatusApi;
 
