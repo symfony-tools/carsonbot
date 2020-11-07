@@ -25,7 +25,7 @@ class WelcomeFirstTimeContributorSubscriber implements EventSubscriberInterface
     public function onPullRequest(GitHubEvent $event)
     {
         $data = $event->getData();
-        if ('opened' !== $data['action']) {
+        if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
             return;
         }
 

@@ -79,6 +79,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
                 'number' => 1234,
                 'title' => $prTitle,
                 'body' => $prBody,
+                'draft' => false,
             ],
         ], $this->repository);
 

@@ -10,6 +10,7 @@ parameters:
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
                 - 'App\Subscriber\WelcomeFirstTimeContributorSubscriber'
+                - 'App\Subscriber\CloseDraftPRSubscriber'
             secret: '%env(SYMFONY_SECRET)%'
 
         symfony/symfony-docs:
@@ -36,6 +37,7 @@ parameters:
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
                 - 'App\Subscriber\WelcomeFirstTimeContributorSubscriber'
+                - 'App\Subscriber\CloseDraftPRSubscriber'
 
 services:
     _defaults:
