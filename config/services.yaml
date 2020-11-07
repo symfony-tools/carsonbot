@@ -42,6 +42,9 @@ services:
         autowire: true
         autoconfigure: true
 
+        bind:
+            string $botUsername: '%env(BOT_USERNAME)%'
+
     App\:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Subscriber,Kernel.php,GitHubEvents.php}'
@@ -61,6 +64,10 @@ services:
     Github\Api\PullRequest:
         factory: ['@Github\Client', api]
         arguments: [pullRequest]
+
+    Github\Api\Search:
+        factory: ['@Github\Client', api]
+        arguments: [search]
 
     Github\Api\Issue\Labels:
         factory: ['@Github\Api\Issue', labels]
