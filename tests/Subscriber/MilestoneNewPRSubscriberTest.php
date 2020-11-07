@@ -6,6 +6,7 @@ use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Issues\GitHub\MilestonesApi;
 use App\Repository\Repository;
+use App\Service\SymfonyVersionProvider;
 use App\Subscriber\MilestoneNewPRSubscriber;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -26,7 +27,12 @@ class MilestoneNewPRSubscriberTest extends TestCase
     protected function setUp()
     {
         $this->milestonesApi = $this->createMock(MilestonesApi::class);
-        $this->subscriber = new MilestoneNewPRSubscriber($this->milestonesApi);
+        $symfonyVersionProvider = $this->getMockBuilder(SymfonyVersionProvider::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getCurrentVersion'])
+            ->getMock();
+        $symfonyVersionProvider->method('getCurrentVersion')->willReturn('5.1');
+        $this->subscriber = new MilestoneNewPRSubscriber($this->milestonesApi, $symfonyVersionProvider);
         $this->repository = new Repository('nyholm', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();

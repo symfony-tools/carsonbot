@@ -5,6 +5,7 @@ namespace App\Subscriber;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Issues\GitHub\MilestonesApi;
+use App\Service\SymfonyVersionProvider;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -13,10 +14,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class MilestoneNewPRSubscriber implements EventSubscriberInterface
 {
     private $milestonesApi;
+    private $symfonyVersionProvider;
+    private $ignoreCurrentVersion;
 
-    public function __construct(MilestonesApi $milestonesApi)
+    public function __construct(MilestonesApi $milestonesApi, SymfonyVersionProvider $symfonyVersionProvider, $ignoreCurrentVersion = false)
     {
         $this->milestonesApi = $milestonesApi;
+        $this->symfonyVersionProvider = $symfonyVersionProvider;
+        $this->ignoreCurrentVersion = $ignoreCurrentVersion;
     }
 
     /**
@@ -32,6 +37,10 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
 
         $targetBranch = $data['pull_request']['base']['ref'];
         if ($targetBranch === $data['repository']['default_branch']) {
+            return;
+        }
+
+        if ($this->ignoreCurrentVersion && $targetBranch === $this->symfonyVersionProvider->getCurrentVersion()) {
             return;
         }
 
