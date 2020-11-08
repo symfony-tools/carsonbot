@@ -4,8 +4,7 @@ namespace App\Service;
 
 use App\Event\EventDispatcher;
 use App\Event\GitHubEvent;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -16,17 +15,17 @@ use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
  *
  * @author Jules Pietri <jules@heahprod.com>
  */
-class GitHubRequestHandler implements LoggerAwareInterface
+class GitHubRequestHandler
 {
-    use LoggerAwareTrait;
     private $dispatcher;
     private $repositoryProvider;
-    private $container;
+    private $logger;
 
-    public function __construct(EventDispatcher $dispatcher, RepositoryProvider $repositoryProvider)
+    public function __construct(EventDispatcher $dispatcher, RepositoryProvider $repositoryProvider, LoggerInterface $logger)
     {
         $this->dispatcher = $dispatcher;
         $this->repositoryProvider = $repositoryProvider;
+        $this->logger = $logger;
     }
 
     /**
@@ -67,6 +66,8 @@ class GitHubRequestHandler implements LoggerAwareInterface
         try {
             $this->dispatcher->dispatch($event, 'github.'.$eventName);
         } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+
             throw new \RuntimeException(sprintf('Failed dispatching "%s" event for "%s" repository.', (string) $eventName, $repository->getFullName()), 0, $e);
         }
 
