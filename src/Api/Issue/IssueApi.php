@@ -12,5 +12,15 @@ use App\Model\Repository;
  */
 interface IssueApi
 {
+    /**
+     * Open new issue or update existing issue.
+     */
+    public function open(Repository $repository, string $title, string $body, array $labels);
+
     public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody);
+
+    /**
+     * Close an issue or a pull request.
+     */
+    public function close(Repository $repository, $issueNumber);
 }
