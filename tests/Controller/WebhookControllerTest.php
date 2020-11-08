@@ -94,6 +94,11 @@ class WebhookControllerTest extends WebTestCase
                 'issues.labeled.waitingCodeMerge.json',
                 ['pull_request' => 2, 'milestone' => 'next'],
             ],
+            'Suggest review on demand' => [
+                'issue_comment',
+                'pull_request.comment.json',
+                ['issue' => 7, 'status_change' => null, 'suggest-review' => true],
+            ],
         ];
     }
 }

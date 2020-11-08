@@ -21,6 +21,8 @@ interface IssueApi
 
     public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody);
 
+    public function hasActivity(Repository $repository, $number): bool;
+
     public function lastCommentWasMadeByBot(Repository $repository, $number): bool;
 
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): array;
@@ -29,4 +31,9 @@ interface IssueApi
      * Close an issue or a pull request.
      */
     public function close(Repository $repository, $issueNumber);
+
+    /**
+     * Get users active or mentioned in this issue/pull request.
+     */
+    public function getUsers(Repository $repository, $issueNumber): array;
 }
