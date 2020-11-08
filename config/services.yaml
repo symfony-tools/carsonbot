@@ -45,6 +45,10 @@ services:
         bind:
             string $botUsername: '%env(BOT_USERNAME)%'
 
+    _instanceof:
+        App\Service\TaskHandler\TaskHandlerInterface:
+            tags: ['app.task_handlers']
+
     App\:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Subscriber,Kernel.php,GitHubEvents.php}'
@@ -90,3 +94,7 @@ services:
         class: App\Subscriber\MilestoneNewPRSubscriber
         arguments:
             $ignoreCurrentVersion: true
+
+    App\Service\TaskRunner:
+        arguments:
+            $handlers: !tagged_iterator app.task_handlers

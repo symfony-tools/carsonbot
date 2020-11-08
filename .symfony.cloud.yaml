@@ -6,6 +6,7 @@ runtime:
     extensions:
         - apcu
         - mbstring
+        - pdo_pgsql
 
 build:
     flavor: none
@@ -31,3 +32,11 @@ hooks:
     deploy: |
         set -x -e
         (>&2 symfony-deploy)
+
+crons:
+    run_Tasks:
+        spec: */5 * * * *
+        cmd: croncape bin/console app:task:run
+
+relationships:
+    database: "mydatabase:postgresql"
