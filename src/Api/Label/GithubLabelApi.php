@@ -4,6 +4,7 @@ namespace App\Api\Label;
 
 use App\Model\Repository;
 use Github\Api\Issue\Labels;
+use Github\Exception\RuntimeException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -84,12 +85,14 @@ class GithubLabelApi implements LabelApi
             return;
         }
 
-        $this->labelsApi->remove(
-            $repository->getVendor(),
-            $repository->getName(),
-            $issueNumber,
-            $label
-        );
+        try {
+            $this->labelsApi->remove($repository->getVendor(), $repository->getName(), $issueNumber, $label);
+        } catch (RuntimeException $e) {
+            // We can just ignore 404 exceptions.
+            if (404 !== $e->getCode()) {
+                throw $e;
+            }
+        }
 
         // Update cache if already loaded
         if (isset($this->labelCache[$key])) {
