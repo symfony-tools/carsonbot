@@ -89,7 +89,7 @@ class GithubLabelApi implements LabelApi
             $this->labelsApi->remove($repository->getVendor(), $repository->getName(), $issueNumber, $label);
         } catch (RuntimeException $e) {
             // We can just ignore 404 exceptions.
-            if ($e->getCode() !== 404) {
+            if (404 !== $e->getCode()) {
                 throw $e;
             }
         }
