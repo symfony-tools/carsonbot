@@ -39,7 +39,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $originalTitle = $prTitle = $data['pull_request']['title'];
+        $originalTitle = $prTitle = trim($data['pull_request']['title']);
         $validLabels = [];
         foreach ($data['pull_request']['labels'] as $label) {
             if ('dddddd' === $label['color']) {
@@ -61,7 +61,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         }
 
         // Add back labels
-        $prTitle = $prPrefix.' '.$prTitle;
+        $prTitle = trim($prPrefix.' '.$prTitle);
         if ($originalTitle === $prTitle) {
             return;
         }
