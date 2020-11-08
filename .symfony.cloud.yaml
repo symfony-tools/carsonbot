@@ -34,8 +34,8 @@ hooks:
         (>&2 symfony-deploy)
 
 crons:
-    run_Tasks:
-        spec: */5 * * * *
+    run_tasks:
+        spec: '*/5 * * * *'
         cmd: croncape bin/console app:task:run
 
 relationships:
