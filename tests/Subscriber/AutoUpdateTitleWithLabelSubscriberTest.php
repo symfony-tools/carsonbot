@@ -42,7 +42,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->dispatcher->addSubscriber($this->subscriber);
     }
 
-    public function testOnPullRequestOpen()
+    public function testOnPullRequestLabeled()
     {
         $event = new GitHubEvent([
             'action' => 'labeled',
@@ -62,5 +62,24 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
         $this->assertSame('[Console][FrameworkBundle] [bar] Foo', $responseData['new_title']);
+    }
+
+    public function testOnPullRequestLabeledWithExisting()
+    {
+        $event = new GitHubEvent([
+            'action' => 'labeled',
+            'number' => 1234,
+            'pull_request' => [
+                'title' => '[Messenger] Fix JSON',
+                'labels' => [
+                    ['name' => 'Status: Needs Review', 'color' => 'abcabc'],
+                    ['name' => 'Messenger', 'color' => 'dddddd'],
+                ],
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+        $this->assertEmpty($responseData);
     }
 }
