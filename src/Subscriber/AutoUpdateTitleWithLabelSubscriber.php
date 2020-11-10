@@ -42,7 +42,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         $originalTitle = $prTitle = trim($data['pull_request']['title']);
         $validLabels = [];
         foreach ($data['pull_request']['labels'] as $label) {
-            if ('dddddd' === $label['color']) {
+            if ('dddddd' === strtolower($label['color'])) {
                 $validLabels[] = $label['name'];
                 // Remove label name from title
                 $prTitle = str_replace('['.$label['name'].']', '', $prTitle);
