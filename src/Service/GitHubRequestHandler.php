@@ -78,6 +78,13 @@ class GitHubRequestHandler
             $responseData['unsupported_action'] = $eventName;
         }
 
+        $this->logger->info('Done handling request', [
+            'event' => $eventName,
+            'response-data' => json_encode($responseData),
+            'repository' => $repositoryFullName,
+            'issue-number' => $data['number'] ?? $data['issue']['number'] ?? $data['pull_request']['number'] ?? 'unknown',
+        ]);
+
         return $responseData;
     }
 

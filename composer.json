@@ -4,6 +4,7 @@
     "license": "MIT",
     "require": {
         "php": ">=7.2",
+        "ext-json": "*",
         "composer/package-versions-deprecated": "^1.11",
         "doctrine/doctrine-bundle": "^2.1",
         "doctrine/doctrine-migrations-bundle": "^3.0",
