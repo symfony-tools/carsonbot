@@ -30,6 +30,11 @@ class GithubPullRequestApi implements PullRequestApi
         return (array) $this->pullRequest->show($repository->getVendor(), $repository->getName(), $number);
     }
 
+    public function updateTitle(Repository $repository, $number, $title): void
+    {
+        $this->pullRequest->update($repository->getVendor(), $repository->getName(), $number, ['title' => $title]);
+    }
+
     /**
      * Trigger start of a "find reviewer" job. The job runs on github actions and will comment on the PR.
      */

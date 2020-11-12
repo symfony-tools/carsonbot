@@ -3,11 +3,12 @@
 namespace App\Subscriber;
 
 use App\Api\Label\LabelApi;
+use App\Api\PullRequest\PullRequestApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Service\LabelNameExtractor;
-use Github\Api\PullRequest;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Lock\LockFactory;
 
 /**
  * When a label changed, then update PR title.
@@ -20,12 +21,14 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
 
     private $labelExtractor;
     private $pullRequestApi;
+    private $lockFactory;
 
-    public function __construct(LabelApi $labelsApi, LabelNameExtractor $labelExtractor, PullRequest $pullRequestApi)
+    public function __construct(LabelApi $labelsApi, LabelNameExtractor $labelExtractor, PullRequestApi $pullRequestApi, LockFactory $lockFactory)
     {
         $this->labelsApi = $labelsApi;
         $this->labelExtractor = $labelExtractor;
         $this->pullRequestApi = $pullRequestApi;
+        $this->lockFactory = $lockFactory;
     }
 
     public function onPullRequest(GitHubEvent $event)
@@ -69,10 +72,19 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         }
 
         $repository = $event->getRepository();
-        $prNumber = $data['number'];
-        $this->pullRequestApi->update($repository->getVendor(), $repository->getName(), $prNumber, ['title' => $prTitle]);
+        $number = $data['number'];
+
+        $lock = $this->lockFactory->createLock($repository->getFullName().'#'.$number);
+        $lock->acquire(true); // blocking. Lock will be released at __destruct
+
+        // Refetch the current title just to make sure it has not changed
+        if ($prTitle === ($this->pullRequestApi->show($repository, $number)['title'] ?? '')) {
+            return;
+        }
+
+        $this->pullRequestApi->updateTitle($repository, $number, $prTitle);
         $event->setResponseData([
-            'pull_request' => $prNumber,
+            'pull_request' => $number,
             'new_title' => $prTitle,
         ]);
     }
