@@ -31,9 +31,11 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
     public function onPullRequest(GitHubEvent $event)
     {
         $data = $event->getData();
-        if ('labeled' !== $action = $data['action']) {
+        $action = $data['action'];
+        if (!in_array($action, ['labeled', 'unlabeled'])) {
             return;
         }
+
         if (!isset($data['pull_request'])) {
             // Only update PullRequests
             return;
