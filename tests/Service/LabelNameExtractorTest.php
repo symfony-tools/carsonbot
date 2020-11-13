@@ -5,19 +5,15 @@ namespace App\Tests\Service;
 use App\Api\Label\StaticLabelApi;
 use App\Model\Repository;
 use App\Service\LabelNameExtractor;
-use Github\Api\Issue\Labels;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Cache\Adapter\NullAdapter;
+use Psr\Log\NullLogger;
 
 class LabelNameExtractorTest extends TestCase
 {
     public function testExtractLabels()
     {
-        $backendApi = $this->getMockBuilder(Labels::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $api = new StaticLabelApi($backendApi, new NullAdapter());
-        $extractor = new LabelNameExtractor($api);
+        $api = new StaticLabelApi();
+        $extractor = new LabelNameExtractor($api, new NullLogger());
         $repo = new Repository('carson-playground', 'symfony');
 
         $this->assertSame(['Messenger'], $extractor->extractLabels('[Messenger] Foobar', $repo));

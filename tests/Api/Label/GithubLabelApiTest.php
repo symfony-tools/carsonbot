@@ -7,6 +7,7 @@ use App\Model\Repository;
 use Github\Api\Issue\Labels;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 
 /**
@@ -35,7 +36,7 @@ class GithubLabelApiTest extends TestCase
         $this->backendApi = $this->getMockBuilder(Labels::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->api = new GithubLabelApi($this->backendApi, new NullAdapter());
+        $this->api = new GithubLabelApi($this->backendApi, new NullAdapter(), new NullLogger());
         $this->repository = new Repository(
             self::USER_NAME,
             self::REPO_NAME,
