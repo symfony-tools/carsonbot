@@ -5,6 +5,7 @@ namespace App\Api\Label;
 use App\Model\Repository;
 use Github\Api\Issue\Labels;
 use Github\Exception\RuntimeException;
+use Github\ResultPager;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -15,16 +16,21 @@ use Symfony\Contracts\Cache\ItemInterface;
 class GithubLabelApi implements LabelApi
 {
     /**
-     * @var Labels
-     */
-    private $labelsApi;
-
-    /**
      * In memory cache for specific issues.
      *
      * @var array<array-key, array<array-key, bool>>
      */
     private $labelCache = [];
+
+    /**
+     * @var Labels
+     */
+    private $labelsApi;
+
+    /**
+     * @var ResultPager
+     */
+    private $resultPager;
 
     /**
      * @var CacheInterface
@@ -36,9 +42,10 @@ class GithubLabelApi implements LabelApi
      */
     private $logger;
 
-    public function __construct(Labels $labelsApi, CacheInterface $cache, LoggerInterface $logger)
+    public function __construct(Labels $labelsApi, ResultPager $resultPager, CacheInterface $cache, LoggerInterface $logger)
     {
         $this->labelsApi = $labelsApi;
+        $this->resultPager = $resultPager;
         $this->cache = $cache;
         $this->logger = $logger;
     }
@@ -118,14 +125,9 @@ class GithubLabelApi implements LabelApi
      */
     public function getAllLabelsForRepository(Repository $repository): array
     {
-        $key = 'labels'.sha1($repository->getFullName());
+        $allLabels = $this->getAllLabels($repository);
 
-        return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
-            $labels = $this->labelsApi->all($repository->getVendor(), $repository->getName()) ?? [];
-            $item->expiresAfter(36000);
-
-            return array_column($labels, 'name');
-        });
+        return array_column($allLabels, 'name');
     }
 
     /**
@@ -136,8 +138,8 @@ class GithubLabelApi implements LabelApi
         $key = 'component_labels_'.sha1($repository->getFullName());
 
         return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
-            $labels = $this->labelsApi->all($repository->getVendor(), $repository->getName()) ?? [];
-            $item->expiresAfter(36000);
+            $labels = $this->getAllLabels($repository);
+            $item->expiresAfter(86400);
             $componentLabels = [];
             foreach ($labels as $label) {
                 if ('dddddd' === strtolower($label['color'])) {
@@ -146,6 +148,18 @@ class GithubLabelApi implements LabelApi
             }
 
             return $componentLabels;
+        });
+    }
+
+    private function getAllLabels(Repository $repository): array
+    {
+        $key = 'labels_'.sha1($repository->getFullName());
+
+        return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
+            $labels = $this->resultPager->fetchAll($this->labelsApi, 'all', [$repository->getVendor(), $repository->getName()]) ?? [];
+            $item->expiresAfter(604800);
+
+            return $labels;
         });
     }
 

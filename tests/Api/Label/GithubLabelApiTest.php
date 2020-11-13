@@ -5,6 +5,7 @@ namespace App\Tests\Api\Label;
 use App\Api\Label\GithubLabelApi;
 use App\Model\Repository;
 use Github\Api\Issue\Labels;
+use Github\ResultPager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -36,7 +37,16 @@ class GithubLabelApiTest extends TestCase
         $this->backendApi = $this->getMockBuilder(Labels::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->api = new GithubLabelApi($this->backendApi, new NullAdapter(), new NullLogger());
+
+        $resultPager = $this->getMockBuilder(ResultPager::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['fetchAll'])
+            ->getMock();
+        $resultPager->method('fetchAll')->willReturnCallback(function () {
+            return $this->backendApi->all('x', 'y');
+        });
+
+        $this->api = new GithubLabelApi($this->backendApi, $resultPager, new NullAdapter(), new NullLogger());
         $this->repository = new Repository(
             self::USER_NAME,
             self::REPO_NAME,

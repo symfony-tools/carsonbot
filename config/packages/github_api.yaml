@@ -5,6 +5,9 @@ services:
         calls:
             - ['authenticate', ['%env(GITHUB_TOKEN)%', 'access_token_header']]
 
+    Github\ResultPager:
+        arguments: ['@Github\Client']
+
     Github\HttpClient\Builder:
         arguments:
             - '@github.httplug_client'
