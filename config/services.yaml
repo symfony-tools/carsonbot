@@ -75,6 +75,8 @@ services:
 
     Github\Api\Issue\Labels:
         factory: ['@Github\Api\Issue', labels]
+        calls:
+            - ['setPerPage', [100]]
 
     Github\Api\Issue\Milestones:
         factory: ['@Github\Api\Issue', milestones]
