@@ -5,6 +5,7 @@ namespace App\Api\Label;
 use App\Model\Repository;
 use Github\Api\Issue\Labels;
 use Github\Exception\RuntimeException;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -30,10 +31,16 @@ class GithubLabelApi implements LabelApi
      */
     private $cache;
 
-    public function __construct(Labels $labelsApi, CacheInterface $cache)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(Labels $labelsApi, CacheInterface $cache, LoggerInterface $logger)
     {
         $this->labelsApi = $labelsApi;
         $this->cache = $cache;
+        $this->logger = $logger;
     }
 
     public function getIssueLabels($issueNumber, Repository $repository): array
@@ -54,7 +61,10 @@ class GithubLabelApi implements LabelApi
             }
         }
 
-        return array_keys($this->labelCache[$key]);
+        $labels = array_keys($this->labelCache[$key]);
+        $this->logger->debug('Returning labels for {repo}#{issue}', ['repo' => $repository->getFullName(), 'issue' => $issueNumber]);
+
+        return $labels;
     }
 
     public function addIssueLabel($issueNumber, string $label, Repository $repository)
@@ -65,12 +75,8 @@ class GithubLabelApi implements LabelApi
             return;
         }
 
-        $this->labelsApi->add(
-            $repository->getVendor(),
-            $repository->getName(),
-            $issueNumber,
-            $label
-        );
+        $this->logger->debug('Adding label "{label}" for {repo}#{issue}', ['label' => $label, 'repo' => $repository->getFullName(), 'issue' => $issueNumber]);
+        $this->labelsApi->add($repository->getVendor(), $repository->getName(), $issueNumber, $label);
 
         // Update cache if already loaded
         if (isset($this->labelCache[$key])) {

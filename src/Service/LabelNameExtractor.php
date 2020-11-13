@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Api\Label\LabelApi;
 use App\Model\Repository;
+use Psr\Log\LoggerInterface;
 
 /**
  * Extract label name from a PR/Issue.
@@ -13,6 +14,7 @@ use App\Model\Repository;
 class LabelNameExtractor
 {
     private $labelsApi;
+    private $logger;
 
     private static $labelAliases = [
         'bridge\doctrine' => 'DoctrineBridge',
@@ -33,9 +35,10 @@ class LabelNameExtractor
         'wdt' => 'WebProfilerBundle',
     ];
 
-    public function __construct(LabelApi $labelsApi)
+    public function __construct(LabelApi $labelsApi, LoggerInterface $logger)
     {
         $this->labelsApi = $labelsApi;
+        $this->logger = $logger;
     }
 
     /**
@@ -56,6 +59,8 @@ class LabelNameExtractor
                 }
             }
         }
+
+        $this->logger->debug('Searched for labels in title', ['title' => $title, 'labels' => json_encode($labels)]);
 
         return $labels;
     }

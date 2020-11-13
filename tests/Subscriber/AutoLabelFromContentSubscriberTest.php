@@ -9,6 +9,7 @@ use App\Model\Repository;
 use App\Service\LabelNameExtractor;
 use App\Subscriber\AutoLabelFromContentSubscriber;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class AutoLabelFromContentSubscriberTest extends TestCase
@@ -30,7 +31,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['addIssueLabels'])
             ->getMock();
-        $this->autoLabelSubscriber = new AutoLabelFromContentSubscriber($this->labelsApi, new LabelNameExtractor($this->labelsApi));
+        $this->autoLabelSubscriber = new AutoLabelFromContentSubscriber($this->labelsApi, new LabelNameExtractor($this->labelsApi, new NullLogger()));
         $this->repository = new Repository('weaverryan', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();

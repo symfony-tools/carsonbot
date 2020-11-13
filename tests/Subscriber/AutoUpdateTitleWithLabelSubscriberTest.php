@@ -8,10 +8,9 @@ use App\GitHubEvents;
 use App\Model\Repository;
 use App\Service\LabelNameExtractor;
 use App\Subscriber\AutoUpdateTitleWithLabelSubscriber;
-use Github\Api\Issue\Labels;
 use Github\Api\PullRequest;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Cache\Adapter\NullAdapter;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
@@ -26,16 +25,13 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
     protected function setUp()
     {
-        $backendApi = $this->getMockBuilder(Labels::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $labelsApi = new StaticLabelApi($backendApi, new NullAdapter());
+        $labelsApi = new StaticLabelApi();
         $this->pullRequestApi = $this->getMockBuilder(PullRequest::class)
             ->disableOriginalConstructor()
             ->setMethods(['update'])
             ->getMock();
 
-        $this->subscriber = new AutoUpdateTitleWithLabelSubscriber($labelsApi, new LabelNameExtractor($labelsApi), $this->pullRequestApi);
+        $this->subscriber = new AutoUpdateTitleWithLabelSubscriber($labelsApi, new LabelNameExtractor($labelsApi, new NullLogger()), $this->pullRequestApi);
         $this->repository = new Repository('carsonbot-playground', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
