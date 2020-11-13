@@ -80,6 +80,7 @@ class GitHubRequestHandler
 
         $this->logger->info('Done handling request', [
             'event' => $eventName,
+            'action' => $data['action'] ?? 'unknown',
             'response-data' => json_encode($responseData),
             'repository' => $repositoryFullName,
             'issue-number' => $data['number'] ?? $data['issue']['number'] ?? $data['pull_request']['number'] ?? 'unknown',
