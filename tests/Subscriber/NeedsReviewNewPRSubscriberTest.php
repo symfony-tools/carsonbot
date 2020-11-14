@@ -42,7 +42,7 @@ class NeedsReviewNewPRSubscriberTest extends TestCase
 
         $event = new GitHubEvent([
             'action' => 'opened',
-            'pull_request' => ['number' => 1234],
+            'pull_request' => ['number' => 1234, 'title' => 'foobar'],
         ], $this->repository);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
@@ -52,6 +52,23 @@ class NeedsReviewNewPRSubscriberTest extends TestCase
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
         $this->assertSame(Status::NEEDS_REVIEW, $responseData['status_change']);
+    }
+
+    public function testOnPullRequestOpenWIP()
+    {
+        $this->statusApi->expects($this->never())
+            ->method('setIssueStatus')
+            ->with(1234, Status::NEEDS_REVIEW);
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => ['number' => 1234, 'title' => '[WIP] foobar'],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+
+        $responseData = $event->getResponseData();
+        $this->assertEmpty($responseData);
     }
 
     public function testOnPullRequestNotOpen()
