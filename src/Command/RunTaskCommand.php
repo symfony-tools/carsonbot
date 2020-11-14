@@ -40,7 +40,7 @@ class RunTaskCommand extends Command
             try {
                 $this->taskRunner->run($task);
             } catch (\Exception $e) {
-                $this->logger->error('Failed running task', ['excpetion' => $e]);
+                $this->logger->error('Failed running task', ['exception' => $e]);
                 $output->writeln($e->getMessage());
             }
         }

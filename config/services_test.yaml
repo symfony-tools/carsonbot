@@ -6,5 +6,5 @@ services:
     App\Api\Issue\IssueApi: '@App\Api\Issue\NullIssueApi'
     App\Api\Label\LabelApi: '@App\Api\Label\StaticLabelApi'
     App\Api\Milestone\MilestoneApi: '@App\Api\Milestone\StaticMilestoneApi'
-    App\Api\PullRequest\PullRequestApi: '@App\Api\PullRequest\GithubPullRequestApi'
+    App\Api\PullRequest\PullRequestApi: '@App\Api\PullRequest\NullPullRequestApi'
     App\Api\Status\StatusApi: '@App\Api\Status\NullStatusApi'

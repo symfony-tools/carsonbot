@@ -61,32 +61,6 @@ services:
         resource: '../src/Subscriber/*'
         autoconfigure: false
 
-    Github\Api\Issue:
-        factory: ['@Github\Client', api]
-        arguments: [issue]
-
-    Github\Api\PullRequest:
-        factory: ['@Github\Client', api]
-        arguments: [pullRequest]
-
-    Github\Api\Repo:
-        factory: ['@Github\Client', api]
-        arguments: [repo]
-
-    Github\Api\Search:
-        factory: ['@Github\Client', api]
-        arguments: [search]
-
-    Github\Api\Issue\Labels:
-        factory: ['@Github\Api\Issue', labels]
-        calls:
-            - ['setPerPage', [100]]
-
-    Github\Api\Issue\Milestones:
-        factory: ['@Github\Api\Issue', milestones]
-
-    Github\Api\Issue\Comments:
-        factory: ['@Github\Api\Issue', comments]
 
     App\Api\Issue\IssueApi: '@App\Api\Issue\GithubIssueApi'
     App\Api\Label\LabelApi: '@App\Api\Label\GithubLabelApi'

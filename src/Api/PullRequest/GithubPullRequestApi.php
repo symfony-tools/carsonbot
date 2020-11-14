@@ -12,9 +12,6 @@ use Github\Api\Search;
  */
 class GithubPullRequestApi implements PullRequestApi
 {
-    /**
-     * @var Repo
-     */
     private $github;
     private $pullRequest;
     private $search;
