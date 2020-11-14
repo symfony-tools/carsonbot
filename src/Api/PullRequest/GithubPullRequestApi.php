@@ -5,6 +5,7 @@ namespace App\Api\PullRequest;
 use App\Model\Repository;
 use Github\Api\PullRequest;
 use Github\Api\Repo;
+use Github\Api\Search;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
@@ -15,14 +16,16 @@ class GithubPullRequestApi implements PullRequestApi
      * @var Repo
      */
     private $github;
-    private $botUsername;
     private $pullRequest;
+    private $search;
+    private $botUsername;
 
-    public function __construct(Repo $github, PullRequest $pullRequest, string $botUsername)
+    public function __construct(Repo $github, PullRequest $pullRequest, Search $search, string $botUsername)
     {
         $this->github = $github;
-        $this->botUsername = $botUsername;
         $this->pullRequest = $pullRequest;
+        $this->search = $search;
+        $this->botUsername = $botUsername;
     }
 
     public function show(Repository $repository, $number): array
@@ -40,5 +43,12 @@ class GithubPullRequestApi implements PullRequestApi
             'pull_request_number' => $number,
             'type' => $type,
         ]);
+    }
+
+    public function getAuthorCount(Repository $repository, string $author): int
+    {
+        $result = $this->search->issues(sprintf('is:pr repo:%s author:%s', $repository->getFullName(), $author));
+
+        return $result['total_count'];
     }
 }

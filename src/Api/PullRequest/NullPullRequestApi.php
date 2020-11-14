@@ -19,4 +19,9 @@ class NullPullRequestApi implements PullRequestApi
     public function findReviewer(Repository $repository, $number, string $type)
     {
     }
+
+    public function getAuthorCount(Repository $repository, string $author): int
+    {
+        return 1;
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Subscriber;
 
 use App\Api\Issue\IssueApi;
+use App\Api\PullRequest\PullRequestApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -13,10 +14,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class WelcomeFirstTimeContributorSubscriber implements EventSubscriberInterface
 {
     private $commentsApi;
+    private $pullRequestApi;
 
-    public function __construct(IssueApi $commentsApi)
+    public function __construct(IssueApi $commentsApi, PullRequestApi $pullRequestApi)
     {
         $this->commentsApi = $commentsApi;
+        $this->pullRequestApi = $pullRequestApi;
     }
 
     public function onPullRequest(GitHubEvent $event)
@@ -32,6 +35,11 @@ class WelcomeFirstTimeContributorSubscriber implements EventSubscriberInterface
         }
 
         $repository = $event->getRepository();
+        if ($this->pullRequestApi->getAuthorCount($repository, $data['sender']['login']) > 1) {
+            // This users has made pull requests before
+            return;
+        }
+
         $pullRequestNumber = $data['pull_request']['number'];
         $defaultBranch = $data['repository']['default_branch'];
         $this->commentsApi->commentOnIssue($repository, $pullRequestNumber, <<<TXT

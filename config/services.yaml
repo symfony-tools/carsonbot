@@ -69,6 +69,10 @@ services:
         factory: ['@Github\Client', api]
         arguments: [pullRequest]
 
+    Github\Api\Repo:
+        factory: ['@Github\Client', api]
+        arguments: [repo]
+
     Github\Api\Search:
         factory: ['@Github\Client', api]
         arguments: [search]
@@ -87,6 +91,7 @@ services:
     App\Api\Issue\IssueApi: '@App\Api\Issue\GithubIssueApi'
     App\Api\Label\LabelApi: '@App\Api\Label\GithubLabelApi'
     App\Api\Milestone\MilestoneApi: '@App\Api\Milestone\GithubMilestoneApi'
+    App\Api\PullRequest\PullRequestApi: '@App\Api\PullRequest\GithubPullRequestApi'
     App\Api\Status\StatusApi: '@App\Api\Status\GitHubStatusApi'
 
     App\Service\RepositoryProvider:
