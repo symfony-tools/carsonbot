@@ -1,5 +1,6 @@
 {
     "name": "carsonbot/carsonbot",
+    "description": "The Carson Issue Butler",
     "type": "project",
     "license": "MIT",
     "require": {
@@ -70,5 +71,6 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         }
     },
-    "minimum-stability": "RC"
+    "minimum-stability": "RC",
+    "prefer-stable": true
 }
