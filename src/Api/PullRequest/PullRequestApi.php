@@ -17,4 +17,6 @@ interface PullRequestApi
     public function show(Repository $repository, $number): array;
 
     public function findReviewer(Repository $repository, $number, string $type);
+
+    public function getAuthorCount(Repository $repository, string $author): int;
 }
