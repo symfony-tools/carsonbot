@@ -33,3 +33,45 @@ services:
         class: Symfony\Component\HttpClient\Retry\GenericRetryStrategy
         arguments:
             - [0, 404, 423, 425, 429, 500, 502, 503, 504, 507, 510]
+
+
+    # Register different APIs as services
+
+    Github\Api\Issue:
+        factory: ['@Github\Client', api]
+        arguments: [issue]
+
+    Github\Api\Issue\Comments:
+        factory: ['@Github\Api\Issue', comments]
+        calls:
+            - ['setPerPage', [100]]
+
+    Github\Api\Issue\Labels:
+        factory: ['@Github\Api\Issue', labels]
+        calls:
+            - ['setPerPage', [100]]
+
+    Github\Api\Issue\Milestones:
+        factory: ['@Github\Api\Issue', milestones]
+
+    Github\Api\Issue\Timeline:
+        factory: ['@Github\Api\Issue', timeline]
+        calls:
+            - [configure]
+
+    Github\Api\PullRequest:
+        factory: ['@Github\Client', api]
+        arguments: [pullRequest]
+
+    Github\Api\PullRequest\Review:
+        factory: ['@Github\Api\PullRequest', reviews]
+
+    Github\Api\Repo:
+        factory: ['@Github\Client', api]
+        arguments: [repo]
+
+    Github\Api\Search:
+        factory: ['@Github\Client', api]
+        arguments: [search]
+        calls:
+            - ['setPerPage', [100]]
