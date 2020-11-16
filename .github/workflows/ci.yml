@@ -43,11 +43,10 @@ jobs:
           composer install --no-interaction --optimize-autoloader
           ./vendor/bin/simple-phpunit install
 
-      - name: Run tests
-        env:
-          GITHUB_TOKEN: ${{ secrets.CARSONTEST_GITHUB_TOKEN }}
+      - name: Setup database
         run: |
-          if [ ! -z $GITHUB_TOKEN ]; then
-              ./vendor/bin/simple-phpunit --testsuite Functional
-          fi
-          ./vendor/bin/simple-phpunit --testsuite Unit
+          bin/console doctrine:database:create
+          bin/console doctrine:schema:create
+
+      - name: Run tests
+        run: ./vendor/bin/simple-phpunit
