@@ -268,6 +268,9 @@
     "symfony/http-kernel": {
         "version": "v5.1.2"
     },
+    "symfony/lock": {
+        "version": "v5.1.8"
+    },
     "symfony/monolog-bridge": {
         "version": "v5.1.2"
     },

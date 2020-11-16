@@ -16,6 +16,10 @@ class NullPullRequestApi implements PullRequestApi
         return [];
     }
 
+    public function updateTitle(Repository $repository, $number, $title): void
+    {
+    }
+
     public function findReviewer(Repository $repository, $number, string $type)
     {
     }

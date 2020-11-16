@@ -16,6 +16,8 @@ interface PullRequestApi
 {
     public function show(Repository $repository, $number): array;
 
+    public function updateTitle(Repository $repository, $number, $title): void;
+
     public function findReviewer(Repository $repository, $number, string $type);
 
     public function getAuthorCount(Repository $repository, string $author): int;
