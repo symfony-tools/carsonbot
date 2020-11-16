@@ -17,6 +17,8 @@ interface IssueApi
      */
     public function open(Repository $repository, string $title, string $body, array $labels);
 
+    public function show(Repository $repository, $issueNumber): array;
+
     public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody);
 
     /**

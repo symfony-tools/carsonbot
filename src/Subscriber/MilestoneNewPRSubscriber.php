@@ -31,7 +31,7 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
     {
         $data = $event->getData();
         $repository = $event->getRepository();
-        if ('opened' !== $data['action']) {
+        if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
             return;
         }
 

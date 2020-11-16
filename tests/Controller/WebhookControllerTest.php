@@ -58,6 +58,16 @@ class WebhookControllerTest extends WebTestCase
                 'pull_request.opened.json',
                 ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Console', 'Bug']],
             ],
+            'On draft pull request opened' => [
+                'pull_request',
+                'pull_request.opened_draft.json',
+                ['pull_request' => 3, 'draft_comment' => true],
+            ],
+            'On pull request draft to ready' => [
+                'pull_request',
+                'pull_request.draft_to_ready.json',
+                ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Console', 'Bug']],
+            ],
             'On pull request labeled' => [
                 'pull_request',
                 'pull_request.labeled.json',

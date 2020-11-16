@@ -44,6 +44,11 @@ class GithubIssueApi implements IssueApi
         }
     }
 
+    public function show(Repository $repository, $issueNumber): array
+    {
+        return $this->issueApi->show($repository->getVendor(), $repository->getName(), $issueNumber);
+    }
+
     public function close(Repository $repository, $issueNumber)
     {
         $this->issueApi->update($repository->getVendor(), $repository->getName(), $issueNumber, ['state' => 'closed']);

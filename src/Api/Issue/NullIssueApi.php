@@ -10,6 +10,11 @@ class NullIssueApi implements IssueApi
     {
     }
 
+    public function show(Repository $repository, $issueNumber): array
+    {
+        return [];
+    }
+
     public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody)
     {
     }
