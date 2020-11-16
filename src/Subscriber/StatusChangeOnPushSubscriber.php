@@ -6,6 +6,7 @@ use App\Api\Status\Status;
 use App\Api\Status\StatusApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
+use App\Service\WipParser;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -36,7 +37,7 @@ class StatusChangeOnPushSubscriber implements EventSubscriberInterface
         $currentStatus = $this->statusApi->getIssueStatus($pullRequestNumber, $repository);
         $pullRequestTitle = $data['pull_request']['title'];
 
-        if (Status::NEEDS_WORK !== $currentStatus || false !== stripos($pullRequestTitle, '[wip]')) {
+        if (Status::NEEDS_WORK !== $currentStatus || WipParser::matchTitle($pullRequestTitle)) {
             $responseData['status_change'] = null;
             $event->setResponseData($responseData);
 

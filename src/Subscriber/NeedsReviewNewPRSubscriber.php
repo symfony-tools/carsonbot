@@ -6,6 +6,7 @@ use App\Api\Status\Status;
 use App\Api\Status\StatusApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
+use App\Service\WipParser;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class NeedsReviewNewPRSubscriber implements EventSubscriberInterface
@@ -25,6 +26,10 @@ class NeedsReviewNewPRSubscriber implements EventSubscriberInterface
         $data = $event->getData();
         $repository = $event->getRepository();
         if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
+            return;
+        }
+
+        if (WipParser::matchTitle($data['pull_request']['title'])) {
             return;
         }
 
