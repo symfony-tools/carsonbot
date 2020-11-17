@@ -50,3 +50,11 @@ jobs:
 
       - name: Run tests
         run: ./vendor/bin/simple-phpunit
+
+      - name: Upload log file
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test.log
+          path: var/log/test.log
+          retention-days: 5
