@@ -28,7 +28,7 @@ class ComplementGenerator
             'Haha, I was thinking of doing this exact same thing. =)',
             'This is.. this is amazing. Thank you!',
             'Excellent, just like I would have done it.',
-            'You, my fried, deserve a BIG HUG for making this PR.',
+            'You, my friend, deserve a BIG HUG for making this PR.',
             'I didn\'t know that was capable of this emotion. I really really like reviewing this PR. Well done.',
             'I see that more good work is coming your way.',
             'Excellent, keep up the good work.',
