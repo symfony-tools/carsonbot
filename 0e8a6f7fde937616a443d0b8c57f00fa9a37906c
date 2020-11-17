@@ -1,0 +1,32 @@
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-16T21:45:19Z
+
+So.. This is weird.
+
+With the following config, the string "sqlite:///%kernel.project_dir%/var/data.db" is passed to `Symfony\Component\Lock\Store\PdoStore::__construct()`. That will not work since "%kernel.project_dir%" is not resolved...
+
+```
+# .env
+DATABASE_URL=sqlite:///%kernel.project_dir%/var/data.db
+
+# config/packages/lock.yaml
+framework:
+    lock: '%env(DATABASE_URL)%'
+```
+
+It might be just me that don't understand when and when no to use `resolve` key. I stay away from in because @nicolas-grekas have told me so repeatedly.
+
+@jderusse, is this expected?
+
+---------------------------------------------------------------------------
+
+by jderusse at 2020-11-16T21:54:37Z
+
+If the content of the env variable contains parameters, you have to use resolve in order to tell Symfony to replace `%foo%` (inside the env variable) by the content of the `foo` parameter.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-16T22:07:48Z
+
+I see. And that is why it worked locally for me when I was testing with Postgres, I didn’t have any parameters there.
