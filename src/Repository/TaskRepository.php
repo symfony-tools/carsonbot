@@ -22,7 +22,7 @@ class TaskRepository extends ServiceEntityRepository
     public function getTasksToVerify(int $limit): array
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.verifyAfter > :now')
+            ->andWhere('t.verifyAfter <= :now')
             ->orderBy('t.updatedAt', 'ASC') // Yes, sort this the wrong way.
             ->setMaxResults($limit)
             ->setParameter('now', new \DateTimeImmutable())
