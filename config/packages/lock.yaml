@@ -1,2 +1,2 @@
 framework:
-    lock: '%env(DATABASE_URL)%'
+    lock: '%env(resolve:DATABASE_URL)%'
