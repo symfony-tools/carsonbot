@@ -11,6 +11,7 @@ parameters:
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
                 - 'App\Subscriber\WelcomeFirstTimeContributorSubscriber'
                 - 'App\Subscriber\CloseDraftPRSubscriber'
+                - 'App\Subscriber\UnsupportedBranchSubscriber'
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
             secret: '%env(SYMFONY_SECRET)%'
 
@@ -23,6 +24,7 @@ parameters:
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
+                - 'App\Subscriber\UnsupportedBranchSubscriber'
                 - 'subscriber.symfony_docs.milestone'
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
             secret: '%env(SYMFONY_DOCS_SECRET)%'
@@ -40,6 +42,7 @@ parameters:
                 - 'App\Subscriber\MilestoneNewPRSubscriber'
                 - 'App\Subscriber\WelcomeFirstTimeContributorSubscriber'
                 - 'App\Subscriber\CloseDraftPRSubscriber'
+                - 'App\Subscriber\UnsupportedBranchSubscriber'
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
 
 services:
