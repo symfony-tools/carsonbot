@@ -10,6 +10,7 @@ use App\Entity\Task;
 use App\Service\RepositoryProvider;
 use App\Service\TaskHandler\CloseDraftHandler;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 class CloseDraftHandlerTest extends TestCase
 {
@@ -29,7 +30,7 @@ class CloseDraftHandlerTest extends TestCase
 
         $repoProvider = new RepositoryProvider(['carsonbot-playground/symfony' => []]);
 
-        $handler = new CloseDraftHandler($prApi, $issueApi, $repoProvider);
+        $handler = new CloseDraftHandler($prApi, $issueApi, $repoProvider, new NullLogger());
         $handler->handle(new Task('carsonbot-playground/symfony', 4711, Task::ACTION_CLOSE_DRAFT, new \DateTimeImmutable()));
     }
 
@@ -49,7 +50,7 @@ class CloseDraftHandlerTest extends TestCase
 
         $repoProvider = new RepositoryProvider(['carsonbot-playground/symfony' => []]);
 
-        $handler = new CloseDraftHandler($prApi, $issueApi, $repoProvider);
+        $handler = new CloseDraftHandler($prApi, $issueApi, $repoProvider, new NullLogger());
         $handler->handle(new Task('carsonbot-playground/symfony', 4711, Task::ACTION_CLOSE_DRAFT, new \DateTimeImmutable()));
     }
 }
