@@ -28,14 +28,17 @@ class RepositoryProvider
         }
     }
 
-    public function getRepository($repositoryName)
+    public function getRepository(string $repositoryName): ?Repository
     {
         $repository = strtolower($repositoryName);
 
         return $this->repositories[$repository] ?? null;
     }
 
-    public function getAllRepositories()
+    /**
+     * @return Repository[]
+     */
+    public function getAllRepositories(): array
     {
         return array_values($this->repositories);
     }

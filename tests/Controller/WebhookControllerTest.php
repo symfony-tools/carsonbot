@@ -21,11 +21,7 @@ class WebhookControllerTest extends WebTestCase
         $statusApi = self::$container->get(StatusApi::class);
 
         // the labels need to be off this issue for one test to pass
-        $statusApi->setIssueStatus(
-            2,
-            null,
-            $repository->getRepository('carsonbot-playground/symfony')
-        );
+        $statusApi->setIssueStatus(2, null, $repository->getRepository('carsonbot-playground/symfony'));
     }
 
     /**
