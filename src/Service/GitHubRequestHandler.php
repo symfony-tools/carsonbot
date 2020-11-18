@@ -46,7 +46,6 @@ class GitHubRequestHandler
         $this->logger->debug(sprintf('Handling from repository %s', $repositoryFullName));
 
         $repository = $this->repositoryProvider->getRepository($repositoryFullName);
-
         if (!$repository) {
             throw new PreconditionFailedHttpException(sprintf('Unsupported repository "%s".', $repositoryFullName));
         }
