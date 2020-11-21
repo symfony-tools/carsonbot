@@ -4,7 +4,7 @@
     "type": "project",
     "license": "MIT",
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "ext-json": "*",
         "composer/package-versions-deprecated": "^1.11",
         "doctrine/doctrine-bundle": "^2.1",
@@ -35,7 +35,7 @@
     },
     "config": {
         "platform": {
-            "php": "7.2.9"
+            "php": "7.4"
         },
         "preferred-install": {
             "*": "dist"
