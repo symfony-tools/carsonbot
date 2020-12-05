@@ -65,6 +65,27 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertSame('[Console][FrameworkBundle] [bar] Foo', $responseData['new_title']);
     }
 
+    public function testOnPullRequestLabeledCaseInsensitive()
+    {
+        $event = new GitHubEvent([
+            'action' => 'labeled',
+            'number' => 1234,
+            'pull_request' => [
+                'title' => '[PHPunitbridge] Foo',
+                'labels' => [
+                    ['name' => 'PhpUnitBridge', 'color' => 'dddddd'],
+                ],
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+        $this->assertSame('[PhpUnitBridge] Foo', $responseData['new_title']);
+    }
+
     public function testOnPullRequestLabeledWithExisting()
     {
         $event = new GitHubEvent([
