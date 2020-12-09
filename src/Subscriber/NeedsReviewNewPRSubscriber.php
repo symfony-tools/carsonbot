@@ -29,13 +29,12 @@ class NeedsReviewNewPRSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $newStatus = Status::NEEDS_REVIEW;
         if (WipParser::matchTitle($data['pull_request']['title'])) {
-            return;
+            $newStatus = Status::NEEDS_WORK;
         }
 
         $pullRequestNumber = $data['pull_request']['number'];
-        $newStatus = Status::NEEDS_REVIEW;
-
         $this->statusApi->setIssueStatus($pullRequestNumber, $newStatus, $repository);
 
         $event->setResponseData([
