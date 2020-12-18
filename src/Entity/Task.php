@@ -99,6 +99,11 @@ class Task
         return $this->action;
     }
 
+    public function getVerifyAfter(): \DateTimeImmutable
+    {
+        return $this->verifyAfter;
+    }
+
     public function setVerifyAfter(\DateTimeImmutable $verifyAfter): void
     {
         $this->verifyAfter = $verifyAfter;
