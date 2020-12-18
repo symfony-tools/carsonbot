@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class RemoveStaledLabelOnCommentSubscriber implements EventSubscriberInterface
+class RemoveStalledLabelOnCommentSubscriber implements EventSubscriberInterface
 {
     private $labelApi;
     private $botUsername;
@@ -37,16 +37,16 @@ class RemoveStaledLabelOnCommentSubscriber implements EventSubscriberInterface
         $removed = false;
         $issueNumber = $data['issue']['number'];
         foreach ($data['issue']['labels'] as $label) {
-            if ('Staled' === $label['name']) {
+            if ('Stalled' === $label['name']) {
                 $removed = true;
-                $this->labelApi->removeIssueLabel($issueNumber, 'Staled', $repository);
+                $this->labelApi->removeIssueLabel($issueNumber, 'Stalled', $repository);
             }
         }
 
         if ($removed) {
             $event->setResponseData([
                 'issue' => $issueNumber,
-                'removed_staled_label' => true,
+                'removed_stalled_label' => true,
             ]);
         }
     }

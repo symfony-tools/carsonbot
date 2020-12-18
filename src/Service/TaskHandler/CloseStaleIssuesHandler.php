@@ -38,7 +38,7 @@ class CloseStaleIssuesHandler implements TaskHandlerInterface
         }
         $labels = $this->labelApi->getIssueLabels($task->getNumber(), $repository);
         if (in_array('Keep open', $labels)) {
-            $this->labelApi->removeIssueLabel($task->getNumber(), 'Staled', $repository);
+            $this->labelApi->removeIssueLabel($task->getNumber(), 'Stalled', $repository);
 
             return;
         }
@@ -47,7 +47,7 @@ class CloseStaleIssuesHandler implements TaskHandlerInterface
             $this->issueApi->commentOnIssue($repository, $task->getNumber(), $this->commentGenerator->getClosingComment());
             $this->issueApi->close($repository, $task->getNumber());
         } else {
-            $this->labelApi->removeIssueLabel($task->getNumber(), 'Staled', $repository);
+            $this->labelApi->removeIssueLabel($task->getNumber(), 'Stalled', $repository);
         }
     }
 

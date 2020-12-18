@@ -78,7 +78,7 @@ review process and how to increase the chances to get the PR merged.
 
 Carson will look for old inactive issues and start a process with them.
 
-1. Bot will make a comment to encourage activity and add label "Staled".
+1. Bot will make a comment to encourage activity and add label "Stalled".
 1. Bot will make a comment to inform the issue will be closed
 1. Bot will close the issue.
 
