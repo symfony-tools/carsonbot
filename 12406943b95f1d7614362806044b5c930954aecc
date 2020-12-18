@@ -1,0 +1,212 @@
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-07T13:29:54Z
+
+This cannot run on a github action like #103 because it needs to create a scheduled task.
+
+---------------------------------------------------------------------------
+
+by wouterj at 2020-11-07T13:53:30Z
+
+I usually don't like auto-closing staled issues: Contrary to staled PRs, there is nothing I as issue owner can do to "unstall" this issue. E.g. I don't know every open source library enough to be able to fix issues I find, so I take the time to open an issue instead. If it's not considered important enough to fix, a maintainer should close it (with a friendly message). If it wasn't closed, it means there is some relevancy of the issue (it just doesn't have enough priority). If it's closed after a year, the issue is there still, it's just hidden.
+
+E.g. some real case: https://github.com/symfony/symfony-docs/issues/4258 This feature is indeed undocumented and useful enough to document. We just haven't yet found the correct example or place in the documentation to fix this issue. That doesn't, imho, mean we should close it.
+
+Another real case I discovered yesterday is for instance https://github.com/SpiderLabs/ModSecurity-nginx/pull/198#issuecomment-644457711 , where a bot autoclosed this issue 2 times already. The PR is just blocked by another PR, there is no reason to close it and "hide" this missing feature.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-07T14:07:24Z
+
+It is indeed tricky. But if an issue has not gotten any comments or activity in over a year, it is not likely it will get fixed soon anyways. You can just make a comment to say whatever and the issue will be open for another [time period].
+
+I agree with your use case. You as a maintainer can set "Keep open" label on this issue.
+
+> Another real case I discovered yesterday
+
+I agree with this too. That is why we don't auto close PRs.
+
+-----
+
+Currently I added a time period for 3 months. Which means, that if there are no activity for 3 months, then we add this comment. We could change this time period to any other value if we think it is too long or too short.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2020-11-07T14:20:46Z
+
+I wonder if we really have any benefits re-developing this here, in Carsonbot?
+We mentioned https://github.com/actions/stale some weeks ago about this. Wouldn't it fit?
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-07T14:24:17Z
+
+Yeah, this is the same as stalebot. But the logic to "redevelop" is way less than 50 lines of code. And we already have a bot =)
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-08T17:35:59Z
+
+This PR is now "done" and ready for review
+
+---------------------------------------------------------------------------
+
+by jderusse at 2020-11-14T16:24:16Z
+
+I personally don't like auto-closed PR, In my experience, when working with k8s repo, the issues are full of comments "issue stale", "re-open"... It's a lot of noise and VERY frustrating for the user that open the PR and for the user that had the exact same issue.
+
+Instead of adding a label to by-pass the bot and keeping the PR open, what's about closing the PR when we don't want to fix it?.
+
+---------------------------------------------------------------------------
+
+by wouterj at 2020-11-14T16:53:14Z
+
+Regarding @jderusse's description: what about changing it from opt-out to opt-in? E.g. have a label that effectively says "hmm, not sure about this one", which will result in auto close within 2 weeks if there is no response.
+
+In the docs, I'm using the `Waiting feedback` for this process manually already.
+
+---------------------------------------------------------------------------
+
+by jderusse at 2020-11-14T16:55:49Z
+
+yeah, a `waiting feedback` on "not reproductible" issues would make more sense to me
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-14T18:14:51Z
+
+Thank you for the reviews. Note that this is not about PRs. This is about closing issues only.
+
+Here is an example timeline:
+
+Day 1: Issue open.
+Day 366: There is no acitivty, Bot makes a comment
+Day 370: User makes a comment
+Day 736: There is no activity,  Bot makes another comment
+Day 750: Bot closes the issue
+
+I don't think there is a lot of noise... I also don't see no point in having an issue open that there is no activity around... Sure, there are exceptions, that is why we have the "Keep open" label.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-14T20:01:37Z
+
+After some discussions with @wouterj, we agree that it is important to consider what we say to the authors. We know they spent time creating this issue.
+
+After x days of delay: Message 1, should encourage an answer. Maybe the users will close the issue themselves?
+After y days of delay: Message 2, comment and say that we are closing the issue.
+
+Should we make this even more fancy?
+
+After x days of delay: Message 1,
+After y days of delay: Message 2, comment and say that we are about to close the issue.
+After z days of delay: Close the issue.
+
+-------
+
+I need some help improving the content in `StaleIssueCommentGenerator`.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-15T08:41:49Z
+
+Thank you. I've updated the PR accordingly.
+
+---------------------------------------------------------------------------
+
+by wouterj at 2020-11-21T11:39:32Z
+
+Something I just realized: 300 issues in the code repository and +/- 90 issues in the docs repository are currently within this filter. We should probably organize a small core team sprint day to check these issues before the first deploy closes them.
+
+The advantage of this bot is that it tries to engage the issue creators in determining whether the issue needs to stay open. We would loose that advantage for the biggest set of issues (the first set), if we have to check them all by hand. Maybe we should make the first close window longer (e.g. 4 weeks), in order to give the user the normal 2 weeks to respond and then have 2 weeks for the core team to review the issues were nobody responded? What do you think? After this first round, we can revert the window back to 2 weeks.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-21T13:20:52Z
+
+I've added a second message.
+
+So, Day 1: Make a comment to encourage and action by the user
+Day: 15: Do a ping and inform that we will close the issue if we dont hear anything
+Day 30: Close the issue.
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2020-12-09T14:04:18Z
+
+What about making this a bit more "manual", eg when an issue has the status "waiting feedback", then we autoclose on 1 month? Applying the label should be manual. I think all issues deserve a comment from someone in the community, no need for the bot to say hello.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-12-09T14:07:14Z
+
+I agree that we could update this in the future. We can also add more rules etc.
+But that is not a blocker from merging this now. The current implementation is the most relaxed and generous rules possible.
+
+>  I think all issues deserve a comment from someone in the community, no need for the bot to say hello.
+
+If nobody have made a comment in 1 year time, then I think it is fair to say that nobody ever will make a comment.
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2020-12-09T14:13:27Z
+
+> If nobody have made a comment in 1 year time, then I think it is fair to say that nobody ever will make a comment.
+
+Does that happen in practice? Any example?
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-12-09T14:16:28Z
+
+Actually yes. Sure it is sad that an issue has been open for long..
+
+https://github.com/symfony/symfony/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-asc
+- 15014
+- 14068
+- 19286
+
+---------------------------------------------------------------------------
+
+by wouterj at 2020-12-09T14:59:09Z
+
+More precisely, there are 57 issues without any comment that are open for 1+ year: https://github.com/symfony/symfony/issues?q=is%3Aissue+is%3Aopen+comments%3A0+updated%3A%3C2019-12-09
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-12-09T15:03:48Z
+
+> I think all issues deserve a comment from someone in the community, no need for the bot to say hello.
+
+So currently there are 50+ issues that the community has "failed". There is another 250 issues with no activity in the past year.
+
+These 300 issues will get a "bot comment" to encourage action when this PR is merged.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-12-16T08:22:10Z
+
+I added support for "Stale" label. So now one can easily find all issues that the bot is working with.
+
+FYI @nicolas-grekas
+
+---------------------------------------------------------------------------
+
+by weaverryan at 2020-12-18T00:29:12Z
+
+Oh, also, could you update the PR title and description to reflect the current way it works?
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2020-12-18T09:44:55Z
+
+> stale-issue command once manually so that the "big dump" of comments can happen in sync, so we can watch it (just in cases).
+
+should we limit the number of notices the bot is going to generate at once?
+eg 10 per batch max, one batch per day? (since I suppose this is going to run as a periodic task?)
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-12-18T09:45:58Z
+
+Currently, there is a limit on 100 per batch. We run the script once per day.
