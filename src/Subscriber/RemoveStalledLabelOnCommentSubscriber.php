@@ -34,6 +34,11 @@ class RemoveStalledLabelOnCommentSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // If not open, then do nothing
+        if ('open' !== $data['issue']['state']) {
+            return;
+        }
+
         $removed = false;
         $issueNumber = $data['issue']['number'];
         foreach ($data['issue']['labels'] as $label) {

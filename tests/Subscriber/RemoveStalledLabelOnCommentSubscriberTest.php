@@ -35,7 +35,7 @@ class RemoveStalledLabelOnCommentSubscriberTest extends TestCase
     public function testOnComment()
     {
         $event = new GitHubEvent([
-            'issue' => ['number' => 1234, 'labels' => []], 'comment' => ['user' => ['login' => 'nyholm']],
+            'issue' => ['number' => 1234, 'state' => 'open', 'labels' => []], 'comment' => ['user' => ['login' => 'nyholm']],
         ], $this->repository);
 
         $this->dispatcher->dispatch($event, GitHubEvents::ISSUE_COMMENT);
@@ -47,7 +47,7 @@ class RemoveStalledLabelOnCommentSubscriberTest extends TestCase
     public function testOnCommentOnStale()
     {
         $event = new GitHubEvent([
-            'issue' => ['number' => 1234, 'labels' => [['name' => 'Foo'], ['name' => 'Stalled']]], 'comment' => ['user' => ['login' => 'nyholm']],
+            'issue' => ['number' => 1234, 'state' => 'open', 'labels' => [['name' => 'Foo'], ['name' => 'Stalled']]], 'comment' => ['user' => ['login' => 'nyholm']],
         ], $this->repository);
 
         $this->dispatcher->dispatch($event, GitHubEvents::ISSUE_COMMENT);
@@ -61,7 +61,19 @@ class RemoveStalledLabelOnCommentSubscriberTest extends TestCase
     public function testOnBotCommentOnStale()
     {
         $event = new GitHubEvent([
-            'issue' => ['number' => 1234, 'labels' => [['name' => 'Foo'], ['name' => 'Stalled']]], 'comment' => ['user' => ['login' => 'carsonbot']],
+            'issue' => ['number' => 1234, 'state' => 'open', 'labels' => [['name' => 'Foo'], ['name' => 'Stalled']]], 'comment' => ['user' => ['login' => 'carsonbot']],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::ISSUE_COMMENT);
+
+        $responseData = $event->getResponseData();
+        $this->assertEmpty($responseData);
+    }
+
+    public function testCommentOnClosed()
+    {
+        $event = new GitHubEvent([
+            'issue' => ['number' => 1234, 'state' => 'closed', 'labels' => [['name' => 'Foo'], ['name' => 'Stalled']]], 'comment' => ['user' => ['login' => 'nyholm']],
         ], $this->repository);
 
         $this->dispatcher->dispatch($event, GitHubEvents::ISSUE_COMMENT);
