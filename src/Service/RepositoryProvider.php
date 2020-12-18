@@ -9,6 +9,9 @@ use App\Model\Repository;
  */
 class RepositoryProvider
 {
+    /**
+     * @var Repository[]
+     */
     private $repositories = [];
 
     public function __construct(array $repositories)

@@ -19,6 +19,16 @@ class NullIssueApi implements IssueApi
     {
     }
 
+    public function lastCommentWasMadeByBot(Repository $repository, $number): bool
+    {
+        return false;
+    }
+
+    public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): array
+    {
+        return [];
+    }
+
     public function close(Repository $repository, $issueNumber)
     {
     }
