@@ -8,11 +8,11 @@ use App\Api\Label\NullLabelApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
-use App\Subscriber\RemoveStaledLabelOnCommentSubscriber;
+use App\Subscriber\RemoveStalledLabelOnCommentSubscriber;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class RemoveStaledLabelOnCommentSubscriberTest extends TestCase
+class RemoveStalledLabelOnCommentSubscriberTest extends TestCase
 {
     private $subscriber;
 
@@ -25,7 +25,7 @@ class RemoveStaledLabelOnCommentSubscriberTest extends TestCase
 
     protected function setUp()
     {
-        $this->subscriber = new RemoveStaledLabelOnCommentSubscriber(new NullLabelApi(), 'carsonbot');
+        $this->subscriber = new RemoveStalledLabelOnCommentSubscriber(new NullLabelApi(), 'carsonbot');
         $this->repository = new Repository('carsonbot-playground', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
@@ -47,7 +47,7 @@ class RemoveStaledLabelOnCommentSubscriberTest extends TestCase
     public function testOnCommentOnStale()
     {
         $event = new GitHubEvent([
-            'issue' => ['number' => 1234, 'labels' => [['name' => 'Foo'], ['name' => 'Staled']]], 'comment' => ['user' => ['login' => 'nyholm']],
+            'issue' => ['number' => 1234, 'labels' => [['name' => 'Foo'], ['name' => 'Stalled']]], 'comment' => ['user' => ['login' => 'nyholm']],
         ], $this->repository);
 
         $this->dispatcher->dispatch($event, GitHubEvents::ISSUE_COMMENT);
@@ -55,13 +55,13 @@ class RemoveStaledLabelOnCommentSubscriberTest extends TestCase
         $responseData = $event->getResponseData();
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['issue']);
-        $this->assertSame(true, $responseData['removed_staled_label']);
+        $this->assertSame(true, $responseData['removed_stalled_label']);
     }
 
     public function testOnBotCommentOnStale()
     {
         $event = new GitHubEvent([
-            'issue' => ['number' => 1234, 'labels' => [['name' => 'Foo'], ['name' => 'Staled']]], 'comment' => ['user' => ['login' => 'carsonbot']],
+            'issue' => ['number' => 1234, 'labels' => [['name' => 'Foo'], ['name' => 'Stalled']]], 'comment' => ['user' => ['login' => 'carsonbot']],
         ], $this->repository);
 
         $this->dispatcher->dispatch($event, GitHubEvents::ISSUE_COMMENT);

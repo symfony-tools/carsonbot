@@ -42,7 +42,7 @@ class InformAboutClosingStaleIssuesHandler implements TaskHandlerInterface
         }
         $labels = $this->labelApi->getIssueLabels($task->getNumber(), $repository);
         if (in_array('Keep open', $labels)) {
-            $this->labelApi->removeIssueLabel($task->getNumber(), 'Staled', $repository);
+            $this->labelApi->removeIssueLabel($task->getNumber(), 'Stalled', $repository);
 
             return;
         }
@@ -51,7 +51,7 @@ class InformAboutClosingStaleIssuesHandler implements TaskHandlerInterface
             $this->issueApi->commentOnIssue($repository, $task->getNumber(), $this->commentGenerator->getInformAboutClosingComment());
             $this->scheduler->runLater($repository, $task->getNumber(), Task::ACTION_CLOSE_STALE, new \DateTimeImmutable(PingStaleIssuesCommand::MESSAGE_THREE_AND_CLOSE_AFTER));
         } else {
-            $this->labelApi->removeIssueLabel($task->getNumber(), 'Staled', $repository);
+            $this->labelApi->removeIssueLabel($task->getNumber(), 'Stalled', $repository);
         }
     }
 
