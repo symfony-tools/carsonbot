@@ -66,7 +66,7 @@ class PingStaleIssuesCommand extends Command
 
         if ($input->getOption('dry-run')) {
             foreach ($issues as $issue) {
-                $output->writeln(sprintf('Marking issue #%s as "Staled". Link https://github.com/%s/issues/%s', $issue['number'], $repository->getFullName(), $issue['number']));
+                $output->writeln(sprintf('Marking issue #%s as "Stalled". Link https://github.com/%s/issues/%s', $issue['number'], $repository->getFullName(), $issue['number']));
             }
 
             return 0;
