@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2020-12-09T14:05:05Z
+
+Yes. Actually, this should close immediately instead of adding a warning.
