@@ -26,7 +26,7 @@ class SymfonyVersionProvider
         $this->cache = $cache;
     }
 
-    public function getCurrentVersion()
+    public function getCurrentVersion(): string
     {
         $httpClient = $this->httpClient;
 
@@ -40,9 +40,25 @@ class SymfonyVersionProvider
                 $version = $defaultValue;
             }
 
-            $item->expiresAfter($version === $defaultValue ? 300 : 604800);
+            $item->expiresAfter($version === $defaultValue ? 300 : 86400);
 
             return $version;
         });
+    }
+
+    /**
+     * @throws \RuntimeException
+     */
+    public function getSupportedVersions(): array
+    {
+        $response = $this->httpClient->request('GET', 'https://symfony.com/releases.json');
+        $data = $response->toArray(true);
+        $versions = $data['supported_versions'] ?? null;
+
+        if (is_array($versions) && count($versions) > 0) {
+            return $versions;
+        }
+
+        throw new \RuntimeException('Could not fetch supported versions');
     }
 }
