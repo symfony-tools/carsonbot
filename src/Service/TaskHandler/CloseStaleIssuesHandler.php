@@ -36,6 +36,12 @@ class CloseStaleIssuesHandler implements TaskHandlerInterface
         if (null === $repository = $this->repositoryProvider->getRepository($task->getRepositoryFullName())) {
             return;
         }
+
+        $issue = $this->issueApi->show($repository, $task->getNumber());
+        if ('open' !== $issue['state']) {
+            return;
+        }
+
         $labels = $this->labelApi->getIssueLabels($task->getNumber(), $repository);
         if (in_array('Keep open', $labels)) {
             $this->labelApi->removeIssueLabel($task->getNumber(), 'Stalled', $repository);
