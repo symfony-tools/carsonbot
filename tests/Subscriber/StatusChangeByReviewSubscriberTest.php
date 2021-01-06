@@ -7,6 +7,7 @@ use App\Api\Status\StatusApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
+use App\Subscriber\StatusChangeByCommentSubscriber;
 use App\Subscriber\StatusChangeByReviewSubscriber;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -97,6 +98,26 @@ class StatusChangeByReviewSubscriberTest extends TestCase
             ['You should include e.g. the line `Status: needs review` in your comment', null],
             ['Before the ticket was in state "Status: reviewed", but then the status was changed', null],
         ];
+    }
+
+    /**
+     * @dataProvider \App\Tests\ValidCommandProvider::get()
+     */
+    public function testCommandCollision($comment, $subscriber)
+    {
+        if (StatusChangeByCommentSubscriber::class === $subscriber) {
+            $this->statusApi->expects($this->once())->method('setIssueStatus');
+        } else {
+            $this->statusApi->expects($this->never())->method('setIssueStatus');
+        }
+
+        $event = new GitHubEvent([
+            'action' => 'submitted',
+            'pull_request' => ['number' => 1234, 'user' => ['login' => 'weaverryan']],
+            'review' => ['state' => 'commented', 'body' => $comment, 'user' => ['login' => 'leannapelham']],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST_REVIEW);
     }
 
     public function testOnIssueCommentAuthorSelfReview()

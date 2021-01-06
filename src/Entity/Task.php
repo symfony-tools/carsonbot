@@ -18,6 +18,7 @@ class Task
     const ACTION_CLOSE_STALE = 1;
     const ACTION_CLOSE_DRAFT = 2;
     const ACTION_INFORM_CLOSE_STALE = 3;
+    const ACTION_SUGGEST_REVIEWER = 4;
 
     /**
      * @var int

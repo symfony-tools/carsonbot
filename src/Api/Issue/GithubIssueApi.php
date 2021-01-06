@@ -5,20 +5,27 @@ namespace App\Api\Issue;
 use App\Model\Repository;
 use Github\Api\Issue;
 use Github\Api\Issue\Comments;
+use Github\Api\Issue\Timeline;
+use Github\Api\PullRequest\Review;
 use Github\Api\Search;
+use Github\Exception\RuntimeException;
 
 class GithubIssueApi implements IssueApi
 {
     private $issueCommentApi;
-    private $botUsername;
+    private $reviewApi;
     private $issueApi;
     private $searchApi;
+    private $timelineApi;
+    private $botUsername;
 
-    public function __construct(Comments $issueCommentApi, Issue $issueApi, Search $searchApi, string $botUsername)
+    public function __construct(Comments $issueCommentApi, Review $reviewApi, Issue $issueApi, Search $searchApi, Timeline $timelineApi, string $botUsername)
     {
         $this->issueCommentApi = $issueCommentApi;
+        $this->reviewApi = $reviewApi;
         $this->issueApi = $issueApi;
         $this->searchApi = $searchApi;
+        $this->timelineApi = $timelineApi;
         $this->botUsername = $botUsername;
     }
 
@@ -52,6 +59,31 @@ class GithubIssueApi implements IssueApi
         return $this->botUsername === ($lastComment['user']['login'] ?? null);
     }
 
+    /**
+     * Has this PR or issue comments/reviews from others than the author?
+     */
+    public function hasActivity(Repository $repository, $number): bool
+    {
+        $issue = $this->issueApi->show($repository->getVendor(), $repository->getName(), $number);
+        $author = $issue['user']['login'] ?? null;
+
+        try {
+            $reviewComments = $this->reviewApi->all($repository->getVendor(), $repository->getName(), $number);
+        } catch (RuntimeException $e) {
+            // This was not a PR =)
+            $reviewComments = [];
+        }
+
+        $all = array_merge($reviewComments, $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $number));
+        foreach ($all as $comment) {
+            if (!in_array($comment['user']['login'], [$author, $this->botUsername])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function show(Repository $repository, $issueNumber): array
     {
         return $this->issueApi->show($repository->getVendor(), $repository->getName(), $issueNumber);
@@ -80,5 +112,24 @@ class GithubIssueApi implements IssueApi
         $issues = $this->searchApi->issues(sprintf('repo:%s is:issue -linked:pr -label:"Keep open" is:open updated:<%s', $repository->getFullName(), $noUpdateAfter->format('Y-m-d')));
 
         return $issues['items'] ?? [];
+    }
+
+    public function getUsers(Repository $repository, $issueNumber): array
+    {
+        $timeline = $this->timelineApi->all($repository->getVendor(), $repository->getName(), $issueNumber);
+        $users = [];
+        foreach ($timeline as $event) {
+            $users[] = $event['actor']['login'] ?? $event['user']['login'] ?? $event['author']['email'] ?? '';
+            if (isset($event['body'])) {
+                // Parse body for user reference
+                if (preg_match_all('|@([a-zA-z_\-0-9]+)|', $event['body'], $matches)) {
+                    foreach ($matches[1] as $match) {
+                        $users[] = $match;
+                    }
+                }
+            }
+        }
+
+        return array_map(function ($a) { return strtolower($a); }, array_unique($users));
     }
 }
