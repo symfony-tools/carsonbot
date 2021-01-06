@@ -1,0 +1,64 @@
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-08T18:27:41Z
+
+This PR is ready for a review
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-11-09T18:14:34Z
+
+Tobias, thanks for proposing this feature. I know that some communities have something similar. MY only fear it's whether this will be truly useful to add reviewers ... or it will be just annoying and won't improve the current situation. But, the only way to know it is to try it for real, so I'm 👍  to try this.
+
+About the proposed command -> `@carsonbot find me a reviewer please`  These "textual interfaces" are always complex to use ... so maybe we could design it with very simple commands/orders instead of textually correct phrases. E.g. `@carsonbot help`, `@carsonbot find reviewer`
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-09T18:19:46Z
+
+> MY only fear it's whether this will be truly useful to add reviewers
+
+Yeah.. I am not sure.. We will see =)
+
+> About the proposed command
+
+I agree. The only hard requirements at the moment is to write `@carsonbot` and `review` on the same line. So most phrases will be okey.
+
+- `@carsonbot review`
+- `@carsonbot find reviewer please`
+- `@carsonbot get a review`
+- `Please @carsonbot fetch a reviewer for me`
+- etc
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-11-10T10:14:46Z
+
+Thank you @stof for the review. I've updated the PR accordingly.
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2020-12-09T14:12:10Z
+
+Does any project use this logic successfully already?
+I'm curious about how relevant this will be.
+Also: which problem does it solve? Will this solve something that is actually slowing us down right now? That's a honest question :) I feel like things are pretty smooth, but I'm curious to see how this proposal can improve things.
+What's the way to verify this provides value? Enable, then wait and see?
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2020-12-09T14:30:00Z
+
+> Does any project use this logic successfully already?
+
+Yes, @javiereguiluz showed some examples from the Ruby community. They have bot that suggest a reviewer when the PR is opened.
+
+> which problem does it solve?
+
+Just two very tiny problems.
+1. If a PR dont get any attention, it will try to ping someone
+2. It will ping a person that probably never have been pinged before
+
+> What's the way to verify this provides value? Enable, then wait and see?
+
+Yes, Wait and see. Maybe this is a good idea, maybe it is something we disable before Christmas. Let's try something new.
