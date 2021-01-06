@@ -89,6 +89,11 @@ class WebhookControllerTest extends WebTestCase
                 'pull_request.new_contributor.json',
                 ['pull_request' => 4, 'status_change' => 'needs_review',  'pr_labels' => [], 'new_contributor' => true],
             ],
+            'Waiting Code Merge' => [
+                'pull_request',
+                'issues.labeled.waitingCodeMerge.json',
+                ['pull_request' => 2, 'milestone' => 'next'],
+            ],
         ];
     }
 }

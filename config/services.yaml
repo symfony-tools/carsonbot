@@ -27,6 +27,7 @@ parameters:
                 - 'App\Subscriber\UnsupportedBranchSubscriber'
                 - 'subscriber.symfony_docs.milestone'
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
+                - 'App\Subscriber\UpdateMilestoneWhenLabeledWaitingCodeMergeSubscriber'
             secret: '%env(SYMFONY_DOCS_SECRET)%'
 
         # used in a functional test
@@ -44,6 +45,7 @@ parameters:
                 - 'App\Subscriber\CloseDraftPRSubscriber'
                 - 'App\Subscriber\UnsupportedBranchSubscriber'
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
+                - 'App\Subscriber\UpdateMilestoneWhenLabeledWaitingCodeMergeSubscriber'
 
 services:
     _defaults:
