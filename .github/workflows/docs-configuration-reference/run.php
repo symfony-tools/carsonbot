@@ -41,7 +41,7 @@ exit(0);
 
 function parseConfigKeys(string $doc, array $config, string $base, array &$missingKeys) {
     foreach ($config as $key => $value) {
-        if (!str_contains($doc, $key)) {
+        if (!is_numeric($key) && !str_contains($doc, $key)) {
             $missingKeys[] = $base . '.' . $key;
         }
         if (is_array($value)) {
