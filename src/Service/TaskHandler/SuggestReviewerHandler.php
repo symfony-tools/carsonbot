@@ -48,6 +48,11 @@ class SuggestReviewerHandler implements TaskHandlerInterface
             return;
         }
 
+        $issue = $this->issueApi->show($repository, $task->getNumber());
+        if ('open' !== $issue['state']) {
+            return;
+        }
+
         if ($this->issueApi->hasActivity($repository, $task->getNumber())) {
             return;
         }
