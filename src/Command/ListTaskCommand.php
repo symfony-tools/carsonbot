@@ -70,6 +70,7 @@ class ListTaskCommand extends Command
             Task::ACTION_CLOSE_STALE => 'Close stale',
             Task::ACTION_CLOSE_DRAFT => 'Close draft',
             Task::ACTION_INFORM_CLOSE_STALE => 'Inform about close',
+            Task::ACTION_SUGGEST_REVIEWER => 'Suggest reviewer',
         ];
 
         return $data[$action] ?? 'Unknown action';
