@@ -21,6 +21,7 @@ class ReviewerFilter
             'fabpot', 'tobion', 'nicolas-grekas', 'stof', 'dunglas', 'jakzal',
             'xabbuh', 'javiereguiluz', 'lyrixx', 'weaverryan', 'chalasr', 'ogizanagi',
             'sroze', 'yceruto', 'nyholm', 'wouterj', 'derrabus', 'jderusse',
+            'oskarstark',
         ];
 
     public function __construct(IssueApi $issueApi)
