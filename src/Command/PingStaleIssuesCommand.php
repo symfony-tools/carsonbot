@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class PingStaleIssuesCommand extends Command
 {
-    public const STALE_IF_NOT_UPDATED_SINCE = '-12months';
+    public const STALE_IF_NOT_UPDATED_SINCE = '-3months';
     public const MESSAGE_TWO_AFTER = '+2weeks';
     public const MESSAGE_THREE_AND_CLOSE_AFTER = '+2weeks';
 
