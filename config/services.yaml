@@ -24,7 +24,6 @@ parameters:
                 - 'App\Subscriber\StatusChangeByReviewSubscriber'
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
-                - 'App\Subscriber\FindReviewerSubscriber'
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
                 - 'App\Subscriber\UnsupportedBranchSubscriber'
                 - 'subscriber.symfony_docs.milestone'
