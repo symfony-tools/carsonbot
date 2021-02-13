@@ -21,7 +21,7 @@ class StaticLabelApi extends NullLabelApi
             'Feature', 'Filesystem', 'Finder', 'Form', 'FrameworkBundle',
             'HttpClient', 'HttpFoundation', 'HttpKernel', 'Inflector', 'Intl', 'Ldap',
             'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'Notifier',
-            'OptionsResolver', 'PhpUnitBridge', 'Process', 'PropertyAccess',
+            'OptionsResolver', 'PasswordHasher', 'PhpUnitBridge', 'Process', 'PropertyAccess',
             'PropertyInfo', 'ProxyManagerBridge', 'Routing', 'Security',
             'SecurityBundle', 'Serializer', 'Stopwatch', 'String', 'Templating',
             'Translator', 'TwigBridge', 'TwigBundle', 'Uid', 'Validator', 'VarDumper',
