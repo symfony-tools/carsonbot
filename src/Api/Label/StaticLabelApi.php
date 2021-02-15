@@ -7,6 +7,8 @@ use App\Model\Repository;
 /**
  * Dont fetch data from external source.
  *
+ * This class is only used in tests.
+ *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
 class StaticLabelApi extends NullLabelApi
@@ -21,7 +23,7 @@ class StaticLabelApi extends NullLabelApi
             'Feature', 'Filesystem', 'Finder', 'Form', 'FrameworkBundle',
             'HttpClient', 'HttpFoundation', 'HttpKernel', 'Inflector', 'Intl', 'Ldap',
             'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'Notifier',
-            'OptionsResolver', 'PhpUnitBridge', 'Process', 'PropertyAccess',
+            'OptionsResolver', 'PasswordHasher', 'PhpUnitBridge', 'Process', 'PropertyAccess',
             'PropertyInfo', 'ProxyManagerBridge', 'Routing', 'Security',
             'SecurityBundle', 'Serializer', 'Stopwatch', 'String', 'Templating',
             'Translation', 'TwigBridge', 'TwigBundle', 'Uid', 'Validator', 'VarDumper',
