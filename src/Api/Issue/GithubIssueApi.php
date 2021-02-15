@@ -109,7 +109,7 @@ class GithubIssueApi implements IssueApi
 
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): array
     {
-        $issues = $this->searchApi->issues(sprintf('repo:%s is:issue -linked:pr -label:"Keep open" is:open updated:<%s', $repository->getFullName(), $noUpdateAfter->format('Y-m-d')));
+        $issues = $this->searchApi->issues(sprintf('repo:%s is:issue -label:"Keep open" is:open updated:<%s', $repository->getFullName(), $noUpdateAfter->format('Y-m-d')));
 
         return $issues['items'] ?? [];
     }
