@@ -22,7 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class PingStaleIssuesCommand extends Command
 {
-    public const STALE_IF_NOT_UPDATED_SINCE = '-3months';
     public const MESSAGE_TWO_AFTER = '+2weeks';
     public const MESSAGE_THREE_AND_CLOSE_AFTER = '+2weeks';
 
@@ -47,6 +46,7 @@ class PingStaleIssuesCommand extends Command
     protected function configure()
     {
         $this->addArgument('repository', InputArgument::REQUIRED, 'The full name to the repository, eg symfony/symfony-docs');
+        $this->addOption('not-updated-for', null, InputOption::VALUE_REQUIRED, 'A string representing a time period to for how long the issue has been stalled.', '12months');
         $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Do a test search without making any comments or changes');
     }
 
@@ -61,7 +61,7 @@ class PingStaleIssuesCommand extends Command
             return 1;
         }
 
-        $notUpdatedAfter = new \DateTimeImmutable(self::STALE_IF_NOT_UPDATED_SINCE);
+        $notUpdatedAfter = new \DateTimeImmutable((string) $input->getOption('not-updated-for'));
         $issues = $this->issueApi->findStaleIssues($repository, $notUpdatedAfter);
 
         if ($input->getOption('dry-run')) {

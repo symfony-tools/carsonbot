@@ -44,11 +44,11 @@ crons:
 
     stale_issues_symfony:
         spec: '58 12 * * *'
-        cmd: croncape bin/console app:issue:ping-stale symfony/symfony
+        cmd: croncape bin/console app:issue:ping-stale symfony/symfony --not-updated-for 6months
 
     stale_issues_docs:
         spec: '48 12 * * *'
-        cmd: croncape bin/console app:issue:ping-stale symfony/symfony-docs
+        cmd: croncape bin/console app:issue:ping-stale symfony/symfony-docs --not-updated-for 12months
 
 relationships:
     database: "mydatabase:postgresql"
