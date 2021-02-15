@@ -7,6 +7,8 @@ use App\Model\Repository;
 /**
  * Dont fetch data from external source.
  *
+ * This class is only used in tests.
+ *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
 class StaticLabelApi extends NullLabelApi
