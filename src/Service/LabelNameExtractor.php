@@ -31,7 +31,7 @@ class LabelNameExtractor
         'fwb' => 'FrameworkBundle',
         'profiler' => 'WebProfilerBundle',
         'router' => 'Routing',
-        'translation' => 'Translator',
+        'translator' => 'Translation',
         'wdt' => 'WebProfilerBundle',
     ];
 
