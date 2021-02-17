@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by wouterj at 2021-02-13T22:51:21Z
+
+First: I do share your observations about this feature. The feature works much better than I honestly expected.
+
+However, I find 3 months to be on the far end of the "time gradient". 1 year maybe is too long (it's good to get user interaction quicker), but 3 months is even shorter than the development phase of a single release.
+
+That means that if I post a feature request in the first week of a release, I need to have it finished one month before feature freeze in order not to make Carson ask for interaction. Even more, if I respond to Carson, but I do not manage to finish before feature freeze (and the feature is postponed one release), I'll get another question from Carson before development phase of the next release even begins.
+
+I think following the release cycle (6 months) or maybe 5 months should be the absolute minimum for it not to be annoying even for me (a regular last-month contributor and a not-so-common issue opener).
+
+---
+
+I think for docs 1 year is exactly the correct length (less resources & less contributors). So I would love to see this being configured per repo.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2021-02-15T15:51:15Z
+
+> The feature works much better than I honestly expected.
+
+Same. Im happy =)
+
+-------
+
+I think your reasoning makes sense. I've updated the PR accordingly.
