@@ -129,4 +129,24 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $responseData = $event->getResponseData();
         $this->assertEmpty($responseData);
     }
+
+    public function testRemoveLabel()
+    {
+        $event = new GitHubEvent([
+            'action' => 'labeled',
+            'number' => 1234,
+            'pull_request' => [
+                'title' => '[Console][FrameworkBundle] [Random] Foo normal title',
+                'labels' => [
+                    ['name' => 'Console', 'color' => 'dddddd'],
+                ],
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+        $this->assertSame('[Console] [Random] Foo normal title', $responseData['new_title']);
+    }
 }
