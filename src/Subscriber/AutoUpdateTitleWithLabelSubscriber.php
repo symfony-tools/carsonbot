@@ -44,6 +44,12 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $repository = $event->getRepository();
+        $number = $data['number'];
+
+        $lock = $this->lockFactory->createLock($repository->getFullName().'#'.$number);
+        $lock->acquire(true); // blocking. Lock will be released at __destruct
+
         $originalTitle = $prTitle = trim($data['pull_request']['title']);
         $validLabels = [];
         foreach ($data['pull_request']['labels'] as $label) {
@@ -59,6 +65,11 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
             }
         }
 
+        // Remove any other labels in the title.
+        foreach ($this->labelExtractor->extractLabels($prTitle, $repository) as $label) {
+            $prTitle = str_ireplace('['.$label.']', '', $prTitle);
+        }
+
         sort($validLabels);
         $prPrefix = '';
         foreach ($validLabels as $label) {
@@ -70,12 +81,6 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         if ($originalTitle === $prTitle) {
             return;
         }
-
-        $repository = $event->getRepository();
-        $number = $data['number'];
-
-        $lock = $this->lockFactory->createLock($repository->getFullName().'#'.$number);
-        $lock->acquire(true); // blocking. Lock will be released at __destruct
 
         // Refetch the current title just to make sure it has not changed
         if ($prTitle === ($this->pullRequestApi->show($repository, $number)['title'] ?? '')) {
