@@ -78,7 +78,7 @@ class GithubLabelApiTest extends TestCase
 
         $this->backendApi->expects($this->once())
             ->method('add')
-            ->with(self::USER_NAME, self::REPO_NAME, 1234, 'a');
+            ->with(self::USER_NAME, self::REPO_NAME, 1234, ['a']);
 
         $this->api->addIssueLabel(1234, 'a', $this->repository);
     }
@@ -96,7 +96,7 @@ class GithubLabelApiTest extends TestCase
 
         $this->backendApi->expects($this->once())
             ->method('add')
-            ->with(self::USER_NAME, self::REPO_NAME, 1234, 'd');
+            ->with(self::USER_NAME, self::REPO_NAME, 1234, ['d']);
 
         $this->assertSame(['a', 'b', 'c'], $this->api->getIssueLabels(1234, $this->repository));
 

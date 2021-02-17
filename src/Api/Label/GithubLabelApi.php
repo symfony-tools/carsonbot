@@ -76,19 +76,7 @@ class GithubLabelApi implements LabelApi
 
     public function addIssueLabel($issueNumber, string $label, Repository $repository)
     {
-        $key = $this->getCacheKey($issueNumber, $repository);
-
-        if (isset($this->labelCache[$key][$label])) {
-            return;
-        }
-
-        $this->logger->debug('Adding label "{label}" for {repo}#{issue}', ['label' => $label, 'repo' => $repository->getFullName(), 'issue' => $issueNumber]);
-        $this->labelsApi->add($repository->getVendor(), $repository->getName(), $issueNumber, $label);
-
-        // Update cache if already loaded
-        if (isset($this->labelCache[$key])) {
-            $this->labelCache[$key][$label] = true;
-        }
+        $this->addIssueLabels($issueNumber, [$label], $repository);
     }
 
     public function removeIssueLabel($issueNumber, string $label, Repository $repository)
@@ -115,8 +103,24 @@ class GithubLabelApi implements LabelApi
 
     public function addIssueLabels($issueNumber, array $labels, Repository $repository)
     {
+        $key = $this->getCacheKey($issueNumber, $repository);
+        $labelsToAdd = [];
+
         foreach ($labels as $label) {
-            $this->addIssueLabel($issueNumber, $label, $repository);
+            if (!isset($this->labelCache[$key][$label])) {
+                $labelsToAdd[] = $label;
+            }
+        }
+
+        if ([] !== $labelsToAdd) {
+            $this->labelsApi->add($repository->getVendor(), $repository->getName(), $issueNumber, $labelsToAdd);
+        }
+
+        // Update cache if already loaded
+        foreach ($labels as $label) {
+            if (isset($this->labelCache[$key])) {
+                $this->labelCache[$key][$label] = true;
+            }
         }
     }
 
