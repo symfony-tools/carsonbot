@@ -63,7 +63,7 @@ class PingStaleIssuesCommand extends Command
 
         /** @var string $timeString */
         $timeString = $input->getOption('not-updated-for');
-        $notUpdatedAfter = new \DateTimeImmutable($timeString);
+        $notUpdatedAfter = new \DateTimeImmutable('-'.ltrim($timeString, '-'));
         $issues = $this->issueApi->findStaleIssues($repository, $notUpdatedAfter);
 
         if ($input->getOption('dry-run')) {
