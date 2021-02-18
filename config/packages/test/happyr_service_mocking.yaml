@@ -1,0 +1,3 @@
+happyr_service_mocking:
+    services:
+        - 'App\Api\PullRequest\PullRequestApi'

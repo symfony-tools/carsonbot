@@ -53,7 +53,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
 
         // Fetch the current PR just to make sure we are working with all available information
         $githubPullRequest = $this->pullRequestApi->show($repository, $number);
-        $originalTitle = $prTitle = trim($githubPullRequest['title']);
+        $originalTitle = $prTitle = trim($githubPullRequest['title'] ?? '');
         $validLabels = [];
 
         foreach ($githubPullRequest['labels'] ?? [] as $label) {
