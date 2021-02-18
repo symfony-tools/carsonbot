@@ -51,7 +51,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         $lock = $this->lockFactory->createLock($repository->getFullName().'#'.$number);
         $lock->acquire(true); // blocking. Lock will be released at __destruct
 
-        // Fetch the current PR just to make sure it has not changed
+        // Fetch the current PR just to make sure we are working with all available information
         $githubPullRequest = $this->pullRequestApi->show($repository, $number);
         $originalTitle = $prTitle = trim($githubPullRequest['title']);
         $validLabels = [];
