@@ -47,6 +47,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         $repository = $event->getRepository();
         $number = $data['number'];
 
+        sleep(1); // Wait for github API to be updated
         $lock = $this->lockFactory->createLock($repository->getFullName().'#'.$number);
         $lock->acquire(true); // blocking. Lock will be released at __destruct
 
