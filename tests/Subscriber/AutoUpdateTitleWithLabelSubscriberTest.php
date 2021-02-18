@@ -45,7 +45,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
     public function testOnPullRequestLabeled()
     {
-        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request'=>[]], $this->repository);
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
         $this->pullRequestApi->method('show')->willReturn([
             'title' => '[fwb][bar] Foo',
             'labels' => [
@@ -64,7 +64,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
     public function testOnPullRequestLabeledCaseInsensitive()
     {
-        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request'=>[]], $this->repository);
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
         $this->pullRequestApi->method('show')->willReturn([
             'title' => '[PHPunitbridge] Foo',
             'labels' => [
@@ -82,7 +82,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
     public function testOnPullRequestLabeledWithExisting()
     {
-        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request'=>[]], $this->repository);
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
         $this->pullRequestApi->method('show')->willReturn([
                 'title' => '[Messenger] Fix JSON',
                 'labels' => [
@@ -98,7 +98,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
     public function testRemoveLabel()
     {
-        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request'=>[]], $this->repository);
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
         $this->pullRequestApi->method('show')->willReturn([
                 'title' => '[Console][FrameworkBundle] [Random] Foo normal title',
                 'labels' => [
