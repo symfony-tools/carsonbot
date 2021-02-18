@@ -26,11 +26,11 @@ class WebhookControllerTest extends WebTestCase
         $pullRequestApi = self::$container->get(PullRequestApi::class);
 
         ServiceMock::all($pullRequestApi, 'show', function ($repository, $id) {
-            if ($id !== 4711) {
+            if (4711 !== $id) {
                 return [];
             }
 
-            return ['title'=>'Readme update', 'labels' => [
+            return ['title' => 'Readme update', 'labels' => [
                 ['name' => 'Messenger', 'color' => 'dddddd'],
             ]];
         });
