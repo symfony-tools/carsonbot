@@ -2,12 +2,16 @@
 
 namespace App\Tests\Controller;
 
+use App\Api\PullRequest\PullRequestApi;
 use App\Api\Status\StatusApi;
 use App\Service\RepositoryProvider;
+use Happyr\ServiceMocking\ServiceMock;
+use Happyr\ServiceMocking\Test\RestoreServiceContainer;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class WebhookControllerTest extends WebTestCase
 {
+    use RestoreServiceContainer;
     private $client;
 
     public function setup()
@@ -19,6 +23,17 @@ class WebhookControllerTest extends WebTestCase
         $this->client = $this->createClient();
         $repository = self::$container->get(RepositoryProvider::class);
         $statusApi = self::$container->get(StatusApi::class);
+        $pullRequestApi = self::$container->get(PullRequestApi::class);
+
+        ServiceMock::all($pullRequestApi, 'show', function ($repository, $id) {
+            if (4711 !== $id) {
+                return [];
+            }
+
+            return ['title' => 'Readme update', 'labels' => [
+                ['name' => 'Messenger', 'color' => 'dddddd'],
+            ]];
+        });
 
         // the labels need to be off this issue for one test to pass
         $statusApi->setIssueStatus(2, null, $repository->getRepository('carsonbot-playground/symfony'));
@@ -67,7 +82,7 @@ class WebhookControllerTest extends WebTestCase
             'On pull request labeled' => [
                 'pull_request',
                 'pull_request.labeled.json',
-                ['pull_request' => 3, 'new_title' => '[Messenger] Readme update'],
+                ['pull_request' => 4711, 'new_title' => '[Messenger] Readme update'],
             ],
             'On pull request opened with target branch' => [
                 'pull_request',
