@@ -45,17 +45,14 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
     public function testOnPullRequestLabeled()
     {
-        $event = new GitHubEvent([
-            'action' => 'labeled',
-            'number' => 1234,
-            'pull_request' => [
-                'title' => '[fwb][bar] Foo',
-                'labels' => [
-                    ['name' => 'FrameworkBundle', 'color' => 'dddddd'],
-                    ['name' => 'Console', 'color' => 'dddddd'],
-                ],
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request'=>[]], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => '[fwb][bar] Foo',
+            'labels' => [
+                ['name' => 'FrameworkBundle', 'color' => 'dddddd'],
+                ['name' => 'Console', 'color' => 'dddddd'],
             ],
-        ], $this->repository);
+        ]);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
@@ -67,16 +64,13 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
     public function testOnPullRequestLabeledCaseInsensitive()
     {
-        $event = new GitHubEvent([
-            'action' => 'labeled',
-            'number' => 1234,
-            'pull_request' => [
-                'title' => '[PHPunitbridge] Foo',
-                'labels' => [
-                    ['name' => 'PhpUnitBridge', 'color' => 'dddddd'],
-                ],
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request'=>[]], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => '[PHPunitbridge] Foo',
+            'labels' => [
+                ['name' => 'PhpUnitBridge', 'color' => 'dddddd'],
             ],
-        ], $this->repository);
+        ]);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
@@ -88,42 +82,14 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
     public function testOnPullRequestLabeledWithExisting()
     {
-        $event = new GitHubEvent([
-            'action' => 'labeled',
-            'number' => 1234,
-            'pull_request' => [
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request'=>[]], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
                 'title' => '[Messenger] Fix JSON',
                 'labels' => [
                     ['name' => 'Status: Needs Review', 'color' => 'abcabc'],
                     ['name' => 'Messenger', 'color' => 'dddddd'],
                 ],
-            ],
-        ], $this->repository);
-
-        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
-        $responseData = $event->getResponseData();
-        $this->assertEmpty($responseData);
-    }
-
-    /**
-     * If a user add two labels at the same time. We will get two webhooks simultaneously.
-     * We need to make sure that when we request the Github API it will return the changes
-     * from the first webhook.
-     */
-    public function testOnPullRequestLabeledTwice()
-    {
-        $this->pullRequestApi->method('show')->willReturn(['title' => '[Console][FrameworkBundle] Foo normal title']);
-        $event = new GitHubEvent([
-            'action' => 'labeled',
-            'number' => 1234,
-            'pull_request' => [
-                'title' => 'Foo normal title',
-                'labels' => [
-                    ['name' => 'FrameworkBundle', 'color' => 'dddddd'],
-                    ['name' => 'Console', 'color' => 'dddddd'],
-                ],
-            ],
-        ], $this->repository);
+            ]);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
@@ -132,16 +98,13 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
     public function testRemoveLabel()
     {
-        $event = new GitHubEvent([
-            'action' => 'labeled',
-            'number' => 1234,
-            'pull_request' => [
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request'=>[]], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
                 'title' => '[Console][FrameworkBundle] [Random] Foo normal title',
                 'labels' => [
                     ['name' => 'Console', 'color' => 'dddddd'],
                 ],
-            ],
-        ], $this->repository);
+            ]);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();

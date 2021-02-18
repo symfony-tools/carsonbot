@@ -50,9 +50,12 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         $lock = $this->lockFactory->createLock($repository->getFullName().'#'.$number);
         $lock->acquire(true); // blocking. Lock will be released at __destruct
 
-        $originalTitle = $prTitle = trim($data['pull_request']['title']);
+        // Fetch the current PR just to make sure it has not changed
+        $githubPullRequest = $this->pullRequestApi->show($repository, $number);
+        $originalTitle = $prTitle = trim($githubPullRequest['title']);
         $validLabels = [];
-        foreach ($data['pull_request']['labels'] as $label) {
+
+        foreach ($githubPullRequest['labels'] ?? [] as $label) {
             if ('dddddd' === strtolower($label['color'])) {
                 $validLabels[] = $label['name'];
                 // Remove label name from title
@@ -79,11 +82,6 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         // Add back labels
         $prTitle = trim($prPrefix.' '.trim($prTitle));
         if ($originalTitle === $prTitle) {
-            return;
-        }
-
-        // Refetch the current title just to make sure it has not changed
-        if ($prTitle === ($this->pullRequestApi->show($repository, $number)['title'] ?? '')) {
             return;
         }
 
