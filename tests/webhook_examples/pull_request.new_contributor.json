@@ -340,7 +340,7 @@
     "merged_by": null,
     "comments": 0,
     "review_comments": 0,
-    "maintainer_can_modify": true,
+    "maintainer_can_modify": false,
     "commits": 1,
     "additions": 1,
     "deletions": 1,
