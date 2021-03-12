@@ -84,11 +84,11 @@ jobs:
           cd build/reviewer
           ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} ${{ steps.target-repo.outputs.dir }} \
           --after `date +%Y-%m-%d --date="2 year ago"` \
-          --ignore-path "src/Symfony/FrameworkBundle/*" \
           --ignore-path "src/Symfony/Bundle/FrameworkBundle/*" \
           --ignore-path "src/**/Tests/*" \
           --ignore-path CHANGELOG*.md \
           --ignore-path UPGRADE*.md \
+          --ignore-path composer.json \
           --pretty-print > output.json
 
           cat output.json
