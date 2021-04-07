@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\Api\Issue\IssueApi;
-use App\Service\ComplementGenerator;
 use App\Service\RepositoryProvider;
 use App\Service\ReviewerFilter;
 use Symfony\Component\Console\Command\Command;
@@ -24,15 +23,13 @@ class SuggestReviewerCommand extends Command
     private $issueApi;
     private $repositoryProvider;
     private $reviewerFilter;
-    private $complementGenerator;
 
-    public function __construct(RepositoryProvider $repositoryProvider, IssueApi $issueApi, ReviewerFilter $reviewerFilter, ComplementGenerator $complementGenerator)
+    public function __construct(RepositoryProvider $repositoryProvider, IssueApi $issueApi, ReviewerFilter $reviewerFilter)
     {
         parent::__construct();
         $this->issueApi = $issueApi;
         $this->repositoryProvider = $repositoryProvider;
         $this->reviewerFilter = $reviewerFilter;
-        $this->complementGenerator = $complementGenerator;
     }
 
     protected function configure()
@@ -91,11 +88,8 @@ class SuggestReviewerCommand extends Command
             return 0;
         }
 
-        $complement = $this->complementGenerator->getPullRequestComplement();
         $this->issueApi->commentOnIssue($repository, $pullRequestNumber, <<<TXT
 Hey!
-
-$complement
 
 I think @$reviewer has recently worked with this code. Maybe they can help review this?
 
