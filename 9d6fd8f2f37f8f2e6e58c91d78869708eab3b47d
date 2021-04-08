@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by wouterj at 2021-03-12T10:19:03Z
+
+Wouldn't it be better to say "only include `*.php` files (excluding tests)`?
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2021-03-12T10:34:32Z
+
+Yeah you are correct. But that requires me to update the `git-reviewer` repo.
+
+This change would be pretty much the same.
