@@ -14,6 +14,7 @@ parameters:
                 - 'App\Subscriber\CloseDraftPRSubscriber'
                 - 'App\Subscriber\UnsupportedBranchSubscriber'
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
+                - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
             secret: '%env(SYMFONY_SECRET)%'
 
         symfony/symfony-docs:
@@ -29,6 +30,7 @@ parameters:
                 - 'subscriber.symfony_docs.milestone'
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
                 - 'App\Subscriber\UpdateMilestoneWhenLabeledWaitingCodeMergeSubscriber'
+                - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
             secret: '%env(SYMFONY_DOCS_SECRET)%'
 
         # used in a functional test
@@ -48,6 +50,7 @@ parameters:
                 - 'App\Subscriber\UnsupportedBranchSubscriber'
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
                 - 'App\Subscriber\UpdateMilestoneWhenLabeledWaitingCodeMergeSubscriber'
+                - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
 
 services:
     _defaults:
