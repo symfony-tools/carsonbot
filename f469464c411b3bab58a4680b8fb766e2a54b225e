@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------
+
+by stof at 2021-03-05T14:47:37Z
+
+Should we put such comment only on PRs having multiple commits in them ?
+
+---------------------------------------------------------------------------
+
+by derrabus at 2021-03-05T18:23:55Z
+
+> Should we put such comment only on PRs having multiple commits in them ?
+
+The contributor might add more commits later. So it might be reasonable emit that message even on single-commit PRs.
+
+---------------------------------------------------------------------------
+
+by chalasr at 2021-03-05T21:10:30Z
+
+Should we just add it to the PR template then?
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2021-03-07T10:28:26Z
+
+Detecting multiple commits is more correct. But that increases complexity by a lot. We need to both check when PR open and when PR got a push. We also need to to use `git` to figure out how many commits there are, Im not sure that data in in the webhook payload. At last we need to keep track of if we made this comment on the PR earlier or not. Bottom line is, I really dont want to implement this feature =)
+
+> Should we just add it to the PR template then?
+
+What should we add? I think the PR template is good as it is. Especially if Carson makes this comment.
