@@ -6,7 +6,6 @@ use App\Api\Issue\IssueApi;
 use App\Entity\Task;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
-use App\Service\ComplementGenerator;
 use App\Service\TaskScheduler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -16,13 +15,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class CloseDraftPRSubscriber implements EventSubscriberInterface
 {
     private $issueApi;
-    private $complementGenerator;
     private $scheduler;
 
-    public function __construct(IssueApi $issueApi, ComplementGenerator $complementGenerator, TaskScheduler $scheduler)
+    public function __construct(IssueApi $issueApi, TaskScheduler $scheduler)
     {
         $this->issueApi = $issueApi;
-        $this->complementGenerator = $complementGenerator;
         $this->scheduler = $scheduler;
     }
 
@@ -35,11 +32,8 @@ class CloseDraftPRSubscriber implements EventSubscriberInterface
         }
 
         $number = $data['pull_request']['number'];
-        $complement = $this->complementGenerator->getPullRequestComplement();
         $this->issueApi->commentOnIssue($repository, $number, <<<TXT
 Hey!
-
-$complement
 
 To help keep things organized, we don't allow "Draft" pull requests. Could you please click the "ready for review" button or close this PR and open a new one when you are done?
 

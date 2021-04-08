@@ -7,7 +7,6 @@ use App\Api\Issue\NullIssueApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
-use App\Service\ComplementGenerator;
 use App\Service\SymfonyVersionProvider;
 use App\Subscriber\UnsupportedBranchSubscriber;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +39,7 @@ class UnsupportedBranchSubscriberTest extends TestCase
             ->getMock();
         $symfonyVersionProvider->method('getSupportedVersions')->willReturn(['4.4', '5.1']);
 
-        $subscriber = new UnsupportedBranchSubscriber($symfonyVersionProvider, $this->issueApi, new ComplementGenerator(), new NullLogger());
+        $subscriber = new UnsupportedBranchSubscriber($symfonyVersionProvider, $this->issueApi, new NullLogger());
         $this->repository = new Repository('carsonbot-playground', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
