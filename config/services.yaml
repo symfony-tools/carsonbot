@@ -15,6 +15,7 @@ parameters:
                 - 'App\Subscriber\UnsupportedBranchSubscriber'
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
                 - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
+                - 'App\Subscriber\ApproveCiForNonContributors'
             secret: '%env(SYMFONY_SECRET)%'
 
         symfony/symfony-docs:
@@ -31,6 +32,7 @@ parameters:
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
                 - 'App\Subscriber\UpdateMilestoneWhenLabeledWaitingCodeMergeSubscriber'
                 - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
+                - 'App\Subscriber\ApproveCiForNonContributors'
             secret: '%env(SYMFONY_DOCS_SECRET)%'
 
         # used in a functional test
@@ -51,6 +53,7 @@ parameters:
                 - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
                 - 'App\Subscriber\UpdateMilestoneWhenLabeledWaitingCodeMergeSubscriber'
                 - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
+                - 'App\Subscriber\ApproveCiForNonContributors'
 
 services:
     _defaults:
@@ -75,12 +78,12 @@ services:
         resource: '../src/Subscriber/*'
         autoconfigure: false
 
-
     App\Api\Issue\IssueApi: '@App\Api\Issue\GithubIssueApi'
     App\Api\Label\LabelApi: '@App\Api\Label\GithubLabelApi'
     App\Api\Milestone\MilestoneApi: '@App\Api\Milestone\GithubMilestoneApi'
     App\Api\PullRequest\PullRequestApi: '@App\Api\PullRequest\GithubPullRequestApi'
     App\Api\Status\StatusApi: '@App\Api\Status\GitHubStatusApi'
+    App\Api\Workflow\WorkflowApi: '@App\Api\Workflow\GithubWorkflowApi'
 
     App\Service\RepositoryProvider:
         arguments: [ '%repositories%' ]

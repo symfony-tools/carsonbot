@@ -8,3 +8,4 @@ services:
     App\Api\Milestone\MilestoneApi: '@App\Api\Milestone\StaticMilestoneApi'
     App\Api\PullRequest\PullRequestApi: '@App\Api\PullRequest\NullPullRequestApi'
     App\Api\Status\StatusApi: '@App\Api\Status\NullStatusApi'
+    App\Api\Workflow\WorkflowApi: '@App\Api\Workflow\NullWorkflowApi'

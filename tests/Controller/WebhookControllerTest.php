@@ -67,12 +67,12 @@ class WebhookControllerTest extends WebTestCase
             'On pull request opened' => [
                 'pull_request',
                 'pull_request.opened.json',
-                ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Console', 'Bug'], 'unsupported_branch' => '2.5'],
+                ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Console', 'Bug'], 'unsupported_branch' => '2.5', 'approved_run' => true],
             ],
             'On draft pull request opened' => [
                 'pull_request',
                 'pull_request.opened_draft.json',
-                ['pull_request' => 3, 'draft_comment' => true],
+                ['pull_request' => 3, 'draft_comment' => true, 'approved_run' => true],
             ],
             'On pull request draft to ready' => [
                 'pull_request',
@@ -87,7 +87,7 @@ class WebhookControllerTest extends WebTestCase
             'On pull request opened with target branch' => [
                 'pull_request',
                 'pull_request.opened_target_branch.json',
-                ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Bug'], 'milestone' => '4.4'],
+                ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Bug'], 'milestone' => '4.4', 'approved_run' => true],
             ],
             'On issue labeled bug' => [
                 'issues',
@@ -102,7 +102,7 @@ class WebhookControllerTest extends WebTestCase
             'Welcome first users' => [
                 'pull_request',
                 'pull_request.new_contributor.json',
-                ['pull_request' => 4, 'status_change' => 'needs_review',  'pr_labels' => [], 'new_contributor' => true, 'squash_comment' => true],
+                ['pull_request' => 4, 'status_change' => 'needs_review',  'pr_labels' => [], 'new_contributor' => true, 'squash_comment' => true, 'approved_run' => true],
             ],
             'Waiting Code Merge' => [
                 'pull_request',

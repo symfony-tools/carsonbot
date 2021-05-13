@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f34db7d7fb4797fdbbeb7229fbd8371",
+    "content-hash": "fe2120fb8824c43df8973c103778f137",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -1626,16 +1626,16 @@
         },
         {
             "name": "knplabs/github-api",
-            "version": "v3.2.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/php-github-api.git",
-                "reference": "1dce0d33292eb2c4d33e2f9354b4043caf14588e"
+                "reference": "48f1df227d597336ae794c0c54a4db0e61da1dfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/1dce0d33292eb2c4d33e2f9354b4043caf14588e",
-                "reference": "1dce0d33292eb2c4d33e2f9354b4043caf14588e",
+                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/48f1df227d597336ae794c0c54a4db0e61da1dfe",
+                "reference": "48f1df227d597336ae794c0c54a4db0e61da1dfe",
                 "shasum": ""
             },
             "require": {
@@ -1665,11 +1665,12 @@
                 "symfony/cache": "^5.1.8",
                 "symfony/phpunit-bridge": "^5.2"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-2.x": "2.20.x-dev",
-                    "dev-master": "3.2.x-dev"
+                    "dev-master": "3.3.x-dev"
                 }
             },
             "autoload": {
@@ -1702,7 +1703,7 @@
             ],
             "support": {
                 "issues": "https://github.com/KnpLabs/php-github-api/issues",
-                "source": "https://github.com/KnpLabs/php-github-api/tree/v3.2.0"
+                "source": "https://github.com/KnpLabs/php-github-api/tree/master"
             },
             "funding": [
                 {
@@ -1710,7 +1711,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-04-28T18:12:19+00:00"
+            "time": "2021-05-20T19:56:43+00:00"
         },
         {
             "name": "laminas/laminas-code",
@@ -8747,7 +8748,9 @@
     ],
     "aliases": [],
     "minimum-stability": "RC",
-    "stability-flags": [],
+    "stability-flags": {
+        "knplabs/github-api": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

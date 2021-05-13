@@ -69,3 +69,6 @@ services:
     Github\Api\Search:
         factory: ['@Github\Client', api]
         arguments: [search]
+
+    Github\Api\Repository\Actions\WorkflowRuns:
+        factory: ['@Github\Api\Repo', workflowRuns]
