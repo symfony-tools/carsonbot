@@ -46,8 +46,11 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
+        /** @var array $repositories */
+        $repositories = $container->getParameter('repositories');
         $dispatcherCollection = $container->getDefinition(EventDispatcher::class);
-        foreach ($container->getParameter('repositories') as $name => $repository) {
+
+        foreach ($repositories as $name => $repository) {
             $ed = new Definition(SymfonyEventDispatcher::class);
             foreach ($repository['subscribers'] as $subscriber) {
                 $ed->addMethodCall('addSubscriber', [new Reference($subscriber)]);

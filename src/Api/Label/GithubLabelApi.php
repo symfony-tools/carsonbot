@@ -160,7 +160,7 @@ class GithubLabelApi implements LabelApi
         $key = 'labels_'.sha1($repository->getFullName());
 
         return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
-            $labels = $this->resultPager->fetchAll($this->labelsApi, 'all', [$repository->getVendor(), $repository->getName()]) ?? [];
+            $labels = $this->resultPager->fetchAll($this->labelsApi, 'all', [$repository->getVendor(), $repository->getName()]);
             $item->expiresAfter(604800);
 
             return $labels;

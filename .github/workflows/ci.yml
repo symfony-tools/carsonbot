@@ -11,9 +11,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-
     steps:
       - name: Set up PHP
         uses: shivammathur/setup-php@2.7.0
@@ -39,9 +36,7 @@ jobs:
             composer-
 
       - name: Download dependencies
-        run: |
-          composer install --no-interaction --optimize-autoloader
-          ./vendor/bin/simple-phpunit install
+        run: composer install --no-interaction --optimize-autoloader
 
       - name: Setup database
         run: |
@@ -49,7 +44,7 @@ jobs:
           bin/console doctrine:schema:create
 
       - name: Run tests
-        run: ./vendor/bin/simple-phpunit
+        run: ./vendor/bin/phpunit
 
       - name: Upload log file
         if: ${{ failure() }}

@@ -9,9 +9,11 @@ use Github\Api\Issue\Timeline;
 use Github\Api\PullRequest\Review;
 use Github\Api\Search;
 use Github\Exception\RuntimeException;
+use Github\ResultPager;
 
 class GithubIssueApi implements IssueApi
 {
+    private $resultPager;
     private $issueCommentApi;
     private $reviewApi;
     private $issueApi;
@@ -19,8 +21,9 @@ class GithubIssueApi implements IssueApi
     private $timelineApi;
     private $botUsername;
 
-    public function __construct(Comments $issueCommentApi, Review $reviewApi, Issue $issueApi, Search $searchApi, Timeline $timelineApi, string $botUsername)
+    public function __construct(ResultPager $resultPager, Comments $issueCommentApi, Review $reviewApi, Issue $issueApi, Search $searchApi, Timeline $timelineApi, string $botUsername)
     {
+        $this->resultPager = $resultPager;
         $this->issueCommentApi = $issueCommentApi;
         $this->reviewApi = $reviewApi;
         $this->issueApi = $issueApi;
@@ -38,8 +41,8 @@ class GithubIssueApi implements IssueApi
         ];
 
         $issueNumber = null;
-        $existingIssues = $this->searchApi->issues(sprintf('repo:%s "%s" is:open author:%s', $repository->getFullName(), $title, $this->botUsername));
-        foreach ($existingIssues['items'] ?? [] as $issue) {
+        $existingIssues = $this->resultPager->fetchAllLazy($this->searchApi, 'issues', [sprintf('repo:%s "%s" is:open author:%s', $repository->getFullName(), $title, $this->botUsername), 'updated', 'desc']);
+        foreach ($existingIssues as $issue) {
             $issueNumber = $issue['number'];
         }
 
@@ -53,7 +56,7 @@ class GithubIssueApi implements IssueApi
 
     public function lastCommentWasMadeByBot(Repository $repository, $number): bool
     {
-        $allComments = $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $number);
+        $allComments = $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $number, ['per_page' => 100]);
         $lastComment = $allComments[count($allComments) - 1] ?? [];
 
         return $this->botUsername === ($lastComment['user']['login'] ?? null);
@@ -74,7 +77,7 @@ class GithubIssueApi implements IssueApi
             $reviewComments = [];
         }
 
-        $all = array_merge($reviewComments, $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $number));
+        $all = array_merge($reviewComments, $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $number, ['per_page' => 100]));
         foreach ($all as $comment) {
             if (!in_array($comment['user']['login'], [$author, $this->botUsername])) {
                 return true;
@@ -107,11 +110,9 @@ class GithubIssueApi implements IssueApi
         );
     }
 
-    public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): array
+    public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable
     {
-        $issues = $this->searchApi->issues(sprintf('repo:%s is:issue -label:"Keep open" is:open updated:<%s', $repository->getFullName(), $noUpdateAfter->format('Y-m-d')));
-
-        return $issues['items'] ?? [];
+        return $this->resultPager->fetchAllLazy($this->searchApi, 'issues', [sprintf('repo:%s is:issue -label:"Keep open" is:open updated:<%s', $repository->getFullName(), $noUpdateAfter->format('Y-m-d')), 'updated', 'desc']);
     }
 
     public function getUsers(Repository $repository, $issueNumber): array

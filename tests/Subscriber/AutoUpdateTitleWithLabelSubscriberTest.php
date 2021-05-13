@@ -25,7 +25,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
     private $subscriber;
     private $repository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $labelsApi = new StaticLabelApi();
         $this->pullRequestApi = $this->getMockBuilder(NullPullRequestApi::class)

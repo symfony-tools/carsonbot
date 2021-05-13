@@ -14,7 +14,7 @@ class WebhookControllerTest extends WebTestCase
     use RestoreServiceContainer;
     private $client;
 
-    public function setup()
+    protected function setup(): void
     {
         if ($this->client) {
             return;

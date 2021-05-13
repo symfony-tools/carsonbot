@@ -24,7 +24,7 @@ class BugLabelNewIssueSubscriberTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->statusApi = $this->createMock(StatusApi::class);
         $this->bugLabelSubscriber = new BugLabelNewIssueSubscriber($this->statusApi);

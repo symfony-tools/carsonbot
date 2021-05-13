@@ -25,7 +25,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->labelsApi = $this->getMockBuilder(StaticLabelApi::class)
             ->disableOriginalConstructor()

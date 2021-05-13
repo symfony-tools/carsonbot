@@ -24,7 +24,7 @@ class StatusChangeOnPushSubscriberTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->statusApi = $this->createMock(StatusApi::class);
         $this->statusChangeSubscriber = new StatusChangeOnPushSubscriber($this->statusApi);

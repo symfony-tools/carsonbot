@@ -25,7 +25,7 @@ interface IssueApi
 
     public function lastCommentWasMadeByBot(Repository $repository, $number): bool;
 
-    public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): array;
+    public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable;
 
     /**
      * Close an issue or a pull request.

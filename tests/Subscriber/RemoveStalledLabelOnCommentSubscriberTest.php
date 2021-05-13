@@ -23,7 +23,7 @@ class RemoveStalledLabelOnCommentSubscriberTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subscriber = new RemoveStalledLabelOnCommentSubscriber(new NullLabelApi(), 'carsonbot');
         $this->repository = new Repository('carsonbot-playground', 'symfony', null);

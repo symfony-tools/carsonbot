@@ -24,7 +24,7 @@ class MilestoneNewPRSubscriberTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->milestonesApi = $this->createMock(GithubMilestoneApi::class);
         $symfonyVersionProvider = $this->getMockBuilder(SymfonyVersionProvider::class)

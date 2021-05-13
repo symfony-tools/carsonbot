@@ -32,7 +32,7 @@ class GithubLabelApiTest extends TestCase
 
     private $repository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->backendApi = $this->getMockBuilder(Labels::class)
             ->disableOriginalConstructor()

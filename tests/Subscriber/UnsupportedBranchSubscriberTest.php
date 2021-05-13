@@ -30,14 +30,14 @@ class UnsupportedBranchSubscriberTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->issueApi = $this->createMock(NullIssueApi::class);
         $symfonyVersionProvider = $this->getMockBuilder(SymfonyVersionProvider::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getSupportedVersions'])
+            ->setMethods(['getMaintainedVersions'])
             ->getMock();
-        $symfonyVersionProvider->method('getSupportedVersions')->willReturn(['4.4', '5.1']);
+        $symfonyVersionProvider->method('getMaintainedVersions')->willReturn(['4.4', '5.1']);
 
         $subscriber = new UnsupportedBranchSubscriber($symfonyVersionProvider, $this->issueApi, new NullLogger());
         $this->repository = new Repository('carsonbot-playground', 'symfony', null);
