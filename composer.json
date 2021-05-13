@@ -21,7 +21,7 @@
         "symfony/http-client": "^5.2@rc",
         "symfony/lock": "^5.2@rc",
         "symfony/monolog-bundle": "~3.5",
-        "symfony/security-core": "5.1.*",
+        "symfony/security-core": "5.2.*",
         "symfony/twig-pack": "^1.0",
         "symfony/yaml": "^5.1"
     },
