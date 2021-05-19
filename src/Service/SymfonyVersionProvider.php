@@ -49,16 +49,16 @@ class SymfonyVersionProvider
     /**
      * @throws \RuntimeException
      */
-    public function getSupportedVersions(): array
+    public function getMaintainedVersions(): array
     {
         $response = $this->httpClient->request('GET', 'https://symfony.com/releases.json');
         $data = $response->toArray(true);
-        $versions = $data['supported_versions'] ?? null;
+        $versions = $data['maintained_versions'] ?? null;
 
         if (is_array($versions) && count($versions) > 0) {
             return $versions;
         }
 
-        throw new \RuntimeException('Could not fetch supported versions');
+        throw new \RuntimeException('Could not fetch maintained versions');
     }
 }

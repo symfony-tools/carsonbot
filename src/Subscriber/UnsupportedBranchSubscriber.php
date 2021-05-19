@@ -41,7 +41,7 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
         }
 
         try {
-            $validBranches = $this->symfonyVersionProvider->getSupportedVersions();
+            $validBranches = $this->symfonyVersionProvider->getMaintainedVersions();
         } catch (\Throwable $e) {
             $this->logger->error('Failed to get valid branches', ['exception' => $e]);
 
