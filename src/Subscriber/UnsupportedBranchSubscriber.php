@@ -57,7 +57,7 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
         $this->issueApi->commentOnIssue($event->getRepository(), $number, <<<TXT
 Hey!
 
-But you have made this PR towards a branch that is not maintained anymore. :/
+Oh no, it looks like you have made this PR towards a branch that is not maintained anymore. :/
 Could you update the [PR base branch](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/changing-the-base-branch-of-a-pull-request) to target one of these branches instead? $validBranchesString.
 
 Cheers!
