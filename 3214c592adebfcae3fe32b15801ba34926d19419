@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2021-05-19T14:58:35Z
+
+https://symfony.com/releases.json won't list `6.0` for the next 6 months.
+
+---------------------------------------------------------------------------
+
+by derrabus at 2021-05-19T16:29:47Z
+
+Can we use https://symfony.com/maintained-versions.json instead?
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2021-05-19T16:33:03Z
+
+PR updated.
