@@ -34,7 +34,7 @@ class GitHubStatusApiTest extends TestCase
      */
     private $repository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->labelsApi = $this->getMockBuilder(GithubLabelApi::class)
             ->disableOriginalConstructor()

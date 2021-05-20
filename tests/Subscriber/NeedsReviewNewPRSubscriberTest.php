@@ -24,7 +24,7 @@ class NeedsReviewNewPRSubscriberTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->statusApi = $this->createMock(StatusApi::class);
         $this->needsReviewSubscriber = new NeedsReviewNewPRSubscriber($this->statusApi);

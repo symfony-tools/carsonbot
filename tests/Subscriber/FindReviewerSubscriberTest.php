@@ -27,7 +27,7 @@ class FindReviewerSubscriberTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->pullRequestApi = $this->createMock(NullPullRequestApi::class);
         $this->taskScheduler = $this->createMock(TaskScheduler::class);

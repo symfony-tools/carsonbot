@@ -11,11 +11,11 @@ services:
     Github\HttpClient\Builder:
         arguments:
             - '@github.httplug_client'
-            - '@Http\Message\RequestFactory'
-            - '@Http\Message\StreamFactory'
+            - '@Psr\Http\Message\RequestFactoryInterface'
+            - '@Psr\Http\Message\StreamFactoryInterface'
 
     github.httplug_client:
-        class: Symfony\Component\HttpClient\HttplugClient
+        class: Symfony\Component\HttpClient\Psr18Client
         arguments:
             - '@github.retryable_client'
             - '@Psr\Http\Message\ResponseFactoryInterface'
@@ -43,13 +43,9 @@ services:
 
     Github\Api\Issue\Comments:
         factory: ['@Github\Api\Issue', comments]
-        calls:
-            - ['setPerPage', [100]]
 
     Github\Api\Issue\Labels:
         factory: ['@Github\Api\Issue', labels]
-        calls:
-            - ['setPerPage', [100]]
 
     Github\Api\Issue\Milestones:
         factory: ['@Github\Api\Issue', milestones]
@@ -73,5 +69,3 @@ services:
     Github\Api\Search:
         factory: ['@Github\Client', api]
         arguments: [search]
-        calls:
-            - ['setPerPage', [100]]

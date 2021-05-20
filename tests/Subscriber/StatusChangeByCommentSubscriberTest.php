@@ -25,7 +25,7 @@ class StatusChangeByCommentSubscriberTest extends TestCase
      */
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->statusApi = $this->createMock(StatusApi::class);
         $logger = $this->createMock(LoggerInterface::class);

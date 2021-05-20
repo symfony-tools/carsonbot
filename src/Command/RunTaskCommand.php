@@ -29,7 +29,7 @@ class RunTaskCommand extends Command
 
     protected function configure()
     {
-        $this->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Limit the number of tasks to run', 10);
+        $this->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Limit the number of tasks to run', '10');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

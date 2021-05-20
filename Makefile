@@ -6,7 +6,7 @@ help:
 build: test ## Runs test targets
 
 test: vendor/autoload.php ## Runs tests with phpunit
-	vendor/bin/simple-phpunit --testsuite Unit
+	vendor/bin/phpunit --testsuite Unit
 
 vendor/autoload.php:
 	composer install --no-interaction
