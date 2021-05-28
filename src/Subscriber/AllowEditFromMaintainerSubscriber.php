@@ -36,7 +36,7 @@ class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
         $repository = $event->getRepository();
         $pullRequestNumber = $data['pull_request']['number'];
         $this->commentsApi->commentOnIssue($repository, $pullRequestNumber, <<<TXT
-Please note that you need squash your commits before this PR can be merged. The maintainer can also squash the commits for you, but then you need to “Allow edits from maintainer” (there is a checkbox in the sidebar of the PR).
+It looks like you unchecked the "Allow edits from maintainer" box. That is fine, but please note that if you have multiple commits, you'll need to squash your commits into one before this can be merged. Or, you can check the "Allow edits from maintainers" box and the maintainer can squash for you.
 
 Cheers!
 
