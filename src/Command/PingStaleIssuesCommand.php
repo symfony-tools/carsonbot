@@ -80,7 +80,7 @@ class PingStaleIssuesCommand extends Command
             $this->labelApi->addIssueLabel($issue['number'], 'Stalled', $repository);
 
             // add a scheduled task to process this issue again after 2 weeks
-            $this->scheduler->runLater($repository, $issue['number'], Task::ACTION_INFORM_CLOSE_STALE, new \DateTimeImmutable(self::MESSAGE_TWO_AFTER));
+            $this->scheduler->runLater($repository, (int) $issue['number'], Task::ACTION_INFORM_CLOSE_STALE, new \DateTimeImmutable(self::MESSAGE_TWO_AFTER));
         }
 
         return 0;

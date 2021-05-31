@@ -33,12 +33,12 @@ class ListTaskCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var int|null $number */
+        /** @var mixed|null $number */
         $number = $input->getOption('number');
         if (null === $number) {
             $criteria = [];
         } else {
-            $criteria = ['number' => $number];
+            $criteria = ['number' => (int) $number];
         }
 
         $limit = 100;

@@ -34,8 +34,7 @@ class RunTaskCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var int $limit */
-        $limit = $input->getOption('limit');
+        $limit = (int) $input->getOption('limit');
         foreach ($this->repository->getTasksToVerify($limit) as $task) {
             try {
                 $this->taskRunner->run($task);
