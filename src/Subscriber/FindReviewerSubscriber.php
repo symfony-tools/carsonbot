@@ -36,7 +36,7 @@ class FindReviewerSubscriber implements EventSubscriberInterface
         $repository = $event->getRepository();
 
         // set scheduled task to run in 20 hours
-        $this->scheduler->runLater($repository, $data['number'], Task::ACTION_SUGGEST_REVIEWER, new \DateTimeImmutable('+20hours'));
+        $this->scheduler->runLater($repository, (int) $data['number'], Task::ACTION_SUGGEST_REVIEWER, new \DateTimeImmutable('+20hours'));
     }
 
     /**

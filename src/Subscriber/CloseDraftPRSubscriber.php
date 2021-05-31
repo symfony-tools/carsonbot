@@ -31,7 +31,7 @@ class CloseDraftPRSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $number = $data['pull_request']['number'];
+        $number = (int) $data['pull_request']['number'];
         $this->issueApi->commentOnIssue($repository, $number, <<<TXT
 Hey!
 
