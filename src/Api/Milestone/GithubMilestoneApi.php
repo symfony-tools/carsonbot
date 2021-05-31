@@ -38,7 +38,7 @@ class GithubMilestoneApi implements MilestoneApi
         if (!isset($this->cache[$key])) {
             $this->cache[$key] = [];
 
-            $milestones = $this->milestonesApi->all($repository->getVendor(), $repository->getName());
+            $milestones = $this->milestonesApi->all($repository->getVendor(), $repository->getName(), ['per_page' => 100]);
 
             foreach ($milestones as $milestone) {
                 $this->cache[$key][] = $milestone;
