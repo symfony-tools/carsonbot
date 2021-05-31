@@ -71,7 +71,7 @@ class GithubIssueApi implements IssueApi
         $author = $issue['user']['login'] ?? null;
 
         try {
-            $reviewComments = $this->reviewApi->all($repository->getVendor(), $repository->getName(), $number);
+            $reviewComments = $this->reviewApi->all($repository->getVendor(), $repository->getName(), $number, ['per_page' => 100]);
         } catch (RuntimeException $e) {
             // This was not a PR =)
             $reviewComments = [];
