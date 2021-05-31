@@ -26,9 +26,6 @@
     "doctrine/dbal": {
         "version": "2.13.1"
     },
-    "doctrine/deprecations": {
-        "version": "v0.5.3"
-    },
     "doctrine/doctrine-bundle": {
         "version": "2.3",
         "recipe": {
