@@ -10,7 +10,7 @@
         "doctrine/doctrine-bundle": "2.2.1",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/dbal": "^2.13.1",
-        "doctrine/common": "3.0.2",
+        "doctrine/common": "^3.0",
         "doctrine/orm": "2.7.4",
         "incenteev/composer-parameter-handler": "~2.0",
         "knplabs/github-api": "^3.3",
