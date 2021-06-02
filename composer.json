@@ -7,7 +7,7 @@
         "php": ">=7.4",
         "ext-json": "*",
         "composer/package-versions-deprecated": "^1.11",
-        "doctrine/doctrine-bundle": "2.2.4",
+        "doctrine/doctrine-bundle": "2.3.0",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/dbal": "^2.13.1",
         "doctrine/common": "^3.0",
