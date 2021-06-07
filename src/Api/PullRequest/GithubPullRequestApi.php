@@ -30,9 +30,15 @@ class GithubPullRequestApi implements PullRequestApi
         return (array) $this->pullRequest->show($repository->getVendor(), $repository->getName(), $number);
     }
 
-    public function updateTitle(Repository $repository, $number, $title): void
+    public function updateTitle(Repository $repository, $number, string $title, string $body = null): void
     {
-        $this->pullRequest->update($repository->getVendor(), $repository->getName(), $number, ['title' => $title]);
+        $params = ['title' => $title];
+
+        if (null !== $body) {
+            $params['body'] = $body;
+        }
+
+        $this->pullRequest->update($repository->getVendor(), $repository->getName(), $number, $params);
     }
 
     /**
