@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by Nyholm at 2021-06-07T13:56:29Z
+
+I agree that we may introduce some more objects, we may also make the subscribers fail individually and try to minimise "update requests". But that fall outside of the current PR.
