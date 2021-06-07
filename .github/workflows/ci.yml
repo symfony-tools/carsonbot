@@ -35,13 +35,14 @@ jobs:
             composer-${{ runner.os }}-
             composer-
 
+      - name: Docker
+        run: docker-compose up -d
+
       - name: Download dependencies
         run: composer install --no-interaction --optimize-autoloader
 
       - name: Setup database
-        run: |
-          bin/console doctrine:database:create
-          bin/console doctrine:schema:create
+        run: bin/console doctrine:schema:create
 
       - name: Run tests
         run: ./vendor/bin/phpunit

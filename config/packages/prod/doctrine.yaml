@@ -1,9 +1,4 @@
 doctrine:
-    dbal:
-        # Since the real DATABASE_URL is not available when building cache on deployment,
-        # we need to specify these values here: https://github.com/symfony-tools/carsonbot/issues/179
-        driver: pdo_pgsql
-        server_version: '12'
     orm:
         auto_generate_proxy_classes: false
         metadata_cache_driver:

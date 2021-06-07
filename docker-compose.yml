@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+    database:
+        # In production, you may want to use a managed database service
+        image: postgres:12-alpine
+        environment:
+            - POSTGRES_DB=carsonbot
+            - POSTGRES_USER=db_user
+            # You should definitely change the password in production
+            - POSTGRES_PASSWORD=db_password
+        volumes:
+            - db-data:/var/lib/postgresql/data:rw
+            # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+            # - ./docker/db/data:/var/lib/postgresql/data:rw
+        ports:
+            - "5432:5432"
+volumes:
+    db-data: { }
