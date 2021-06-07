@@ -36,7 +36,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $store = $this->getMockBuilder(PersistingStoreInterface::class)->getMock();
         $store->method('exists')->willReturn(false);
 
-        $this->subscriber = new AutoUpdateTitleWithLabelSubscriber($labelsApi, new LabelNameExtractor($labelsApi, new NullLogger()), $this->pullRequestApi, new LockFactory($store));
+        $this->subscriber = new AutoUpdateTitleWithLabelSubscriber(new LabelNameExtractor($labelsApi, new NullLogger()), $this->pullRequestApi, new LockFactory($store));
         $this->repository = new Repository('carsonbot-playground', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();

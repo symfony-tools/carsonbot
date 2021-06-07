@@ -2,7 +2,6 @@
 
 namespace App\Subscriber;
 
-use App\Api\Label\LabelApi;
 use App\Api\PullRequest\PullRequestApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
@@ -17,15 +16,12 @@ use Symfony\Component\Lock\LockFactory;
  */
 class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
 {
-    private $labelsApi;
-
     private $labelExtractor;
     private $pullRequestApi;
     private $lockFactory;
 
-    public function __construct(LabelApi $labelsApi, LabelNameExtractor $labelExtractor, PullRequestApi $pullRequestApi, LockFactory $lockFactory)
+    public function __construct(LabelNameExtractor $labelExtractor, PullRequestApi $pullRequestApi, LockFactory $lockFactory)
     {
-        $this->labelsApi = $labelsApi;
         $this->labelExtractor = $labelExtractor;
         $this->pullRequestApi = $pullRequestApi;
         $this->lockFactory = $lockFactory;
