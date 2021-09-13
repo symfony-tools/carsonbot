@@ -16,16 +16,18 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
     private $milestonesApi;
     private $symfonyVersionProvider;
     private $ignoreCurrentVersion;
+    private $ignoreDefaultBranch;
 
-    public function __construct(MilestoneApi $milestonesApi, SymfonyVersionProvider $symfonyVersionProvider, $ignoreCurrentVersion = false)
+    public function __construct(MilestoneApi $milestonesApi, SymfonyVersionProvider $symfonyVersionProvider, $ignoreCurrentVersion = false, $ignoreDefaultBranch = false)
     {
         $this->milestonesApi = $milestonesApi;
         $this->symfonyVersionProvider = $symfonyVersionProvider;
         $this->ignoreCurrentVersion = $ignoreCurrentVersion;
+        $this->ignoreDefaultBranch = $ignoreDefaultBranch;
     }
 
     /**
-     * Sets milestone on PRs that target non-default branch.
+     * Sets milestone on PRs.
      */
     public function onPullRequest(GitHubEvent $event)
     {
@@ -36,7 +38,7 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
         }
 
         $targetBranch = $data['pull_request']['base']['ref'];
-        if ($targetBranch === $data['repository']['default_branch']) {
+        if ($this->ignoreDefaultBranch && $targetBranch === $data['repository']['default_branch']) {
             return;
         }
 
