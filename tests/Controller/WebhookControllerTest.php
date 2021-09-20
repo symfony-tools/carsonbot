@@ -50,7 +50,7 @@ class WebhookControllerTest extends WebTestCase
         $response = $client->getResponse();
 
         $responseData = json_decode($response->getContent(), true);
-        $this->assertSame(200, $response->getStatusCode(), isset($responseData['error']) ? $responseData['error'] : 'An error occurred.');
+        $this->assertResponseIsSuccessful(isset($responseData['error']) ? $responseData['error'] : 'An error occurred.');
 
         // a weak sanity check that we went down "the right path" in the controller
         $this->assertSame($expectedResponse, $responseData);

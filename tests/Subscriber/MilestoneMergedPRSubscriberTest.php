@@ -6,18 +6,15 @@ use App\Api\Milestone\GithubMilestoneApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
-use App\Service\SymfonyVersionProvider;
-use App\Subscriber\MilestoneNewPRSubscriber;
+use App\Subscriber\MilestoneMergedPRSubscriber;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class MilestoneNewPRSubscriberTest extends TestCase
+class MilestoneMergedPRSubscriberTest extends TestCase
 {
     private $subscriber;
 
     private $milestonesApi;
-
-    private $symfonyVersionProvider;
 
     private $repository;
 
@@ -29,19 +26,14 @@ class MilestoneNewPRSubscriberTest extends TestCase
     protected function setUp(): void
     {
         $this->milestonesApi = $this->createMock(GithubMilestoneApi::class);
-        $this->symfonyVersionProvider = $this->getMockBuilder(SymfonyVersionProvider::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getCurrentVersion'])
-            ->getMock();
-        $this->symfonyVersionProvider->method('getCurrentVersion')->willReturn('5.1');
-        $this->subscriber = new MilestoneNewPRSubscriber($this->milestonesApi, $this->symfonyVersionProvider);
+        $this->subscriber = new MilestoneMergedPRSubscriber($this->milestonesApi);
         $this->repository = new Repository('nyholm', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber($this->subscriber);
     }
 
-    public function testOnPullRequestOpen()
+    public function testOnPullRequestMerged()
     {
         $this->milestonesApi->expects($this->once())
             ->method('exists')
@@ -53,7 +45,9 @@ class MilestoneNewPRSubscriberTest extends TestCase
             ->with($this->repository, 1234, '4.4');
 
         $event = new GitHubEvent([
-            'action' => 'opened',
+            'action' => 'closed',
+            'merged' => true,
+            'milestone' => '1.2',
             'pull_request' => [
                 'number' => 1234,
                 'base' => ['ref' => '4.4'],
@@ -71,30 +65,7 @@ class MilestoneNewPRSubscriberTest extends TestCase
         $this->assertSame('4.4', $responseData['milestone']);
     }
 
-    public function testOnPullRequestOpenDefaultBranch()
-    {
-        $this->subscriber = new MilestoneNewPRSubscriber($this->milestonesApi, $this->symfonyVersionProvider, true);
-
-        $this->milestonesApi->expects($this->never())
-            ->method('updateMilestone');
-
-        $event = new GitHubEvent([
-            'action' => 'opened',
-            'pull_request' => [
-                'number' => 1234,
-                'base' => ['ref' => 'master'],
-            ],
-            'repository' => [
-                'default_branch' => 'master',
-            ],
-        ], $this->repository);
-
-        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
-        $responseData = $event->getResponseData();
-        $this->assertEmpty($responseData);
-    }
-
-    public function testOnPullRequestOpenMilestoneNotExist()
+    public function testMilestoneNotExist()
     {
         $this->milestonesApi->expects($this->once())
             ->method('exists')
@@ -105,7 +76,9 @@ class MilestoneNewPRSubscriberTest extends TestCase
             ->method('updateMilestone');
 
         $event = new GitHubEvent([
-            'action' => 'opened',
+            'action' => 'closed',
+            'merged' => true,
+            'milestone' => null,
             'pull_request' => [
                 'number' => 1234,
                 'base' => ['ref' => '4.4'],
@@ -120,13 +93,14 @@ class MilestoneNewPRSubscriberTest extends TestCase
         $this->assertEmpty($responseData);
     }
 
-    public function testOnPullRequestNotOpen()
+    public function testOnPullRequestNotMerged()
     {
         $this->milestonesApi->expects($this->never())
             ->method('updateMilestone');
 
         $event = new GitHubEvent([
-            'action' => 'close',
+            'action' => 'closed',
+            'merged' => false,
         ], $this->repository);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
