@@ -33,6 +33,10 @@ class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
             return;
         }
 
+        if ($data['repository']['full_name'] === $data['pull_request']['head']['repo']['full_name']) {
+            return;
+        }
+
         $repository = $event->getRepository();
         $pullRequestNumber = $data['pull_request']['number'];
         $this->commentsApi->commentOnIssue($repository, $pullRequestNumber, <<<TXT
