@@ -99,6 +99,11 @@ the first 20 hours.
 If a PR is opened towards a branch that is not maintained anymore, Carson will
 kindly explain to the author what to do.
 
+### Add a warning if pull request description mismatch the targeted branch.
+
+If a PR is opened towards a branch but the description does not match, Carson will
+post a nice comment to explain to the author what to do.
+
 ### Open issues when docs for config reference is incomplete
 
 The Symfony documentation includes some pages with "configuration reference", to
