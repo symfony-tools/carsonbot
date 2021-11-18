@@ -18,10 +18,10 @@ class ReviewerFilter
 
     // These users will never be pinged for a review
     private $blocked = [
-            'fabpot', 'tobion', 'nicolas-grekas', 'stof', 'dunglas', 'jakzal',
+            'fabpot', 'tobion', 'nicolas-grekas', 'stof', 'dunglas',
             'xabbuh', 'javiereguiluz', 'lyrixx', 'weaverryan', 'chalasr', 'ogizanagi',
-            'sroze', 'yceruto', 'nyholm', 'wouterj', 'derrabus', 'jderusse',
-            'oskarstark',
+            'yceruto', 'nyholm', 'wouterj', 'derrabus', 'jderusse',
+            'oskarstark', 'kbond', 'welcomattic', 'gromnan', 'fancyweb',
         ];
 
     public function __construct(IssueApi $issueApi)
