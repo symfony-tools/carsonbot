@@ -37,20 +37,22 @@ hooks:
         set -x -e
         (>&2 symfony-deploy)
 
-#crons:
-#    run_tasks:
-#        spec: '*/5 * * * *'
-#        cmd: croncape bin/console app:task:run
-#
-#    stale_issues_symfony:
-#        spec: '58 12 * * *'
-#        cmd: croncape bin/console app:issue:ping-stale symfony/symfony --not-updated-for 6months
-#
-#    stale_issues_docs:
-#        spec: '48 12 * * *'
-#        cmd: croncape bin/console app:issue:ping-stale symfony/symfony-docs --not-updated-for 12months
-#
+crons:
+    run_tasks:
+        spec: '*/5 * * * *'
+        cmd: croncape bin/console app:task:run
+
+    stale_issues_symfony:
+        spec: '58 12 * * *'
+        cmd: croncape bin/console app:issue:ping-stale symfony/symfony --not-updated-for 6months
+
+    stale_issues_docs:
+        spec: '48 12 * * *'
+        cmd: croncape bin/console app:issue:ping-stale symfony/symfony-docs --not-updated-for 12months
+
 relationships:
     database: "mydatabase:postgresql"
+
+
 
 
