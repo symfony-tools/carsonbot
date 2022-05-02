@@ -18,7 +18,7 @@
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/console": "^5.2",
         "symfony/dotenv": "^5.2",
-        "symfony/flex": "^1.12",
+        "symfony/flex": "^1.18.6",
         "symfony/framework-bundle": "^5.2",
         "symfony/http-client": "^5.2",
         "symfony/lock": "^5.2",
@@ -45,7 +45,10 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": true
+        }
     },
     "extra": {
         "symfony": {
