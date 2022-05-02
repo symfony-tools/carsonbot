@@ -2,6 +2,9 @@
     "clue/stream-filter": {
         "version": "v1.5.0"
     },
+    "composer/package-versions-deprecated": {
+        "version": "1.11.99.5"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -105,12 +108,6 @@
     },
     "laminas/laminas-code": {
         "version": "4.3.0"
-    },
-    "laminas/laminas-eventmanager": {
-        "version": "3.3.1"
-    },
-    "laminas/laminas-zendframework-bridge": {
-        "version": "1.2.0"
     },
     "monolog/monolog": {
         "version": "2.2.0"
@@ -416,6 +413,9 @@
     "symfony/options-resolver": {
         "version": "v5.2.4"
     },
+    "symfony/password-hasher": {
+        "version": "v5.4.8"
+    },
     "symfony/polyfill-ctype": {
         "version": "v1.22.1"
     },
@@ -428,11 +428,17 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.22.1"
     },
+    "symfony/polyfill-php72": {
+        "version": "v1.25.0"
+    },
     "symfony/polyfill-php73": {
         "version": "v1.22.1"
     },
     "symfony/polyfill-php80": {
         "version": "v1.22.1"
+    },
+    "symfony/polyfill-php81": {
+        "version": "v1.25.0"
     },
     "symfony/routing": {
         "version": "5.1",
@@ -479,9 +485,6 @@
             "config/packages/twig.yaml",
             "templates/base.html.twig"
         ]
-    },
-    "symfony/twig-pack": {
-        "version": "v1.0.1"
     },
     "symfony/var-dumper": {
         "version": "v5.2.8"
