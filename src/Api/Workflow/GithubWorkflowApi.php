@@ -14,13 +14,11 @@ class GithubWorkflowApi implements WorkflowApi
 {
     private ResultPager $resultPager;
     private WorkflowRuns $workflowApi;
-    private LoggerInterface $logger;
 
-    public function __construct(ResultPager $resultPager, WorkflowRuns $workflowApi, LoggerInterface $logger)
+    public function __construct(ResultPager $resultPager, WorkflowRuns $workflowApi)
     {
         $this->resultPager = $resultPager;
         $this->workflowApi = $workflowApi;
-        $this->logger = $logger;
     }
 
     public function approveWorkflowsForPullRequest(Repository $repository, string $headRepository, string $headBranch): void
