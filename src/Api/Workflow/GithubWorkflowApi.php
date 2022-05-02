@@ -5,7 +5,6 @@ namespace App\Api\Workflow;
 use App\Model\Repository;
 use Github\Api\Repository\Actions\WorkflowRuns;
 use Github\ResultPager;
-use Psr\Log\LoggerInterface;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>

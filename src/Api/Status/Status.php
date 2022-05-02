@@ -9,11 +9,11 @@ namespace App\Api\Status;
  */
 final class Status
 {
-    const NEEDS_REVIEW = 'needs_review';
+    public const NEEDS_REVIEW = 'needs_review';
 
-    const NEEDS_WORK = 'needs_work';
+    public const NEEDS_WORK = 'needs_work';
 
-    const WORKS_FOR_ME = 'works_for_me';
+    public const WORKS_FOR_ME = 'works_for_me';
 
-    const REVIEWED = 'reviewed';
+    public const REVIEWED = 'reviewed';
 }

@@ -3,7 +3,6 @@
 namespace App\Subscriber;
 
 use App\Api\Issue\IssueApi;
-use App\Api\PullRequest\PullRequestApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
