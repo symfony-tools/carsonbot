@@ -2,3 +2,7 @@ parameters:
     level: 5
     paths:
         - src
+    ignoreErrors:
+        - "#\\\\Entity\\\\.* is never written, only read#"
+        - "#\\\\Entity\\\\.* is never read, only written#"
+        - "#^Property .*\\\\Entity\\\\.* is unused#"
