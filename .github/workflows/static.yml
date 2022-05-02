@@ -9,54 +9,59 @@ on:
 jobs:
   phpstan:
     name: PHPStan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
-      - name: Set up PHP
-        uses: shivammathur/setup-php@2.7.0
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: 7.4
           coverage: none
+          tools: phpstan:1.4.6, cs2pr
 
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Download dependencies
-        run: composer install --no-interaction --optimize-autoloader
+        uses: ramsey/composer-install@v1
 
       - name: PHPStan
-        uses: docker://oskarstark/phpstan-ga:0.12.48
-        with:
-          entrypoint: /composer/vendor/bin/phpstan
-          args: analyze --no-progress
+        run: phpstan analyze --no-progress --error-format=checkstyle | cs2pr
 
   php-cs-fixer:
     name: PHP-CS-Fixer
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+          tools: php-cs-fixer:3.6, cs2pr
+
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: PHP-CS-Fixer
-        uses: docker://oskarstark/php-cs-fixer-ga:2.16.4
-        with:
-          args: --dry-run --diff-format udiff
+        run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
 
   psalm:
     name: Psalm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      - name: Set up PHP
-        uses: shivammathur/setup-php@2.7.0
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: 8.1
           coverage: none
+          tools: vimeo/psalm:4.22.0
 
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Download dependencies
+        uses: ramsey/composer-install@v1
+
       - name: Psalm
-        uses: docker://vimeo/psalm-github-actions:3.17.2
-        with:
-          args: --no-progress --show-info=false --stats
+        run: psalm --no-progress --output-format=github

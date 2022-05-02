@@ -16,9 +16,9 @@ use Symfony\Component\Cache\Adapter\NullAdapter;
  */
 class GithubLabelApiTest extends TestCase
 {
-    const USER_NAME = 'weaverryan';
+    public const USER_NAME = 'weaverryan';
 
-    const REPO_NAME = 'carson';
+    public const REPO_NAME = 'carson';
 
     /**
      * @var Labels|MockObject

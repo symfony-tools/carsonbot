@@ -5,7 +5,6 @@ namespace App\Api\Workflow;
 use App\Model\Repository;
 use Github\Api\Repository\Actions\WorkflowRuns;
 use Github\ResultPager;
-use Psr\Log\LoggerInterface;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
@@ -14,13 +13,11 @@ class GithubWorkflowApi implements WorkflowApi
 {
     private ResultPager $resultPager;
     private WorkflowRuns $workflowApi;
-    private LoggerInterface $logger;
 
-    public function __construct(ResultPager $resultPager, WorkflowRuns $workflowApi, LoggerInterface $logger)
+    public function __construct(ResultPager $resultPager, WorkflowRuns $workflowApi)
     {
         $this->resultPager = $resultPager;
         $this->workflowApi = $workflowApi;
-        $this->logger = $logger;
     }
 
     public function approveWorkflowsForPullRequest(Repository $repository, string $headRepository, string $headBranch): void

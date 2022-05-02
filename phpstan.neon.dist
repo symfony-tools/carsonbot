@@ -1,4 +1,9 @@
 parameters:
     level: 5
+    reportUnmatchedIgnoredErrors: false
     paths:
         - src
+    ignoreErrors:
+        - "#\\\\Entity\\\\.* is never written, only read#"
+        - "#\\\\Entity\\\\.* is never read, only written#"
+        - "#^Property .*\\\\Entity\\\\.* is unused#"

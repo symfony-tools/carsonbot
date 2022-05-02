@@ -3,7 +3,6 @@
 namespace App\Subscriber;
 
 use App\Api\Issue\IssueApi;
-use App\Api\PullRequest\PullRequestApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -14,12 +13,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
 {
     private $commentsApi;
-    private $pullRequestApi;
 
-    public function __construct(IssueApi $commentsApi, PullRequestApi $pullRequestApi)
+    public function __construct(IssueApi $commentsApi)
     {
         $this->commentsApi = $commentsApi;
-        $this->pullRequestApi = $pullRequestApi;
     }
 
     public function onPullRequest(GitHubEvent $event)

@@ -15,9 +15,9 @@ use Psr\Log\LoggerInterface;
  */
 class GitHubStatusApiTest extends TestCase
 {
-    const USER_NAME = 'weaverryan';
+    public const USER_NAME = 'weaverryan';
 
-    const REPO_NAME = 'carson';
+    public const REPO_NAME = 'carson';
 
     /**
      * @var GithubLabelApi|MockObject
