@@ -87,20 +87,19 @@ class GitHubStatusApiTest extends TestCase
 
     public function testSetIssueStatusRemovesExcessStatuses()
     {
-        $this->labelsApi->expects($this->at(0))
+        $this->labelsApi->expects(self::once())
             ->method('getIssueLabels')
             ->with(1234)
             ->willReturn(['Bug', 'Status: Needs Review', 'Status: Needs Work']);
 
-        $this->labelsApi->expects($this->at(1))
+        $this->labelsApi->expects($this->exactly(2))
             ->method('removeIssueLabel')
-            ->with(1234, 'Status: Needs Review');
+            ->withConsecutive(
+                [1234, 'Status: Needs Review'],
+                [1234, 'Status: Needs Work']
+            );
 
-        $this->labelsApi->expects($this->at(2))
-            ->method('removeIssueLabel')
-            ->with(1234, 'Status: Needs Work');
-
-        $this->labelsApi->expects($this->at(3))
+        $this->labelsApi->expects($this->once())
             ->method('addIssueLabel')
             ->with(1234, 'Status: Reviewed');
 
@@ -147,13 +146,12 @@ class GitHubStatusApiTest extends TestCase
             ->with(1234)
             ->willReturn(['Bug', 'Status: Needs Review', 'Unconfirmed']);
 
-        $this->labelsApi->expects($this->at(1))
+        $this->labelsApi->expects($this->exactly(2))
             ->method('removeIssueLabel')
-            ->with(1234, 'Status: Needs Review');
-
-        $this->labelsApi->expects($this->at(2))
-            ->method('removeIssueLabel')
-            ->with(1234, 'Unconfirmed');
+            ->withConsecutive(
+                [1234, 'Status: Needs Review'],
+                [1234, 'Unconfirmed']
+            );
 
         $this->labelsApi->expects($this->once())
             ->method('addIssueLabel')
