@@ -72,13 +72,14 @@ TXT
     private function extractDescriptionBranchFromBody(string $body): ?string
     {
         $s = new UnicodeString($body);
+        $bodyWithoutComment = $s->replaceMatches('/<!--\s*.*\s*-->/', '');
 
         // @see symfony/symfony/.github/PULL_REQUEST_TEMPLATE.md
-        if (!$s->containsAny('Branch?')) {
+        if (!$bodyWithoutComment->containsAny('Branch?')) {
             return null;
         }
 
-        $rowsDescriptionBranch = $s->match('/.*Branch.*/');
+        $rowsDescriptionBranch = $bodyWithoutComment->match('/.*Branch.*/');
 
         $rowDescriptionBranch = $rowsDescriptionBranch[0]; // row matching
 
