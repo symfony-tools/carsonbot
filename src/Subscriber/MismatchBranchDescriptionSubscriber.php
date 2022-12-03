@@ -89,6 +89,10 @@ TXT
 
         $descriptionBranch = $descriptionBranchParts[2]; // get the version
 
+        if (str_contains($descriptionBranch, '<!--')) {
+            $descriptionBranch = preg_replace('/<!--.*-->/s', '', $descriptionBranch);
+        }
+
         return \trim($descriptionBranch);
     }
 }
