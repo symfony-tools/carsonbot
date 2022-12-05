@@ -15,7 +15,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@2.7.0
         with:
-          php-version: 7.4
+          php-version: 8.1
           coverage: none
 
       - name: Checkout code
@@ -29,9 +29,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ runner.os }}-7.4-${{ hashFiles('composer.*') }}
+          key: composer-${{ runner.os }}-8.1-${{ hashFiles('composer.*') }}
           restore-keys: |
-            composer-${{ runner.os }}-7.4-
+            composer-${{ runner.os }}-8.1-
             composer-${{ runner.os }}-
             composer-
 
