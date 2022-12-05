@@ -69,6 +69,35 @@ TXT;
         $this->assertCount(0, $responseData);
     }
 
+    public function testOnPullRequestOpenMatchWithComment()
+    {
+        $this->issueApi->expects($this->never())
+            ->method('commentOnIssue');
+
+        $body = <<<TXT
+| Q             | A
+| ------------- | ---
+| Branch?       | 6.2 <!-- see below -->
+| Bug fix?      | yes/no
+TXT;
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'body' => $body,
+                'base' => [
+                    'ref' => '6.2',
+                ],
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(0, $responseData);
+    }
+
     public function testOnPullRequestOpenNotMatch()
     {
         $this->issueApi->expects($this->once())
