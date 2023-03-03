@@ -19,11 +19,6 @@ class NullIssueApi implements IssueApi
     {
     }
 
-    public function hasActivity(Repository $repository, $number): bool
-    {
-        return false;
-    }
-
     public function lastCommentWasMadeByBot(Repository $repository, $number): bool
     {
         return false;
@@ -36,10 +31,5 @@ class NullIssueApi implements IssueApi
 
     public function close(Repository $repository, $issueNumber)
     {
-    }
-
-    public function getUsers(Repository $repository, $issueNumber): array
-    {
-        return [];
     }
 }
