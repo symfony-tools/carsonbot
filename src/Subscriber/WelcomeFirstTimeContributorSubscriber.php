@@ -66,7 +66,7 @@ Cheers!
 
 Carsonbot
 TXT
-);
+        );
 
         $event->setResponseData([
             'pull_request' => $pullRequestNumber,

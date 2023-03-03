@@ -4,7 +4,6 @@ namespace App\Api\PullRequest;
 
 use App\Model\Repository;
 use Github\Api\PullRequest;
-use Github\Api\Repo;
 use Github\Api\Search;
 
 /**
