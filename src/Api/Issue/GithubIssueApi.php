@@ -22,7 +22,6 @@ class GithubIssueApi implements IssueApi
         $this->issueCommentApi = $issueCommentApi;
         $this->issueApi = $issueApi;
         $this->searchApi = $searchApi;
-        $this->timelineApi = $timelineApi;
         $this->botUsername = $botUsername;
     }
 
