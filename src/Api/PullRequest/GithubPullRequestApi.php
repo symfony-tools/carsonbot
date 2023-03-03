@@ -12,17 +12,13 @@ use Github\Api\Search;
  */
 class GithubPullRequestApi implements PullRequestApi
 {
-    private $github;
     private $pullRequest;
     private $search;
-    private $botUsername;
 
-    public function __construct(Repo $github, PullRequest $pullRequest, Search $search, string $botUsername)
+    public function __construct(PullRequest $pullRequest, Search $search)
     {
-        $this->github = $github;
         $this->pullRequest = $pullRequest;
         $this->search = $search;
-        $this->botUsername = $botUsername;
     }
 
     public function show(Repository $repository, $number): array
