@@ -8,7 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * A "Task" is a scheduled job.
  *
  * @ORM\Table
+ *
  * @ORM\Entity(repositoryClass="App\Repository\TaskRepository")
+ *
  * @ORM\HasLifecycleCallbacks()
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
@@ -18,13 +20,14 @@ class Task
     public const ACTION_CLOSE_STALE = 1;
     public const ACTION_CLOSE_DRAFT = 2;
     public const ACTION_INFORM_CLOSE_STALE = 3;
-    public const ACTION_SUGGEST_REVIEWER = 4;
 
     /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -112,6 +115,7 @@ class Task
 
     /**
      * @ORM\PrePersist
+     *
      * @ORM\PreUpdate
      */
     public function updateUpdatedAt()

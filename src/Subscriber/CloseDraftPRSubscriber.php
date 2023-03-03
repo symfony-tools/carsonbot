@@ -43,7 +43,7 @@ Cheers!
 
 Carsonbot
 TXT
-);
+        );
 
         // Add a scheduled task to close the PR within 1 hour.
         $this->scheduler->runLater($repository, $number, Task::ACTION_CLOSE_DRAFT, new \DateTimeImmutable('+1hour'));

@@ -50,17 +50,9 @@ services:
     Github\Api\Issue\Milestones:
         factory: ['@Github\Api\Issue', milestones]
 
-    Github\Api\Issue\Timeline:
-        factory: ['@Github\Api\Issue', timeline]
-        calls:
-            - [configure]
-
     Github\Api\PullRequest:
         factory: ['@Github\Client', api]
         arguments: [pullRequest]
-
-    Github\Api\PullRequest\Review:
-        factory: ['@Github\Api\PullRequest', reviews]
 
     Github\Api\Repo:
         factory: ['@Github\Client', api]

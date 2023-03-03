@@ -84,16 +84,6 @@ Carson will look for old inactive issues and start a process with them.
 The process can be interrupted with anyone making a comment on the issue or the
 "Keep open" label is added.
 
-### Suggest reviewers
-
-Carson can look at the PR to figure out who will be a good candidate to review the
-changes. This can be triggered by someone can make a comment in a PR to say
-`@carsonbot find me a reviewer please` (or really anything with `@carsonbot` and
-`review` on the same line).
-
-Carson will also try to find a reviewer if there is no activity on a new PR within
-the first 20 hours.
-
 ### Add a warning if pull request target unsupported branch
 
 If a PR is opened towards a branch that is not maintained anymore, Carson will
