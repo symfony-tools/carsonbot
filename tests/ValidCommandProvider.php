@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-use App\Subscriber\FindReviewerSubscriber;
 use App\Subscriber\StatusChangeByCommentSubscriber;
 
 /**
@@ -20,7 +19,5 @@ class ValidCommandProvider
         yield ['Status: works for me', StatusChangeByCommentSubscriber::class];
         yield ['@carsonbot Status: needs review', StatusChangeByCommentSubscriber::class];
         yield ['@carsonbot Status: reviewed', StatusChangeByCommentSubscriber::class];
-        yield ['@carsonbot review', FindReviewerSubscriber::class];
-        yield ['@carsonbot reviewer', FindReviewerSubscriber::class];
     }
 }

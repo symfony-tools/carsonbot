@@ -50,6 +50,7 @@ class WebhookControllerTest extends WebTestCase
         $response = $client->getResponse();
 
         $responseData = json_decode($response->getContent(), true);
+        file_put_contents('dump.html', $response->getContent());
         $this->assertResponseIsSuccessful(isset($responseData['error']) ? $responseData['error'] : 'An error occurred.');
 
         // a weak sanity check that we went down "the right path" in the controller
@@ -64,7 +65,7 @@ class WebhookControllerTest extends WebTestCase
                 'issue_comment.created.json',
                 ['issue' => 1, 'status_change' => 'needs_review'],
             ],
-            'On pull request opened' => [
+            'On normal pull request opened' => [
                 'pull_request',
                 'pull_request.opened.json',
                 ['pull_request' => 3, 'status_change' => 'needs_review', 'pr_labels' => ['Console', 'Bug'], 'unsupported_branch' => '2.5', 'approved_run' => true],
@@ -108,11 +109,6 @@ class WebhookControllerTest extends WebTestCase
                 'pull_request',
                 'issues.labeled.waitingCodeMerge.json',
                 ['pull_request' => 2, 'milestone' => 'next'],
-            ],
-            'Suggest review on demand' => [
-                'issue_comment',
-                'pull_request.comment.json',
-                ['issue' => 7, 'status_change' => null, 'suggest-review' => true],
             ],
         ];
     }

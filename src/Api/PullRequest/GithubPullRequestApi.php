@@ -41,18 +41,6 @@ class GithubPullRequestApi implements PullRequestApi
         $this->pullRequest->update($repository->getVendor(), $repository->getName(), $number, $params);
     }
 
-    /**
-     * Trigger start of a "find reviewer" job. The job runs on github actions and will comment on the PR.
-     */
-    public function findReviewer(Repository $repository, $number, string $type)
-    {
-        $this->github->dispatch($this->botUsername, 'carsonbot', 'find-reviewer', [
-            'repository' => $repository->getFullName(),
-            'pull_request_number' => $number,
-            'type' => $type,
-        ]);
-    }
-
     public function getAuthorCount(Repository $repository, string $author): int
     {
         $result = $this->search->issues(sprintf('is:pr repo:%s author:%s', $repository->getFullName(), $author));
