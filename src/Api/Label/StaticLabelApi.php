@@ -24,10 +24,10 @@ class StaticLabelApi extends NullLabelApi
             'HttpClient', 'HttpFoundation', 'HttpKernel', 'Inflector', 'Intl', 'Ldap',
             'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'Notifier',
             'OptionsResolver', 'PasswordHasher', 'PhpUnitBridge', 'Process', 'PropertyAccess',
-            'PropertyInfo', 'ProxyManagerBridge', 'Routing', 'Security',
+            'PropertyInfo', 'ProxyManagerBridge', 'RemoteEvent', 'Routing', 'Scheduler', 'Security',
             'SecurityBundle', 'Serializer', 'Stopwatch', 'String', 'Templating',
             'Translation', 'TwigBridge', 'TwigBundle', 'Uid', 'Validator', 'VarDumper',
-            'VarExporter', 'WebLink', 'WebProfilerBundle', 'WebServerBundle', 'Workflow',
+            'VarExporter', 'Webhook', 'WebLink', 'WebProfilerBundle', 'WebServerBundle', 'Workflow',
             'Yaml',
         ];
     }
