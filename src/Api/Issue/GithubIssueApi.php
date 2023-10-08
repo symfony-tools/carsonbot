@@ -80,6 +80,10 @@ class GithubIssueApi implements IssueApi
 
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable
     {
-        return $this->resultPager->fetchAllLazy($this->searchApi, 'issues', [sprintf('repo:%s is:issue -label:"Keep open" -label:"Missing translations" is:open updated:<%s', $repository->getFullName(), $noUpdateAfter->format('Y-m-d')), 'updated', 'desc']);
+        return $this->resultPager->fetchAllLazy($this->searchApi, 'issues', [
+            sprintf('repo:%s is:issue -label:"Keep open" -label:"Missing translations" is:open -linked:pr updated:<%s', $repository->getFullName(), $noUpdateAfter->format('Y-m-d')),
+            'updated',
+            'desc'
+        ]);
     }
 }
