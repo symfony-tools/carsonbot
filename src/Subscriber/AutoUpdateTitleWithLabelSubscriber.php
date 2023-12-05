@@ -77,7 +77,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         }
 
         // Add back labels
-        $prTitle = trim($prPrefix.' '.trim($prTitle));
+        $prTitle = trim($prPrefix.' '.trim(str_replace('&nbsp;', '', $prTitle)));
         if ($originalTitle === $prTitle) {
             return;
         }
