@@ -53,7 +53,7 @@ class LabelNameExtractor
             foreach ($matches['labels'] as $label) {
                 $label = $this->fixLabelName($label);
 
-                // check case-insensitively, but the apply the correctly-cased label
+                // check case-insensitively, but then apply the correctly-cased label
                 if (isset($validLabels[strtolower($label)])) {
                     $labels[] = $validLabels[strtolower($label)];
                 }
