@@ -8,9 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
 {
-    /**
-     * @Route("/")
-     */
+    #[Route('/')]
     public function index(RepositoryProvider $repositoryProvider)
     {
         $repositories = $repositoryProvider->getAllRepositories();
