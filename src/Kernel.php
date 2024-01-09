@@ -15,11 +15,6 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 {
     use MicroKernelTrait;
 
-    protected function build(ContainerBuilder $container)
-    {
-        $container->addCompilerPass($this);
-    }
-
     public function process(ContainerBuilder $container)
     {
         /** @var array $repositories */
