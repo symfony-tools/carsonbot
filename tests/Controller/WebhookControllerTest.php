@@ -21,9 +21,9 @@ class WebhookControllerTest extends WebTestCase
         }
 
         $this->client = $this->createClient();
-        $repository = self::$container->get(RepositoryProvider::class);
-        $statusApi = self::$container->get(StatusApi::class);
-        $pullRequestApi = self::$container->get(PullRequestApi::class);
+        $repository = self::getContainer()->get(RepositoryProvider::class);
+        $statusApi = self::getContainer()->get(StatusApi::class);
+        $pullRequestApi = self::getContainer()->get(PullRequestApi::class);
 
         ServiceMock::all($pullRequestApi, 'show', function ($repository, $id) {
             if (4711 !== $id) {
