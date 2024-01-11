@@ -36,7 +36,7 @@ abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterfac
         $formatting = '[\\s\\*]*';
         // Match first character after "status:"
         // Case insensitive ("i"), ignores formatting with "*" before or after the ":"
-        $pattern = "~(?=\n|^)(?:\@carsonbot)?${formatting}status${formatting}:${formatting}[\"']?($triggerWord)[\"']?${formatting}[.!]?${formatting}(?<=\r\n|\n|$)~i";
+        $pattern = "~(?=\n|^)(?:\@carsonbot)?{$formatting}status{$formatting}:{$formatting}[\"']?($triggerWord)[\"']?{$formatting}[.!]?{$formatting}(?<=\r\n|\n|$)~i";
 
         if (preg_match_all($pattern, $body, $matches)) {
             // Second subpattern = first status character

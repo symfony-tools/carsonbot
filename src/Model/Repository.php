@@ -26,7 +26,7 @@ class Repository
      */
     private $secret;
 
-    public function __construct(string $vendor, string $name, ?string $secret = null)
+    public function __construct(string $vendor, string $name, string $secret = null)
     {
         $this->vendor = $vendor;
         $this->name = $name;
