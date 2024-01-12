@@ -9,15 +9,15 @@ on:
 jobs:
   phpstan:
     name: PHPStan
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 8.2
           coverage: none
-          tools: phpstan:1.4.6, cs2pr
+          tools: phpstan:1.10, cs2pr
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -30,15 +30,15 @@ jobs:
 
   php-cs-fixer:
     name: PHP-CS-Fixer
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 8.2
           coverage: none
-          tools: php-cs-fixer:3.6, cs2pr
+          tools: php-cs-fixer:3.42, cs2pr
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -48,14 +48,14 @@ jobs:
 
   psalm:
     name: Psalm
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 8.2
           coverage: none
-          tools: vimeo/psalm:4.22.0
+          tools: vimeo/psalm:5.18.0
 
       - name: Checkout code
         uses: actions/checkout@v2
