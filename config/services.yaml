@@ -61,6 +61,18 @@ parameters:
                 - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
                 - 'App\Subscriber\ApproveCiForNonContributors'
 
+        symfony/ux:
+            subscribers:
+                - 'App\Subscriber\StatusChangeByCommentSubscriber'
+                - 'App\Subscriber\StatusChangeOnPushSubscriber'
+                - 'App\Subscriber\StatusChangeByReviewSubscriber'
+                - 'App\Subscriber\NeedsReviewNewPRSubscriber'
+                - 'App\Subscriber\BugLabelNewIssueSubscriber'
+                - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
+                - 'App\Subscriber\RewriteUnwantedPhrasesSubscriber'
+                - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
+            secret: '%env(SYMFONY_UX_SECRET)%'
+
 services:
     _defaults:
         autowire: true
