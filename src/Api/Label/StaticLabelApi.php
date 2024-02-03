@@ -16,7 +16,7 @@ class StaticLabelApi extends NullLabelApi
     public function getComponentLabelsForRepository(Repository $repository): array
     {
         return [
-            'Asset', 'BrowserKit', 'Cache', 'Config', 'Console',
+            'Asset', 'AssetMapper', 'BrowserKit', 'Cache', 'Config', 'Console',
             'Contracts', 'CssSelector', 'Debug', 'DebugBundle', 'DependencyInjection',
             'Doctrine', 'DoctrineBridge', 'DomCrawler', 'Dotenv',
             'Enhancement', 'ErrorHandler', 'EventDispatcher', 'ExpressionLanguage',
@@ -26,7 +26,7 @@ class StaticLabelApi extends NullLabelApi
             'OptionsResolver', 'PasswordHasher', 'PhpUnitBridge', 'Process', 'PropertyAccess',
             'PropertyInfo', 'ProxyManagerBridge', 'PsrHttpMessageBridge', 'RemoteEvent', 'Routing',
             'Scheduler', 'Security', 'SecurityBundle', 'Serializer', 'Stopwatch', 'String',
-            'Templating', 'Translation', 'TwigBridge', 'TwigBundle', 'Uid', 'Validator', 'VarDumper',
+            'Templating', 'Translation', 'TwigBridge', 'TwigBundle', 'TypeInfo', 'Uid', 'Validator', 'VarDumper',
             'VarExporter', 'Webhook', 'WebLink', 'WebProfilerBundle', 'WebServerBundle', 'Workflow',
             'Yaml',
         ];
