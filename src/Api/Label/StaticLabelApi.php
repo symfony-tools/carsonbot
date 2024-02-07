@@ -18,7 +18,7 @@ class StaticLabelApi extends NullLabelApi
         return [
             'Asset', 'AssetMapper', 'BrowserKit', 'Cache', 'Config', 'Console',
             'Contracts', 'CssSelector', 'Debug', 'DebugBundle', 'DependencyInjection',
-            'Doctrine', 'DoctrineBridge', 'DomCrawler', 'Dotenv',
+            'Doctrine', 'DoctrineBridge', 'DomCrawler', 'Dotenv', 'Emoji',
             'Enhancement', 'ErrorHandler', 'EventDispatcher', 'ExpressionLanguage',
             'Feature', 'Filesystem', 'Finder', 'Form', 'FrameworkBundle',
             'HttpClient', 'HttpFoundation', 'HttpKernel', 'Inflector', 'Intl', 'Ldap',
