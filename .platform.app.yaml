@@ -50,6 +50,10 @@ crons:
         spec: '48 12 * * *'
         cmd: croncape bin/console app:issue:ping-stale symfony/symfony-docs --not-updated-for 12months
 
+    stale_issues_ux:
+        spec: '38 12 * * *'
+        cmd: croncape bin/console app:issue:ping-stale symfony/ux --not-updated-for 6months
+
 relationships:
     database: "mydatabase:postgresql"
 
