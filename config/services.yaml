@@ -63,6 +63,8 @@ parameters:
 
         symfony/ux:
             subscribers:
+                - 'App\Subscriber\AutoLabelFromContentSubscriber'
+                - 'App\Subscriber\AutoUpdateTitleWithLabelSubscriber'
                 - 'App\Subscriber\StatusChangeByCommentSubscriber'
                 - 'App\Subscriber\StatusChangeOnPushSubscriber'
                 - 'App\Subscriber\StatusChangeByReviewSubscriber'
