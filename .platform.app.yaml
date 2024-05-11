@@ -30,12 +30,11 @@ mounts:
 hooks:
     build: |
         set -x -e
-
-        curl -s https://get.symfony.com/cloud/configurator | (>&2 bash)
-        (>&2 symfony-build)
+        curl -s https://get.symfony.com/cloud/configurator | bash
+        symfony-build
     deploy: |
         set -x -e
-        (>&2 symfony-deploy)
+        symfony-deploy
 
 crons:
     run_tasks:
@@ -56,7 +55,3 @@ crons:
 
 relationships:
     database: "mydatabase:postgresql"
-
-
-
-
