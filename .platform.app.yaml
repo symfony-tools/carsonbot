@@ -37,6 +37,10 @@ hooks:
         symfony-deploy
 
 crons:
+    unpause:
+        spec: '0 0 * * 0' # every Sunday at midnight
+        cmd: croncape symfony redeploy --no-wait
+
     run_tasks:
         spec: '*/5 * * * *'
         cmd: croncape bin/console app:task:run
