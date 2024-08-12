@@ -36,7 +36,7 @@ jobs:
             composer-
 
       - name: Docker
-        run: docker-compose up -d
+        run: docker compose up --detach
 
       - name: Download dependencies
         run: composer install --no-interaction --optimize-autoloader
