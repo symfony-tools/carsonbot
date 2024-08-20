@@ -112,4 +112,21 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertSame(1234, $responseData['pull_request']);
         $this->assertSame('[Console] [Random] Foo normal title', $responseData['new_title']);
     }
+
+    public function testExtraBlankSpace()
+    {
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 57753, 'pull_request' => []], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
+                'title' => '[ErrorHandler]&nbsp;restrict the maximum length of the X-Debug-Exception header',
+                'labels' => [
+                    ['name' => 'ErrorHandler', 'color' => 'dddddd'],
+                ],
+            ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+        $this->assertCount(2, $responseData);
+        $this->assertSame(57753, $responseData['pull_request']);
+        $this->assertSame('[ErrorHandler] restrict the maximum length of the X-Debug-Exception header', $responseData['new_title']);
+    }
 }
