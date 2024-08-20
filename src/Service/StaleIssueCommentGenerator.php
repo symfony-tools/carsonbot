@@ -71,6 +71,9 @@ TXT;
         return <<<TXT
 Thank you for this suggestion.
 There has not been a lot of activity here for a while. Would you still like to see this feature?
+[Every feature request may or may not be developed in future versions based on the community.](https://symfony.com/doc/current/contributing/community/releases.html#development)
+Perhaps someone would like to try?
+You can [read how to contribute](https://symfony.com/doc/current/contributing/code/pull_requests.html) to get started.
 TXT;
     }
 
