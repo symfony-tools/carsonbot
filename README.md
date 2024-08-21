@@ -62,7 +62,7 @@ Carson will update the milestone of the PR to a existing milestone that matches 
 
 The "status" of a pull request defined by one of the labels: "Needs review", "Needs work",
 "Works for me" and "Reviewed". The status can be changed by adding a comment like:
-"Status: needs work".
+"Status: Needs work".
 
 The status will also be changed if someone adds a review that requests changes or
 approves the PR. Finally, the status will be "Needs review" after the author pushes
