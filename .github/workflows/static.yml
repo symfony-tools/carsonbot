@@ -20,10 +20,10 @@ jobs:
           tools: phpstan:1.10, cs2pr
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Download dependencies
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v3
 
       - name: PHPStan
         run: phpstan analyze --no-progress --error-format=checkstyle | cs2pr
@@ -41,7 +41,7 @@ jobs:
           tools: php-cs-fixer:3.42, cs2pr
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: PHP-CS-Fixer
         run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
@@ -58,10 +58,10 @@ jobs:
           tools: vimeo/psalm:5.18.0
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Download dependencies
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v3
 
       - name: Psalm
         run: psalm --no-progress --output-format=github

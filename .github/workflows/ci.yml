@@ -19,7 +19,7 @@ jobs:
           coverage: none
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Get composer cache directory
         id: composer-cache
@@ -49,7 +49,7 @@ jobs:
 
       - name: Upload log file
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test.log
           path: var/log/test.log
