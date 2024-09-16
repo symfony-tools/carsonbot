@@ -7,7 +7,7 @@ namespace App\Api\Milestone;
 use App\Model\Repository;
 
 /**
- * Dont fetch data from external source.
+ * Don't fetch data from external source.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
