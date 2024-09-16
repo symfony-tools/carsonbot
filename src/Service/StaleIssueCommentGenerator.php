@@ -47,15 +47,11 @@ TXT;
      */
     public function getComment(string $type): string
     {
-        switch ($type) {
-            case IssueType::BUG:
-                return $this->bug();
-            case IssueType::FEATURE:
-            case IssueType::RFC:
-                return $this->feature();
-            default:
-                return $this->unknown();
-        }
+        return match ($type) {
+            IssueType::BUG => $this->bug(),
+            IssueType::FEATURE, IssueType::RFC => $this->feature(),
+            default => $this->unknown(),
+        };
     }
 
     private function bug(): string

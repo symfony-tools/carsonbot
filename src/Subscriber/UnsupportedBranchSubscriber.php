@@ -14,21 +14,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class UnsupportedBranchSubscriber implements EventSubscriberInterface
 {
-    private $symfonyVersionProvider;
-    private $issueApi;
-    private $logger;
-
-    public function __construct(SymfonyVersionProvider $symfonyVersionProvider, IssueApi $issueApi, LoggerInterface $logger)
-    {
-        $this->symfonyVersionProvider = $symfonyVersionProvider;
-        $this->issueApi = $issueApi;
-        $this->logger = $logger;
+    public function __construct(
+        private readonly SymfonyVersionProvider $symfonyVersionProvider,
+        private readonly IssueApi $issueApi,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     /**
      * Sets milestone on PRs that target non-default branch.
      */
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
@@ -72,7 +68,10 @@ TXT
         ]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

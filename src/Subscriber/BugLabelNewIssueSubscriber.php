@@ -10,20 +10,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BugLabelNewIssueSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var StatusApi
-     */
-    private $statusApi;
-
-    public function __construct(StatusApi $statusApi)
-    {
-        $this->statusApi = $statusApi;
+    public function __construct(
+        private readonly StatusApi $statusApi,
+    ) {
     }
 
     /**
      * Changes "Bug" issues to "Needs Review".
      */
-    public function onIssues(GitHubEvent $event)
+    public function onIssues(GitHubEvent $event): void
     {
         $data = $event->getData();
         $repository = $event->getRepository();
@@ -48,7 +43,10 @@ class BugLabelNewIssueSubscriber implements EventSubscriberInterface
         $event->setResponseData($responseData);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::ISSUES => 'onIssues',

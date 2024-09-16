@@ -9,7 +9,7 @@ use App\Model\Repository;
  */
 interface MilestoneApi
 {
-    public function updateMilestone(Repository $repository, int $issueNumber, string $milestoneName);
+    public function updateMilestone(Repository $repository, int $issueNumber, string $milestoneName): void;
 
     public function exists(Repository $repository, string $milestoneName): bool;
 }

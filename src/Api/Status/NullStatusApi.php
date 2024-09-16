@@ -9,12 +9,12 @@ use App\Model\Repository;
  */
 class NullStatusApi implements StatusApi
 {
-    public function getIssueStatus($issueNumber, Repository $repository): ?string
+    public function getIssueStatus(int $issueNumber, Repository $repository): ?string
     {
         return null;
     }
 
-    public function setIssueStatus($issueNumber, ?string $newStatus, Repository $repository)
+    public function setIssueStatus(int $issueNumber, ?string $newStatus, Repository $repository): void
     {
     }
 }

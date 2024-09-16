@@ -10,36 +10,30 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class GitHubEvent extends Event
 {
-    protected $responseData = [];
+    protected array $responseData = [];
 
-    private $data;
-    private $repository;
-
-    public function __construct(array $data, Repository $repository)
-    {
-        $this->data = $data;
-        $this->repository = $repository;
+    public function __construct(
+        private readonly array $data,
+        private readonly Repository $repository,
+    ) {
     }
 
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
 
-    /**
-     * @return Repository
-     */
-    public function getRepository()
+    public function getRepository(): Repository
     {
         return $this->repository;
     }
 
-    public function getResponseData()
+    public function getResponseData(): array
     {
         return $this->responseData;
     }
 
-    public function setResponseData(array $responseData)
+    public function setResponseData(array $responseData): void
     {
         foreach ($responseData as $k => $v) {
             $this->responseData[$k] = $v;

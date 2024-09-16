@@ -20,34 +20,14 @@ class GithubLabelApi implements LabelApi
      *
      * @var array<array-key, array<array-key, bool>>
      */
-    private $labelCache = [];
+    private array $labelCache = [];
 
-    /**
-     * @var Labels
-     */
-    private $labelsApi;
-
-    /**
-     * @var ResultPager
-     */
-    private $resultPager;
-
-    /**
-     * @var CacheInterface
-     */
-    private $cache;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(Labels $labelsApi, ResultPager $resultPager, CacheInterface $cache, LoggerInterface $logger)
-    {
-        $this->labelsApi = $labelsApi;
-        $this->resultPager = $resultPager;
-        $this->cache = $cache;
-        $this->logger = $logger;
+    public function __construct(
+        private readonly Labels $labelsApi,
+        private readonly ResultPager $resultPager,
+        private readonly CacheInterface $cache,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     public function getIssueLabels($issueNumber, Repository $repository): array

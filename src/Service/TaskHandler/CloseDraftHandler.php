@@ -15,17 +15,12 @@ use Psr\Log\LoggerInterface;
  */
 class CloseDraftHandler implements TaskHandlerInterface
 {
-    private $issueApi;
-    private $repositoryProvider;
-    private $pullRequestApi;
-    private $logger;
-
-    public function __construct(PullRequestApi $pullRequestApi, IssueApi $issueApi, RepositoryProvider $repositoryProvider, LoggerInterface $logger)
-    {
-        $this->issueApi = $issueApi;
-        $this->repositoryProvider = $repositoryProvider;
-        $this->pullRequestApi = $pullRequestApi;
-        $this->logger = $logger;
+    public function __construct(
+        private readonly PullRequestApi $pullRequestApi,
+        private readonly IssueApi $issueApi,
+        private readonly RepositoryProvider $repositoryProvider,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     public function handle(Task $task): void

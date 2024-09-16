@@ -84,12 +84,12 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
     {
         $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
         $this->pullRequestApi->method('show')->willReturn([
-                'title' => '[Messenger] Fix JSON',
-                'labels' => [
-                    ['name' => 'Status: Needs Review', 'color' => 'abcabc'],
-                    ['name' => 'Messenger', 'color' => 'dddddd'],
-                ],
-            ]);
+            'title' => '[Messenger] Fix JSON',
+            'labels' => [
+                ['name' => 'Status: Needs Review', 'color' => 'abcabc'],
+                ['name' => 'Messenger', 'color' => 'dddddd'],
+            ],
+        ]);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
@@ -100,11 +100,11 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
     {
         $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
         $this->pullRequestApi->method('show')->willReturn([
-                'title' => '[Console][FrameworkBundle] [Random] Foo normal title',
-                'labels' => [
-                    ['name' => 'Console', 'color' => 'dddddd'],
-                ],
-            ]);
+            'title' => '[Console][FrameworkBundle] [Random] Foo normal title',
+            'labels' => [
+                ['name' => 'Console', 'color' => 'dddddd'],
+            ],
+        ]);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
@@ -117,11 +117,11 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
     {
         $event = new GitHubEvent(['action' => 'labeled', 'number' => 57753, 'pull_request' => []], $this->repository);
         $this->pullRequestApi->method('show')->willReturn([
-                'title' => '[ErrorHandler]&nbsp;restrict the maximum length of the X-Debug-Exception header',
-                'labels' => [
-                    ['name' => 'ErrorHandler', 'color' => 'dddddd'],
-                ],
-            ]);
+            'title' => '[ErrorHandler]&nbsp;restrict the maximum length of the X-Debug-Exception header',
+            'labels' => [
+                ['name' => 'ErrorHandler', 'color' => 'dddddd'],
+            ],
+        ]);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();

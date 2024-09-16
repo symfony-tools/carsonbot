@@ -11,13 +11,10 @@ use Github\ResultPager;
  */
 class GithubWorkflowApi implements WorkflowApi
 {
-    private ResultPager $resultPager;
-    private WorkflowRuns $workflowApi;
-
-    public function __construct(ResultPager $resultPager, WorkflowRuns $workflowApi)
-    {
-        $this->resultPager = $resultPager;
-        $this->workflowApi = $workflowApi;
+    public function __construct(
+        private readonly ResultPager $resultPager,
+        private readonly WorkflowRuns $workflowApi,
+    ) {
     }
 
     public function approveWorkflowsForPullRequest(Repository $repository, string $headRepository, string $headBranch): void

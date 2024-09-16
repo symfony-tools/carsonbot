@@ -13,10 +13,7 @@ use Psr\Log\LoggerInterface;
  */
 class LabelNameExtractor
 {
-    private $labelsApi;
-    private $logger;
-
-    private static $labelAliases = [
+    private static array $labelAliases = [
         'bridge\doctrine' => 'DoctrineBridge',
         'bridge/doctrine' => 'DoctrineBridge',
         'bridge\monolog' => 'MonologBridge',
@@ -35,17 +32,17 @@ class LabelNameExtractor
         'wdt' => 'WebProfilerBundle',
     ];
 
-    public function __construct(LabelApi $labelsApi, LoggerInterface $logger)
-    {
-        $this->labelsApi = $labelsApi;
-        $this->logger = $logger;
+    public function __construct(
+        private readonly LabelApi $labelsApi,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     /**
      * Get labels from title string.
      * Example title: "[PropertyAccess] [RFC] [WIP] Allow custom methods on property accesses".
      */
-    public function extractLabels($title, Repository $repository)
+    public function extractLabels(string $title, Repository $repository): array
     {
         $labels = [];
         if (preg_match_all('/\[(?P<labels>.+)\]/U', $title, $matches)) {
@@ -77,14 +74,12 @@ class LabelNameExtractor
     /**
      * Creates a key=>val array, but the key is lowercased.
      *
-     * @return array
+     * @return array<lowercase-string, string>
      */
-    private function getLabels(Repository $repository)
+    private function getLabels(Repository $repository): array
     {
         $allLabels = $this->labelsApi->getAllLabelsForRepository($repository);
-        $closure = function ($s) {
-            return strtolower($s);
-        };
+        $closure = fn ($s) => strtolower($s);
 
         return array_combine(array_map($closure, $allLabels), $allLabels);
     }
@@ -93,14 +88,10 @@ class LabelNameExtractor
      * It fixes common misspellings and aliases commonly used for label names
      * (e.g. DI -> DependencyInjection).
      */
-    private function fixLabelName($label)
+    private function fixLabelName(string $label): string
     {
         $labelAliases = self::$labelAliases;
 
-        if (isset($labelAliases[strtolower($label)])) {
-            return $labelAliases[strtolower($label)];
-        }
-
-        return $label;
+        return $labelAliases[strtolower($label)] ?? $label;
     }
 }

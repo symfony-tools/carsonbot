@@ -10,20 +10,16 @@ use Psr\Log\LoggerInterface;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class TaskRunner
+readonly class TaskRunner
 {
     /**
-     * @var iterable<TaskHandlerInterface>
+     * @param iterable<TaskHandlerInterface> $handlers
      */
-    private $handlers;
-    private $repository;
-    private $logger;
-
-    public function __construct(TaskRepository $repository, iterable $handlers, LoggerInterface $logger)
-    {
-        $this->handlers = $handlers;
-        $this->repository = $repository;
-        $this->logger = $logger;
+    public function __construct(
+        private TaskRepository $repository,
+        private iterable $handlers,
+        private LoggerInterface $logger,
+    ) {
     }
 
     public function run(Task $task)

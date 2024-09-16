@@ -42,9 +42,7 @@ class GithubLabelApiTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['fetchAll'])
             ->getMock();
-        $resultPager->method('fetchAll')->willReturnCallback(function () {
-            return $this->backendApi->all('x', 'y');
-        });
+        $resultPager->method('fetchAll')->willReturnCallback(fn () => $this->backendApi->all('x', 'y'));
 
         $this->api = new GithubLabelApi($this->backendApi, $resultPager, new NullAdapter(), new NullLogger());
         $this->repository = new Repository(

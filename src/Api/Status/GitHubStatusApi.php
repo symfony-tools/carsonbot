@@ -8,36 +8,27 @@ use Psr\Log\LoggerInterface;
 
 class GitHubStatusApi implements StatusApi
 {
-    private static $statusToLabel = [
+    private static array $statusToLabel = [
         Status::NEEDS_REVIEW => 'Status: Needs Review',
         Status::NEEDS_WORK => 'Status: Needs Work',
         Status::WORKS_FOR_ME => 'Status: Works for me',
         Status::REVIEWED => 'Status: Reviewed',
     ];
 
-    private $labelToStatus = [];
+    private array $labelToStatus;
 
-    /**
-     * @var LabelApi
-     */
-    private $labelsApi;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(LabelApi $labelsApi, LoggerInterface $logger)
-    {
-        $this->labelsApi = $labelsApi;
+    public function __construct(
+        private readonly LabelApi $labelsApi,
+        private readonly LoggerInterface $logger,
+    ) {
         $this->labelToStatus = array_flip(self::$statusToLabel);
-        $this->logger = $logger;
     }
 
     /**
      * @param int         $issueNumber The GitHub issue number
      * @param string|null $newStatus   A Status::* constant
      */
-    public function setIssueStatus($issueNumber, ?string $newStatus, Repository $repository)
+    public function setIssueStatus(int $issueNumber, ?string $newStatus, Repository $repository): void
     {
         if (null !== $newStatus && !isset(self::$statusToLabel[$newStatus])) {
             throw new \InvalidArgumentException(sprintf('Invalid status "%s"', $newStatus));
@@ -92,7 +83,7 @@ class GitHubStatusApi implements StatusApi
         return null;
     }
 
-    public static function getNeedsReviewLabel()
+    public static function getNeedsReviewLabel(): string
     {
         return self::$statusToLabel[Status::NEEDS_REVIEW];
     }

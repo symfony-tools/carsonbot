@@ -14,14 +14,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class UpdateMilestoneWhenLabeledWaitingCodeMergeSubscriber implements EventSubscriberInterface
 {
-    private MilestoneApi $milestoneApi;
-
-    public function __construct(MilestoneApi $milestoneApi)
-    {
-        $this->milestoneApi = $milestoneApi;
+    public function __construct(
+        private readonly MilestoneApi $milestoneApi,
+    ) {
     }
 
-    public function onLabel(GitHubEvent $event)
+    public function onLabel(GitHubEvent $event): void
     {
         $data = $event->getData();
         $action = $data['action'];
@@ -45,7 +43,10 @@ class UpdateMilestoneWhenLabeledWaitingCodeMergeSubscriber implements EventSubsc
         }
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onLabel',

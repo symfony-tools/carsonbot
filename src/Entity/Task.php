@@ -2,19 +2,17 @@
 
 namespace App\Entity;
 
+use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * A "Task" is a scheduled job.
  *
- * @ORM\Table
- *
- * @ORM\Entity(repositoryClass="App\Repository\TaskRepository")
- *
- * @ORM\HasLifecycleCallbacks()
- *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
+#[ORM\Entity(repositoryClass: TaskRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table]
 class Task
 {
     public const ACTION_CLOSE_STALE = 1;
@@ -23,63 +21,31 @@ class Task
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     */
-    private $repositoryFullName;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     */
-    private $number;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     */
-    private $action;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeImmutable $createdAt;
 
     /**
      * @var \DateTimeImmutable
-     *
-     * @ORM\Column(type="datetime_immutable")
      */
-    private $createdAt;
-
-    /**
-     * @var \DateTimeImmutable
-     *
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $updatedAt;
 
-    /**
-     * @var \DateTimeImmutable
-     *
-     * @ORM\Column(type="datetime_immutable")
-     */
-    private $verifyAfter;
-
-    public function __construct(string $repositoryFullName, int $number, int $action, \DateTimeImmutable $verifyAfter)
+    public function __construct(
+        #[ORM\Column(type: 'string')]
+        private readonly string $repositoryFullName,
+        #[ORM\Column(type: 'integer')]
+        private readonly int $number,
+        #[ORM\Column(type: 'integer')]
+        private readonly int $action,
+        #[ORM\Column(type: 'datetime_immutable')]
+        private \DateTimeImmutable $verifyAfter)
     {
-        $this->repositoryFullName = $repositoryFullName;
-        $this->number = $number;
-        $this->action = $action;
-        $this->verifyAfter = $verifyAfter;
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -113,11 +79,8 @@ class Task
         $this->verifyAfter = $verifyAfter;
     }
 
-    /**
-     * @ORM\PrePersist
-     *
-     * @ORM\PreUpdate
-     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function updateUpdatedAt()
     {
         $this->updatedAt = new \DateTimeImmutable();

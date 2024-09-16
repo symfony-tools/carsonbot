@@ -15,19 +15,18 @@ use Psr\Log\LoggerInterface;
  */
 class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
 {
-    private $logger;
-
-    public function __construct(StatusApi $statusApi, LoggerInterface $logger)
-    {
+    public function __construct(
+        StatusApi $statusApi,
+        private readonly LoggerInterface $logger,
+    ) {
         parent::__construct($statusApi);
-        $this->logger = $logger;
     }
 
     /**
      * Sets the status based on the review state (approved/changes requested)
      * or the review body (using the Status: keyword).
      */
-    public function onReview(GitHubEvent $event)
+    public function onReview(GitHubEvent $event): void
     {
         $data = $event->getData();
         if ('submitted' !== $data['action']) {
@@ -39,18 +38,11 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
         $newStatus = null;
 
         // Set status based on review state
-        switch (strtolower($data['review']['state'])) {
-            case 'approved':
-                $newStatus = Status::REVIEWED;
-
-                break;
-            case 'changes_requested':
-                $newStatus = Status::NEEDS_WORK;
-
-                break;
-            default:
-                $newStatus = $this->parseStatusFromText($data['review']['body']);
-        }
+        $newStatus = match (strtolower($data['review']['state'])) {
+            'approved' => Status::REVIEWED,
+            'changes_requested' => Status::NEEDS_WORK,
+            default => $this->parseStatusFromText($data['review']['body']),
+        };
 
         if (Status::REVIEWED === $newStatus && false === $this->isUserAllowedToReview($data)) {
             $newStatus = null;
@@ -72,7 +64,7 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
     /**
      * Sets the status to needs review when a review is requested.
      */
-    public function onReviewRequested(GithubEvent $event)
+    public function onReviewRequested(GitHubEvent $event): void
     {
         $data = $event->getData();
         if ('review_requested' !== $data['action']) {
@@ -92,7 +84,10 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
         ]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST_REVIEW => 'onReview',
@@ -100,7 +95,7 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
         ];
     }
 
-    private function isUserAllowedToReview(array $data)
+    private function isUserAllowedToReview(array $data): bool
     {
         return $data['pull_request']['user']['login'] !== $data['review']['user']['login'];
     }

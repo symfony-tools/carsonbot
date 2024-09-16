@@ -12,17 +12,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class MilestoneMergedPRSubscriber implements EventSubscriberInterface
 {
-    private $milestonesApi;
-
-    public function __construct(MilestoneApi $milestonesApi)
-    {
-        $this->milestonesApi = $milestonesApi;
+    public function __construct(
+        private readonly MilestoneApi $milestonesApi,
+    ) {
     }
 
     /**
      * Sets milestone on merged PRs.
      */
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         $repository = $event->getRepository();
@@ -49,7 +47,10 @@ class MilestoneMergedPRSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

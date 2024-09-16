@@ -7,9 +7,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class EventDispatcher
 {
     /**
-     * @var EventDispatcherInterface[]
+     * @var array<string, EventDispatcherInterface>
      */
-    protected $dispatchers = [];
+    protected array $dispatchers = [];
 
     public function addDispatcher(string $repositoryName, EventDispatcherInterface $dispatcher): void
     {

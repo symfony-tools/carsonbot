@@ -13,23 +13,18 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class MilestoneNewPRSubscriber implements EventSubscriberInterface
 {
-    private $milestonesApi;
-    private $symfonyVersionProvider;
-    private $ignoreCurrentVersion;
-    private $ignoreDefaultBranch;
-
-    public function __construct(MilestoneApi $milestonesApi, SymfonyVersionProvider $symfonyVersionProvider, $ignoreCurrentVersion = false, $ignoreDefaultBranch = false)
-    {
-        $this->milestonesApi = $milestonesApi;
-        $this->symfonyVersionProvider = $symfonyVersionProvider;
-        $this->ignoreCurrentVersion = $ignoreCurrentVersion;
-        $this->ignoreDefaultBranch = $ignoreDefaultBranch;
+    public function __construct(
+        private readonly MilestoneApi $milestonesApi,
+        private readonly SymfonyVersionProvider $symfonyVersionProvider,
+        private $ignoreCurrentVersion = false,
+        private $ignoreDefaultBranch = false,
+    ) {
     }
 
     /**
      * Sets milestone on PRs.
      */
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         $repository = $event->getRepository();
@@ -59,7 +54,10 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

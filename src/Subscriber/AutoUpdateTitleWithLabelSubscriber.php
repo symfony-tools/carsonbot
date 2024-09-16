@@ -16,18 +16,14 @@ use Symfony\Component\Lock\LockFactory;
  */
 class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
 {
-    private $labelExtractor;
-    private $pullRequestApi;
-    private $lockFactory;
-
-    public function __construct(LabelNameExtractor $labelExtractor, PullRequestApi $pullRequestApi, LockFactory $lockFactory)
-    {
-        $this->labelExtractor = $labelExtractor;
-        $this->pullRequestApi = $pullRequestApi;
-        $this->lockFactory = $lockFactory;
+    public function __construct(
+        private readonly LabelNameExtractor $labelExtractor,
+        private readonly PullRequestApi $pullRequestApi,
+        private readonly LockFactory $lockFactory,
+    ) {
     }
 
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         $action = $data['action'];
@@ -92,7 +88,10 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

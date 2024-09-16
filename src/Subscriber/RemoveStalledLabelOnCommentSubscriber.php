@@ -15,16 +15,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class RemoveStalledLabelOnCommentSubscriber implements EventSubscriberInterface
 {
-    private $labelApi;
-    private $botUsername;
-
-    public function __construct(LabelApi $labelApi, string $botUsername)
-    {
-        $this->labelApi = $labelApi;
-        $this->botUsername = $botUsername;
+    public function __construct(
+        private readonly LabelApi $labelApi,
+        private readonly string $botUsername,
+    ) {
     }
 
-    public function onIssueComment(GitHubEvent $event)
+    public function onIssueComment(GitHubEvent $event): void
     {
         $data = $event->getData();
         $repository = $event->getRepository();
@@ -56,7 +53,10 @@ class RemoveStalledLabelOnCommentSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::ISSUE_COMMENT => 'onIssueComment',

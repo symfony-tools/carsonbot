@@ -14,14 +14,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class ApproveCiForNonContributors implements EventSubscriberInterface
 {
-    private WorkflowApi $workflowApi;
-
-    public function __construct(WorkflowApi $workflowApi)
-    {
-        $this->workflowApi = $workflowApi;
+    public function __construct(
+        private readonly WorkflowApi $workflowApi,
+    ) {
     }
 
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         if (!in_array($data['action'], ['opened', 'reopened', 'synchronize'])) {
@@ -36,7 +34,10 @@ class ApproveCiForNonContributors implements EventSubscriberInterface
         $event->setResponseData(['approved_run' => true]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

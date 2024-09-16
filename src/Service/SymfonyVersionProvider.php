@@ -10,20 +10,10 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SymfonyVersionProvider
 {
-    /**
-     * @var HttpClientInterface
-     */
-    private $httpClient;
-
-    /**
-     * @var CacheInterface
-     */
-    private $cache;
-
-    public function __construct(HttpClientInterface $httpClient, CacheInterface $cache)
-    {
-        $this->httpClient = $httpClient;
-        $this->cache = $cache;
+    public function __construct(
+        private HttpClientInterface $httpClient,
+        private readonly CacheInterface $cache,
+    ) {
     }
 
     public function getCurrentVersion(): string
@@ -36,7 +26,7 @@ class SymfonyVersionProvider
                 $response = $httpClient->request('GET', 'https://symfony.com/releases.json');
                 $data = $response->toArray(true);
                 $version = $data['latest_stable_version'] ?? $defaultValue;
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 $version = $defaultValue;
             }
 
