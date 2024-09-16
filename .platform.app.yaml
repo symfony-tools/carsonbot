@@ -1,6 +1,6 @@
 name: carson-bot
 
-type: php:8.2
+type: php:8.3
 
 runtime:
     extensions:
