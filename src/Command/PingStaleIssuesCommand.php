@@ -87,7 +87,7 @@ class PingStaleIssuesCommand extends Command
     }
 
     /**
-     * Extract type from issue array. Make sure we priorities labels if there are
+     * Extract type from issue array. Make sure we prioritize labels if there are
      * more than one type defined.
      */
     private function extractType(array $issue)
