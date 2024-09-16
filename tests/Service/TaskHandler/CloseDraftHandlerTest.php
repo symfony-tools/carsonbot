@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Service\TaskHandler;
+namespace App\Tests\Service\TaskHandler;
 
 use App\Api\Issue\NullIssueApi;
 use App\Api\PullRequest\NullPullRequestApi;
