@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up PHP
-        uses: shivammathur/setup-php@2.7.0
+        uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
           coverage: none
@@ -21,19 +21,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ runner.os }}-8.1-${{ hashFiles('composer.*') }}
-          restore-keys: |
-            composer-${{ runner.os }}-8.1-
-            composer-${{ runner.os }}-
-            composer-
+      - name: Download dependencies
+        uses: ramsey/composer-install@v3
 
       - name: Docker
         run: docker compose up -d
