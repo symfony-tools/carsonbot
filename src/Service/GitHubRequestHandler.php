@@ -46,11 +46,23 @@ class GitHubRequestHandler
             throw new PreconditionFailedHttpException(sprintf('Unsupported repository "%s".', $repositoryFullName));
         }
 
-        if (!empty($repository->getSecret())) {
+        $secret = $repository->getSecret();
+        if (is_string($secret) && '' !== trim($secret)) {
             if (!$request->headers->has('X-Hub-Signature')) {
                 throw new AccessDeniedHttpException('The request is not secured.');
             }
-            if (!$this->authenticate($request->headers->get('X-Hub-Signature'), $repository->getSecret(), $request->getContent())) {
+
+            $content = $request->getContent();
+            if (!is_string($content)) {
+                throw new BadRequestHttpException('Empty request body!');
+            }
+
+            $signature = $request->headers->get('X-Hub-Signature');
+            if (!is_string($signature)) {
+                throw new BadRequestHttpException('Invalid signature!');
+            }
+
+            if (!$this->authenticate($signature, $secret, $content)) {
                 throw new AccessDeniedHttpException('Invalid signature.');
             }
         }
