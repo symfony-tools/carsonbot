@@ -14,16 +14,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class CloseDraftPRSubscriber implements EventSubscriberInterface
 {
-    private $issueApi;
-    private $scheduler;
-
-    public function __construct(IssueApi $issueApi, TaskScheduler $scheduler)
-    {
-        $this->issueApi = $issueApi;
-        $this->scheduler = $scheduler;
+    public function __construct(
+        private readonly IssueApi $issueApi,
+        private readonly TaskScheduler $scheduler,
+    ) {
     }
 
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         $repository = $event->getRepository();
@@ -54,7 +51,10 @@ TXT
         ]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

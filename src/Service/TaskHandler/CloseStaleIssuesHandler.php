@@ -15,17 +15,12 @@ use App\Service\StaleIssueCommentGenerator;
  */
 class CloseStaleIssuesHandler implements TaskHandlerInterface
 {
-    private $issueApi;
-    private $repositoryProvider;
-    private $labelApi;
-    private $commentGenerator;
-
-    public function __construct(LabelApi $labelApi, IssueApi $issueApi, RepositoryProvider $repositoryProvider, StaleIssueCommentGenerator $commentGenerator)
-    {
-        $this->issueApi = $issueApi;
-        $this->repositoryProvider = $repositoryProvider;
-        $this->labelApi = $labelApi;
-        $this->commentGenerator = $commentGenerator;
+    public function __construct(
+        private readonly LabelApi $labelApi,
+        private readonly IssueApi $issueApi,
+        private readonly RepositoryProvider $repositoryProvider,
+        private readonly StaleIssueCommentGenerator $commentGenerator,
+    ) {
     }
 
     /**

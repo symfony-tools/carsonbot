@@ -11,17 +11,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class NeedsReviewNewPRSubscriber implements EventSubscriberInterface
 {
-    private $statusApi;
-
-    public function __construct(StatusApi $statusApi)
-    {
-        $this->statusApi = $statusApi;
+    public function __construct(
+        private readonly StatusApi $statusApi,
+    ) {
     }
 
     /**
      * Adds a "Needs Review" label to new PRs.
      */
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         $repository = $event->getRepository();
@@ -43,7 +41,10 @@ class NeedsReviewNewPRSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

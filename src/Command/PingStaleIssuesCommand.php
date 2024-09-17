@@ -27,30 +27,24 @@ class PingStaleIssuesCommand extends Command
 
     protected static $defaultName = 'app:issue:ping-stale';
 
-    private $repositoryProvider;
-    private $issueApi;
-    private $scheduler;
-    private $commentGenerator;
-    private $labelApi;
-
-    public function __construct(RepositoryProvider $repositoryProvider, IssueApi $issueApi, TaskScheduler $scheduler, StaleIssueCommentGenerator $commentGenerator, LabelApi $labelApi)
-    {
+    public function __construct(
+        private readonly RepositoryProvider $repositoryProvider,
+        private readonly IssueApi $issueApi,
+        private readonly TaskScheduler $scheduler,
+        private readonly StaleIssueCommentGenerator $commentGenerator,
+        private readonly LabelApi $labelApi,
+    ) {
         parent::__construct();
-        $this->repositoryProvider = $repositoryProvider;
-        $this->issueApi = $issueApi;
-        $this->scheduler = $scheduler;
-        $this->commentGenerator = $commentGenerator;
-        $this->labelApi = $labelApi;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument('repository', InputArgument::REQUIRED, 'The full name to the repository, eg symfony/symfony-docs');
         $this->addOption('not-updated-for', null, InputOption::VALUE_REQUIRED, 'A string representing a time period to for how long the issue has been stalled.', '12months');
         $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Do a test search without making any comments or changes');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var string $repositoryName */
         $repositoryName = $input->getArgument('repository');
@@ -58,7 +52,7 @@ class PingStaleIssuesCommand extends Command
         if (null === $repository) {
             $output->writeln('Repository not configured');
 
-            return 1;
+            return Command::FAILURE;
         }
 
         /** @var string $timeString */
@@ -71,7 +65,7 @@ class PingStaleIssuesCommand extends Command
                 $output->writeln(sprintf('Marking issue #%s as "Stalled". Link https://github.com/%s/issues/%s', $issue['number'], $repository->getFullName(), $issue['number']));
             }
 
-            return 0;
+            return Command::SUCCESS;
         }
 
         foreach ($issues as $issue) {
@@ -83,14 +77,14 @@ class PingStaleIssuesCommand extends Command
             $this->scheduler->runLater($repository, (int) $issue['number'], Task::ACTION_INFORM_CLOSE_STALE, new \DateTimeImmutable(self::MESSAGE_TWO_AFTER));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * Extract type from issue array. Make sure we prioritize labels if there are
      * more than one type defined.
      */
-    private function extractType(array $issue)
+    private function extractType(array $issue): string
     {
         $types = [
             IssueType::FEATURE => false,

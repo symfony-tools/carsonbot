@@ -12,7 +12,7 @@ class RepositoryProvider
     /**
      * @var Repository[]
      */
-    private $repositories = [];
+    private array $repositories = [];
 
     public function __construct(array $repositories)
     {
@@ -21,7 +21,7 @@ class RepositoryProvider
                 throw new \InvalidArgumentException(sprintf('The repository name %s is invalid: it must be the form "username/repo_name"', $repositoryFullName));
             }
 
-            list($vendorName, $repositoryName) = explode('/', $repositoryFullName);
+            [$vendorName, $repositoryName] = explode('/', $repositoryFullName);
 
             $this->addRepository(new Repository(
                 $vendorName,
@@ -46,7 +46,7 @@ class RepositoryProvider
         return array_values($this->repositories);
     }
 
-    private function addRepository(Repository $repository)
+    private function addRepository(Repository $repository): void
     {
         $this->repositories[strtolower($repository->getVendor().'/'.$repository->getName())] = $repository;
     }

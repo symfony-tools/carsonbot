@@ -8,29 +8,23 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterface
 {
-    protected static $triggerWordToStatus = [
+    protected static array $triggerWordToStatus = [
         'needs review' => Status::NEEDS_REVIEW,
         'needs work' => Status::NEEDS_WORK,
         'works for me' => Status::WORKS_FOR_ME,
         'reviewed' => Status::REVIEWED,
     ];
 
-    protected $statusApi;
-
-    public function __construct(StatusApi $statusApi)
-    {
-        $this->statusApi = $statusApi;
+    public function __construct(
+        protected StatusApi $statusApi,
+    ) {
     }
 
     /**
      * Parses the text and looks for keywords to see if this should cause any
      * status change.
-     *
-     * @param string $body
-     *
-     * @return string|null
      */
-    protected function parseStatusFromText($body)
+    protected function parseStatusFromText(string $body): ?string
     {
         $triggerWord = implode('|', array_keys(static::$triggerWordToStatus));
         $formatting = '[\\s\\*]*';

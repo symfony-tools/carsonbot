@@ -15,24 +15,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RunTaskCommand extends Command
 {
     protected static $defaultName = 'app:task:run';
-    private $repository;
-    private $taskRunner;
-    private $logger;
 
-    public function __construct(TaskRepository $repository, TaskRunner $taskRunner, LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly TaskRepository $repository,
+        private readonly TaskRunner $taskRunner,
+        private readonly LoggerInterface $logger,
+    ) {
         parent::__construct();
-        $this->repository = $repository;
-        $this->taskRunner = $taskRunner;
-        $this->logger = $logger;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Limit the number of tasks to run', '10');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $limit = (int) $input->getOption('limit');
         foreach ($this->repository->getTasksToVerify($limit) as $task) {
@@ -44,6 +41,6 @@ class RunTaskCommand extends Command
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

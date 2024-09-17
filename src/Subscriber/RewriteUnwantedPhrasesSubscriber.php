@@ -16,16 +16,13 @@ use Symfony\Component\Lock\LockFactory;
  */
 class RewriteUnwantedPhrasesSubscriber implements EventSubscriberInterface
 {
-    private $pullRequestApi;
-    private $lockFactory;
-
-    public function __construct(PullRequestApi $pullRequestApi, LockFactory $lockFactory)
-    {
-        $this->pullRequestApi = $pullRequestApi;
-        $this->lockFactory = $lockFactory;
+    public function __construct(
+        private readonly PullRequestApi $pullRequestApi,
+        private readonly LockFactory $lockFactory,
+    ) {
     }
 
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         $action = $data['action'];
@@ -71,7 +68,10 @@ class RewriteUnwantedPhrasesSubscriber implements EventSubscriberInterface
         return str_ireplace(array_keys($replace), array_values($replace), $text, $count);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

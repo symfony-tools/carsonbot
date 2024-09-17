@@ -11,7 +11,7 @@ use App\Model\Repository;
  */
 interface StatusApi
 {
-    public function getIssueStatus($issueNumber, Repository $repository): ?string;
+    public function getIssueStatus(int $issueNumber, Repository $repository): ?string;
 
-    public function setIssueStatus($issueNumber, ?string $newStatus, Repository $repository);
+    public function setIssueStatus(int $issueNumber, ?string $newStatus, Repository $repository): void;
 }

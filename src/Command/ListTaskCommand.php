@@ -18,12 +18,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ListTaskCommand extends Command
 {
     protected static $defaultName = 'app:task:list';
-    private $repository;
 
-    public function __construct(TaskRepository $repository)
-    {
+    public function __construct(
+        private readonly TaskRepository $repository,
+    ) {
         parent::__construct();
-        $this->repository = $repository;
     }
 
     protected function configure()
@@ -31,7 +30,7 @@ class ListTaskCommand extends Command
         $this->addOption('number', null, InputOption::VALUE_REQUIRED, 'The issue number we are interested in', null);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var mixed|null $number */
         $number = $input->getOption('number');
@@ -61,7 +60,7 @@ class ListTaskCommand extends Command
         }
         $io->newLine();
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function actionToString(int $action): string

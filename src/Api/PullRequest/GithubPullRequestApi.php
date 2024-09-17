@@ -11,13 +11,10 @@ use Github\Api\Search;
  */
 class GithubPullRequestApi implements PullRequestApi
 {
-    private $pullRequest;
-    private $search;
-
-    public function __construct(PullRequest $pullRequest, Search $search)
-    {
-        $this->pullRequest = $pullRequest;
-        $this->search = $search;
+    public function __construct(
+        private readonly PullRequest $pullRequest,
+        private readonly Search $search,
+    ) {
     }
 
     public function show(Repository $repository, $number): array
@@ -25,7 +22,7 @@ class GithubPullRequestApi implements PullRequestApi
         return (array) $this->pullRequest->show($repository->getVendor(), $repository->getName(), $number);
     }
 
-    public function updateTitle(Repository $repository, $number, string $title, string $body = null): void
+    public function updateTitle(Repository $repository, $number, string $title, ?string $body = null): void
     {
         $params = ['title' => $title];
 

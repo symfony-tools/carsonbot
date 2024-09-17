@@ -17,23 +17,17 @@ use App\Service\TaskScheduler;
  */
 class InformAboutClosingStaleIssuesHandler implements TaskHandlerInterface
 {
-    private $issueApi;
-    private $repositoryProvider;
-    private $labelApi;
-    private $commentGenerator;
-    private $scheduler;
-
-    public function __construct(LabelApi $labelApi, IssueApi $issueApi, RepositoryProvider $repositoryProvider, StaleIssueCommentGenerator $commentGenerator, TaskScheduler $scheduler)
-    {
-        $this->issueApi = $issueApi;
-        $this->repositoryProvider = $repositoryProvider;
-        $this->labelApi = $labelApi;
-        $this->commentGenerator = $commentGenerator;
-        $this->scheduler = $scheduler;
+    public function __construct(
+        private readonly LabelApi $labelApi,
+        private readonly IssueApi $issueApi,
+        private readonly RepositoryProvider $repositoryProvider,
+        private readonly StaleIssueCommentGenerator $commentGenerator,
+        private readonly TaskScheduler $scheduler,
+    ) {
     }
 
     /**
-     * Close the issue if the last comment was made by the bot and if "Keep open" label does not exist.
+     * Close the issue if the last comment was made by the bot and "Keep open" label does not exist.
      */
     public function handle(Task $task): void
     {

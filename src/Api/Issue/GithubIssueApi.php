@@ -10,19 +10,13 @@ use Github\ResultPager;
 
 class GithubIssueApi implements IssueApi
 {
-    private $resultPager;
-    private $issueCommentApi;
-    private $issueApi;
-    private $searchApi;
-    private $botUsername;
-
-    public function __construct(ResultPager $resultPager, Comments $issueCommentApi, Issue $issueApi, Search $searchApi, string $botUsername)
-    {
-        $this->resultPager = $resultPager;
-        $this->issueCommentApi = $issueCommentApi;
-        $this->issueApi = $issueApi;
-        $this->searchApi = $searchApi;
-        $this->botUsername = $botUsername;
+    public function __construct(
+        private readonly ResultPager $resultPager,
+        private readonly Comments $issueCommentApi,
+        private readonly Issue $issueApi,
+        private readonly Search $searchApi,
+        private readonly string $botUsername,
+    ) {
     }
 
     public function open(Repository $repository, string $title, string $body, array $labels)

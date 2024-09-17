@@ -12,24 +12,14 @@ use Github\Api\Issue\Milestones;
 class GithubMilestoneApi implements MilestoneApi
 {
     /**
-     * @var Milestones
-     */
-    private $milestonesApi;
-
-    /**
-     * @var Issue
-     */
-    private $issuesApi;
-
-    /**
      * @var string[][]
      */
-    private $cache = [];
+    private array $cache = [];
 
-    public function __construct(Milestones $milestonesApi, Issue $issuesApi)
-    {
-        $this->milestonesApi = $milestonesApi;
-        $this->issuesApi = $issuesApi;
+    public function __construct(
+        private readonly Milestones $milestonesApi,
+        private readonly Issue $issuesApi,
+    ) {
     }
 
     private function getMilestones(Repository $repository): array
@@ -48,7 +38,7 @@ class GithubMilestoneApi implements MilestoneApi
         return $this->cache[$key];
     }
 
-    public function updateMilestone(Repository $repository, int $issueNumber, string $milestoneName)
+    public function updateMilestone(Repository $repository, int $issueNumber, string $milestoneName): void
     {
         $milestoneNumber = null;
         foreach ($this->getMilestones($repository) as $milestone) {
@@ -77,7 +67,7 @@ class GithubMilestoneApi implements MilestoneApi
         return false;
     }
 
-    private function getCacheKey(Repository $repository)
+    private function getCacheKey(Repository $repository): string
     {
         return sprintf('%s_%s', $repository->getVendor(), $repository->getName());
     }

@@ -13,16 +13,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class WelcomeFirstTimeContributorSubscriber implements EventSubscriberInterface
 {
-    private $commentsApi;
-    private $pullRequestApi;
-
-    public function __construct(IssueApi $commentsApi, PullRequestApi $pullRequestApi)
-    {
-        $this->commentsApi = $commentsApi;
-        $this->pullRequestApi = $pullRequestApi;
+    public function __construct(
+        private readonly IssueApi $commentsApi,
+        private readonly PullRequestApi $pullRequestApi,
+    ) {
     }
 
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
@@ -74,7 +71,10 @@ TXT
         ]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

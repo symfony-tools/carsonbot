@@ -17,28 +17,24 @@ use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
  */
 class GitHubRequestHandler
 {
-    private $dispatcher;
-    private $repositoryProvider;
-    private $logger;
-
-    public function __construct(EventDispatcher $dispatcher, RepositoryProvider $repositoryProvider, LoggerInterface $logger)
-    {
-        $this->dispatcher = $dispatcher;
-        $this->repositoryProvider = $repositoryProvider;
-        $this->logger = $logger;
+    public function __construct(
+        private readonly EventDispatcher $dispatcher,
+        private readonly RepositoryProvider $repositoryProvider,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     /**
      * @return array The response data
      */
-    public function handle(Request $request)
+    public function handle(Request $request): array
     {
-        $data = json_decode((string) $request->getContent(), true);
+        $data = json_decode($request->getContent(), true);
         if (null === $data) {
             throw new BadRequestHttpException('Invalid JSON body!');
         }
 
-        $repositoryFullName = isset($data['repository']['full_name']) ? $data['repository']['full_name'] : null;
+        $repositoryFullName = $data['repository']['full_name'] ?? null;
         if (empty($repositoryFullName)) {
             throw new BadRequestHttpException('No repository name!');
         }
@@ -50,11 +46,23 @@ class GitHubRequestHandler
             throw new PreconditionFailedHttpException(sprintf('Unsupported repository "%s".', $repositoryFullName));
         }
 
-        if (!empty($repository->getSecret())) {
+        $secret = $repository->getSecret();
+        if (is_string($secret) && '' !== trim($secret)) {
             if (!$request->headers->has('X-Hub-Signature')) {
                 throw new AccessDeniedHttpException('The request is not secured.');
             }
-            if (!$this->authenticate($request->headers->get('X-Hub-Signature'), $repository->getSecret(), $request->getContent())) {
+
+            $content = $request->getContent();
+            if (!is_string($content)) {
+                throw new BadRequestHttpException('Empty request body!');
+            }
+
+            $signature = $request->headers->get('X-Hub-Signature');
+            if (!is_string($signature)) {
+                throw new BadRequestHttpException('Invalid signature!');
+            }
+
+            if (!$this->authenticate($signature, $secret, $content)) {
                 throw new AccessDeniedHttpException('Invalid signature.');
             }
         }
@@ -88,7 +96,7 @@ class GitHubRequestHandler
         return $responseData;
     }
 
-    private function authenticate($hash, $key, $data)
+    private function authenticate(string $hash, string $key, string $data): bool
     {
         if (!extension_loaded('hash')) {
             throw new \RuntimeException('"hash" extension is needed to check request signature.');

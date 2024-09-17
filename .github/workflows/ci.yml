@@ -75,7 +75,7 @@ jobs:
         with:
           php-version: 8.3
           coverage: none
-          tools: php-cs-fixer:3.42, cs2pr
+          tools: php-cs-fixer:3.64, cs2pr
 
       - name: Checkout code
         uses: actions/checkout@v4

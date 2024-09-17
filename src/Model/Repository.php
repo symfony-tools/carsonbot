@@ -10,27 +10,13 @@ use App\Api\Status\GitHubStatusApi;
 class Repository
 {
     /**
-     * @var string
+     * @param string|null $secret the webhook secret used by GitHub
      */
-    private $vendor;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * The webhook secret used by GitHub.
-     *
-     * @var string|null
-     */
-    private $secret;
-
-    public function __construct(string $vendor, string $name, string $secret = null)
-    {
-        $this->vendor = $vendor;
-        $this->name = $name;
-        $this->secret = $secret;
+    public function __construct(
+        private readonly string $vendor,
+        private readonly string $name,
+        private readonly ?string $secret = null,
+    ) {
     }
 
     public function getVendor(): string

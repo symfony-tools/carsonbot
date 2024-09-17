@@ -15,13 +15,10 @@ use Symfony\Component\String\UnicodeString;
  */
 class MismatchBranchDescriptionSubscriber implements EventSubscriberInterface
 {
-    private IssueApi $issueApi;
-    private LoggerInterface $logger;
-
-    public function __construct(IssueApi $issueApi, LoggerInterface $logger)
-    {
-        $this->issueApi = $issueApi;
-        $this->logger = $logger;
+    public function __construct(
+        private readonly IssueApi $issueApi,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     public function onPullRequest(GitHubEvent $event): void
@@ -62,6 +59,9 @@ TXT
         ]);
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [

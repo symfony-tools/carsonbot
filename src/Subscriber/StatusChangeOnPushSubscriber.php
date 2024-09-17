@@ -17,14 +17,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class StatusChangeOnPushSubscriber implements EventSubscriberInterface
 {
-    private $statusApi;
-
-    public function __construct(StatusApi $statusApi)
-    {
-        $this->statusApi = $statusApi;
+    public function __construct(
+        private readonly StatusApi $statusApi,
+    ) {
     }
 
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
         if ('synchronize' !== $data['action']) {
@@ -52,7 +50,10 @@ class StatusChangeOnPushSubscriber implements EventSubscriberInterface
         $event->setResponseData($responseData);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

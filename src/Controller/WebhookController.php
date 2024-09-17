@@ -8,10 +8,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-class WebhookController extends AbstractController
+final class WebhookController extends AbstractController
 {
     #[Route('/webhooks/github', name: 'webhooks_github', methods: ['POST'])]
-    public function github(Request $request, GitHubRequestHandler $requestHandler)
+    public function github(Request $request, GitHubRequestHandler $requestHandler): JsonResponse
     {
         $responseData = $requestHandler->handle($request);
 

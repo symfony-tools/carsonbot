@@ -13,20 +13,18 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class AutoLabelFromContentSubscriber implements EventSubscriberInterface
 {
-    private $labelsApi;
-
-    private $labelExtractor;
-
-    public function __construct(LabelApi $labelsApi, LabelNameExtractor $labelExtractor)
-    {
-        $this->labelsApi = $labelsApi;
-        $this->labelExtractor = $labelExtractor;
+    public function __construct(
+        private readonly LabelApi $labelsApi,
+        private readonly LabelNameExtractor $labelExtractor,
+    ) {
     }
 
-    public function onPullRequest(GitHubEvent $event)
+    public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
-        if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
+        if (!in_array($data['action'], ['opened', 'ready_for_review'])
+            || ($data['pull_request']['draft'] ?? false)
+        ) {
             return;
         }
 
@@ -64,10 +62,10 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    public function onIssue(GitHubEvent $event)
+    public function onIssue(GitHubEvent $event): void
     {
         $data = $event->getData();
-        if ('opened' !== $action = $data['action']) {
+        if ('opened' !== $data['action']) {
             return;
         }
         $repository = $event->getRepository();
@@ -89,7 +87,10 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::PULL_REQUEST => 'onPullRequest',

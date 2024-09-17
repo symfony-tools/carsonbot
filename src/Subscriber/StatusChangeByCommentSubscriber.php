@@ -10,19 +10,18 @@ use Psr\Log\LoggerInterface;
 
 class StatusChangeByCommentSubscriber extends AbstractStatusChangeSubscriber
 {
-    private $logger;
-
-    public function __construct(StatusApi $statusApi, LoggerInterface $logger)
-    {
+    public function __construct(
+        StatusApi $statusApi,
+        private readonly LoggerInterface $logger,
+    ) {
         parent::__construct($statusApi);
-        $this->logger = $logger;
     }
 
     /**
      * Parses the text of the comment and looks for keywords to see
      * if this should cause any status change.
      */
-    public function onIssueComment(GitHubEvent $event)
+    public function onIssueComment(GitHubEvent $event): void
     {
         $data = $event->getData();
         $repository = $event->getRepository();
@@ -46,14 +45,17 @@ class StatusChangeByCommentSubscriber extends AbstractStatusChangeSubscriber
         $this->statusApi->setIssueStatus($issueNumber, $newStatus, $repository);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             GitHubEvents::ISSUE_COMMENT => 'onIssueComment',
         ];
     }
 
-    private function isUserAllowedToReview(array $data)
+    private function isUserAllowedToReview(array $data): bool
     {
         return $data['issue']['user']['login'] !== $data['comment']['user']['login'];
     }
