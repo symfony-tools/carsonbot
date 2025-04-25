@@ -26,7 +26,10 @@ class CloseDraftHandlerTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['close'])
             ->getMock();
-        $issueApi->expects($this->once())->method('close');
+        $issueApi
+            ->expects($this->once())
+            ->method('close')
+            ->with($this->anything(), 4711, 'not_planned');
 
         $repoProvider = new RepositoryProvider(['carsonbot-playground/symfony' => []]);
 

@@ -25,8 +25,5 @@ interface IssueApi
 
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable;
 
-    /**
-     * Close an issue or a pull request.
-     */
-    public function close(Repository $repository, $issueNumber);
+    public function close(Repository $repository, $issueNumber, ?string $reason = null): void;
 }

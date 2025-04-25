@@ -54,9 +54,21 @@ class GithubIssueApi implements IssueApi
         return $this->issueApi->show($repository->getVendor(), $repository->getName(), $issueNumber);
     }
 
-    public function close(Repository $repository, $issueNumber)
+    public function close(Repository $repository, $issueNumber, ?string $reason = null): void
     {
-        $this->issueApi->update($repository->getVendor(), $repository->getName(), $issueNumber, ['state' => 'closed']);
+        if (null !== $reason && !in_array($reason, [StateReason::COMPLETED, StateReason::NOT_PLANNED], true)) {
+            throw new \InvalidArgumentException(sprintf('Invalid closing state reason "%s".', $reason));
+        }
+
+        $this->issueApi->update(
+            $repository->getVendor(),
+            $repository->getName(),
+            $issueNumber,
+            [
+                'state' => 'closed',
+                'state_reason' => $reason,
+            ],
+        );
     }
 
     /**

@@ -72,7 +72,7 @@ class CloseStaleIssuesHandlerTest extends TestCase
             ->getMock();
         $issueApi->expects($this->any())->method('show')->willReturn(['state' => 'open']);
         $issueApi->expects($this->any())->method('lastCommentWasMadeByBot')->willReturn(true);
-        $issueApi->expects($this->once())->method('close');
+        $issueApi->expects($this->once())->method('close')->with($this->anything(), 4711, 'not_planned');
 
         $repoProvider = new RepositoryProvider(['carsonbot-playground/symfony' => []]);
 

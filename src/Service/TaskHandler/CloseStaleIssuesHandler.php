@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\TaskHandler;
 
 use App\Api\Issue\IssueApi;
+use App\Api\Issue\StateReason;
 use App\Api\Label\LabelApi;
 use App\Entity\Task;
 use App\Service\RepositoryProvider;
@@ -46,7 +47,7 @@ class CloseStaleIssuesHandler implements TaskHandlerInterface
 
         if ($this->issueApi->lastCommentWasMadeByBot($repository, $task->getNumber())) {
             $this->issueApi->commentOnIssue($repository, $task->getNumber(), $this->commentGenerator->getClosingComment());
-            $this->issueApi->close($repository, $task->getNumber());
+            $this->issueApi->close($repository, $task->getNumber(), StateReason::NOT_PLANNED);
         } else {
             $this->labelApi->removeIssueLabel($task->getNumber(), 'Stalled', $repository);
         }
