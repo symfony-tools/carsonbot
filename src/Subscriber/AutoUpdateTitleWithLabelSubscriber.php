@@ -73,7 +73,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         }
 
         // Clean string from all HTML chars and remove whitespace at the beginning
-        $prTitle = preg_replace('@^[\h\s]+@u', '', html_entity_decode($prTitle));
+        $prTitle = (string) preg_replace('@^[\h\s]+@u', '', html_entity_decode($prTitle));
 
         // Add back labels
         $prTitle = trim($prPrefix.' '.trim($prTitle));

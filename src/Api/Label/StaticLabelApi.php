@@ -13,28 +13,25 @@ use App\Model\Repository;
  */
 class StaticLabelApi extends NullLabelApi
 {
-    public function getComponentLabelsForRepository(Repository $repository): array
-    {
-        return [
-            'Asset', 'AssetMapper', 'BrowserKit', 'Cache', 'Config', 'Console',
-            'Contracts', 'CssSelector', 'Debug', 'DebugBundle', 'DependencyInjection',
-            'Doctrine', 'DoctrineBridge', 'DomCrawler', 'Dotenv', 'Emoji',
-            'Enhancement', 'ErrorHandler', 'EventDispatcher', 'ExpressionLanguage',
-            'Feature', 'Filesystem', 'Finder', 'Form', 'FrameworkBundle',
-            'HttpClient', 'HttpFoundation', 'HttpKernel', 'Inflector', 'Intl', 'JsonPath', 'JsonStreamer', 'Ldap',
-            'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'Notifier', 'ObjectMapper',
-            'OptionsResolver', 'PasswordHasher', 'PhpUnitBridge', 'Process', 'PropertyAccess',
-            'PropertyInfo', 'ProxyManagerBridge', 'PsrHttpMessageBridge', 'RemoteEvent', 'Routing',
-            'Scheduler', 'Security', 'SecurityBundle', 'Serializer', 'Stopwatch', 'String',
-            'Templating', 'Translation', 'TwigBridge', 'TwigBundle', 'TypeInfo', 'Uid', 'Validator', 'VarDumper',
-            'VarExporter', 'Webhook', 'WebLink', 'WebProfilerBundle', 'WebServerBundle', 'Workflow',
-            'Yaml',
-        ];
-    }
+    private const array LABELS = [
+        'Asset', 'AssetMapper', 'BrowserKit', 'Cache', 'Config', 'Console',
+        'Contracts', 'CssSelector', 'Debug', 'DebugBundle', 'DependencyInjection',
+        'Doctrine', 'DoctrineBridge', 'DomCrawler', 'Dotenv', 'Emoji',
+        'Enhancement', 'ErrorHandler', 'EventDispatcher', 'ExpressionLanguage',
+        'Feature', 'Filesystem', 'Finder', 'Form', 'FrameworkBundle',
+        'HttpClient', 'HttpFoundation', 'HttpKernel', 'Inflector', 'Intl', 'JsonPath', 'JsonStreamer', 'Ldap',
+        'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'Notifier', 'ObjectMapper',
+        'OptionsResolver', 'PasswordHasher', 'PhpUnitBridge', 'Process', 'PropertyAccess',
+        'PropertyInfo', 'ProxyManagerBridge', 'PsrHttpMessageBridge', 'RemoteEvent', 'Routing',
+        'Scheduler', 'Security', 'SecurityBundle', 'Serializer', 'Stopwatch', 'String',
+        'Templating', 'Translation', 'TwigBridge', 'TwigBundle', 'TypeInfo', 'Uid', 'Validator', 'VarDumper',
+        'VarExporter', 'Webhook', 'WebLink', 'WebProfilerBundle', 'WebServerBundle', 'Workflow',
+        'Yaml',
+    ];
 
     public function getAllLabelsForRepository(Repository $repository): array
     {
-        $labels = $this->getComponentLabelsForRepository($repository);
+        $labels = self::LABELS;
         $labels[] = 'BC Break';
         $labels[] = 'Bug';
         $labels[] = 'Critical';
@@ -47,7 +44,7 @@ class StaticLabelApi extends NullLabelApi
         return $labels;
     }
 
-    public function getIssueLabels($issueNumber, Repository $repository): array
+    public function getIssueLabels(int $issueNumber, Repository $repository): array
     {
         return [];
     }

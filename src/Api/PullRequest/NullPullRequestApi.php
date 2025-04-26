@@ -11,12 +11,12 @@ use App\Model\Repository;
  */
 class NullPullRequestApi implements PullRequestApi
 {
-    public function show(Repository $repository, $number): array
+    public function show(Repository $repository, int $number): array
     {
         return [];
     }
 
-    public function updateTitle(Repository $repository, $number, string $title, ?string $body = null): void
+    public function updateTitle(Repository $repository, int $number, string $title, ?string $body = null): void
     {
     }
 
