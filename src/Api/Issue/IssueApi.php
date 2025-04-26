@@ -14,19 +14,27 @@ interface IssueApi
 {
     /**
      * Open new issue or update existing issue.
+     *
+     * @param array<string> $labels
      */
-    public function open(Repository $repository, string $title, string $body, array $labels);
+    public function open(Repository $repository, string $title, string $body, array $labels): void;
 
-    public function show(Repository $repository, $issueNumber): array;
+    /**
+     * @return array<string, mixed>
+     */
+    public function show(Repository $repository, int $issueNumber): array;
 
-    public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody);
+    public function commentOnIssue(Repository $repository, int $issueNumber, string $commentBody): void;
 
-    public function lastCommentWasMadeByBot(Repository $repository, $number): bool;
+    public function lastCommentWasMadeByBot(Repository $repository, int $number): bool;
 
+    /**
+     * @return iterable<array<string, mixed>>
+     */
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable;
 
     /**
      * Close an issue and mark it as "not_planned".
      */
-    public function close(Repository $repository, $issueNumber): void;
+    public function close(Repository $repository, int $issueNumber): void;
 }

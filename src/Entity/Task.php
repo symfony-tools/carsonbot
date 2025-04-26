@@ -15,9 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table]
 class Task
 {
-    public const ACTION_CLOSE_STALE = 1;
-    public const ACTION_CLOSE_DRAFT = 2;
-    public const ACTION_INFORM_CLOSE_STALE = 3;
+    public const int ACTION_CLOSE_STALE = 1;
+    public const int ACTION_CLOSE_DRAFT = 2;
+    public const int ACTION_INFORM_CLOSE_STALE = 3;
 
     /**
      * @var int
@@ -30,11 +30,8 @@ class Task
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
-    /**
-     * @var \DateTimeImmutable
-     */
     #[ORM\Column(type: 'datetime_immutable')]
-    private $updatedAt;
+    private \DateTimeImmutable $updatedAt;
 
     public function __construct(
         #[ORM\Column(type: 'string')]
@@ -44,9 +41,10 @@ class Task
         #[ORM\Column(type: 'integer')]
         private readonly int $action,
         #[ORM\Column(type: 'datetime_immutable')]
-        private \DateTimeImmutable $verifyAfter)
-    {
+        private \DateTimeImmutable $verifyAfter,
+    ) {
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): int
@@ -81,7 +79,7 @@ class Task
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
-    public function updateUpdatedAt()
+    public function updateUpdatedAt(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
     }

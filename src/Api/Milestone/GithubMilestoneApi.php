@@ -22,6 +22,9 @@ class GithubMilestoneApi implements MilestoneApi
     ) {
     }
 
+    /**
+     * @return array<array<string, mixed>>
+     */
     private function getMilestones(Repository $repository): array
     {
         $key = $this->getCacheKey($repository);

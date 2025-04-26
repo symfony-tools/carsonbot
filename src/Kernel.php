@@ -17,7 +17,9 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
-        /** @var array $repositories */
+        /**
+         * @var array<string, array{subscribers: string[]}> $repositories
+         */
         $repositories = $container->getParameter('repositories');
         $dispatcherCollection = $container->getDefinition(EventDispatcher::class);
 

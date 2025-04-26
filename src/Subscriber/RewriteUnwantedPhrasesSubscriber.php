@@ -59,7 +59,10 @@ class RewriteUnwantedPhrasesSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    private function replaceUnwantedPhrases(string $text, &$count)
+    /**
+     * @param int &$count (optional)
+     */
+    private function replaceUnwantedPhrases(string $text, &$count): string
     {
         $replace = [
             'dead code' => 'unused code',

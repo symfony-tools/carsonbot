@@ -14,9 +14,12 @@ use App\Model\Repository;
  */
 interface PullRequestApi
 {
-    public function show(Repository $repository, $number): array;
+    /**
+     * @return array<string, mixed>
+     */
+    public function show(Repository $repository, int $number): array;
 
-    public function updateTitle(Repository $repository, $number, string $title, ?string $body = null): void;
+    public function updateTitle(Repository $repository, int $number, string $title, ?string $body = null): void;
 
     public function getAuthorCount(Repository $repository, string $author): int;
 }

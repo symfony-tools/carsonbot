@@ -8,6 +8,9 @@ use Psr\Log\LoggerInterface;
 
 class GitHubStatusApi implements StatusApi
 {
+    /**
+     * @var array<string, string>
+     */
     private static array $statusToLabel = [
         Status::NEEDS_REVIEW => 'Status: Needs Review',
         Status::NEEDS_WORK => 'Status: Needs Work',
@@ -15,6 +18,9 @@ class GitHubStatusApi implements StatusApi
         Status::REVIEWED => 'Status: Reviewed',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     private array $labelToStatus;
 
     public function __construct(
@@ -69,7 +75,7 @@ class GitHubStatusApi implements StatusApi
         }
     }
 
-    public function getIssueStatus($issueNumber, Repository $repository): ?string
+    public function getIssueStatus(int $issueNumber, Repository $repository): ?string
     {
         $currentLabels = $this->labelsApi->getIssueLabels($issueNumber, $repository);
 
