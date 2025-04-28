@@ -9,15 +9,22 @@ use PHPUnit\Framework\TestCase;
 
 class WipParserTest extends TestCase
 {
-    public function testMatchTitle()
+    /**
+     * @dataProvider titlesProvider
+     */
+    public function testMatchTitle(bool $expected, string $title)
     {
-        $this->assertTrue(WipParser::matchTitle('[WIP] foo'));
-        $this->assertTrue(WipParser::matchTitle('WIP: bar'));
-        $this->assertTrue(WipParser::matchTitle('(WIP) xas'));
-        $this->assertTrue(WipParser::matchTitle('[WIP]foo'));
-        $this->assertTrue(WipParser::matchTitle('[wip] foo'));
+        $this->assertSame($expected, WipParser::matchTitle($title));
+    }
 
-        $this->assertFalse(WipParser::matchTitle('Bar [WIP] foo'));
-        $this->assertFalse(WipParser::matchTitle('FOOWIP: foo'));
+    public static function titlesProvider(): iterable
+    {
+        yield [true, '[WIP] foo'];
+        yield [true, 'WIP: bar'];
+        yield [true, '(WIP) xas'];
+        yield [true, '[WIP]foo'];
+        yield [true, '[wip] foo'];
+        yield [false, 'Bar [WIP] foo'];
+        yield [false, 'FOOWIP: foo'];
     }
 }
