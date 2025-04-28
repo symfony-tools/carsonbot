@@ -15,11 +15,9 @@ use App\Repository\TaskRepository;
  */
 class TaskScheduler
 {
-    private $taskRepo;
-
-    public function __construct(TaskRepository $taskRepo)
-    {
-        $this->taskRepo = $taskRepo;
+    public function __construct(
+        private TaskRepository $taskRepo
+    ) {
     }
 
     public function runLater(Repository $repository, int $number, int $action, \DateTimeImmutable $checkAt)
