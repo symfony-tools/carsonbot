@@ -10,16 +10,25 @@ use Psr\Log\NullLogger;
 
 class LabelNameExtractorTest extends TestCase
 {
-    public function testExtractLabels()
+    /**
+     * @dataProvider provideLabels
+     */
+    public function testExtractLabels(array $expected, string $title)
     {
         $api = new StaticLabelApi();
         $extractor = new LabelNameExtractor($api, new NullLogger());
         $repo = new Repository('carsonbot-playground', 'symfony');
 
-        $this->assertSame(['Messenger'], $extractor->extractLabels('[Messenger] Foobar', $repo));
-        $this->assertSame(['Messenger'], $extractor->extractLabels('[messenger] Foobar', $repo));
-        $this->assertSame(['Messenger', 'Mime'], $extractor->extractLabels('[Messenger][Mime] Foobar', $repo));
-        $this->assertSame(['Messenger', 'Mime'], $extractor->extractLabels('[Messenger] [Mime] Foobar', $repo));
-        $this->assertSame(['Messenger', 'Mime'], $extractor->extractLabels('[Messenger] Foobar [Mime] ', $repo));
+        $this->assertSame($expected, $extractor->extractLabels($title, $repo));
+    }
+
+    public static function provideLabels(): iterable
+    {
+        yield [['Messenger'], '[Messenger] Foobar'];
+        yield [['Messenger'], '[messenger] Foobar'];
+        yield [['Messenger', 'Mime'], '[Messenger][Mime] Foobar'];
+        yield [['Messenger', 'Mime'], '[Messenger] [Mime] Foobar'];
+        yield [['Messenger', 'Mime'], '[Messenger] Foobar [Mime]'];
+
     }
 }
