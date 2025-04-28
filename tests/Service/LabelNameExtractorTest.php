@@ -28,6 +28,5 @@ class LabelNameExtractorTest extends TestCase
         yield [['Messenger', 'Mime'], '[Messenger][Mime] Foobar'];
         yield [['Messenger', 'Mime'], '[Messenger] [Mime] Foobar'];
         yield [['Messenger', 'Mime'], '[Messenger] Foobar [Mime]'];
-
     }
 }
