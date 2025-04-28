@@ -8,7 +8,7 @@ namespace App\Service;
 class WipParser
 {
     /**
-     * Returns true if the title begins by [WIP], (WIP) or WIP:.
+     * Returns true if the title starts with [WIP], (WIP) or WIP:.
      */
     public static function matchTitle(string $title): bool
     {
