@@ -29,7 +29,7 @@ class NullIssueApi implements IssueApi
         return [];
     }
 
-    public function close(Repository $repository, $issueNumber, ?string $reason = null): void
+    public function close(Repository $repository, $issueNumber): void
     {
     }
 }

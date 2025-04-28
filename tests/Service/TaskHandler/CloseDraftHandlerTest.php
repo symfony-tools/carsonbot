@@ -18,18 +18,16 @@ class CloseDraftHandlerTest extends TestCase
     {
         $prApi = $this->getMockBuilder(NullPullRequestApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['show'])
             ->getMock();
         $prApi->expects($this->once())->method('show')->willReturn(['draft' => true]);
 
         $issueApi = $this->getMockBuilder(NullIssueApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['close'])
             ->getMock();
         $issueApi
             ->expects($this->once())
             ->method('close')
-            ->with($this->anything(), 4711, 'not_planned');
+            ->with($this->anything(), 4711);
 
         $repoProvider = new RepositoryProvider(['carsonbot-playground/symfony' => []]);
 

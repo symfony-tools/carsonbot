@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service\TaskHandler;
 
 use App\Api\Issue\IssueApi;
-use App\Api\Issue\StateReason;
 use App\Api\PullRequest\PullRequestApi;
 use App\Entity\Task;
 use App\Service\RepositoryProvider;
@@ -35,7 +34,7 @@ class CloseDraftHandler implements TaskHandlerInterface
 
         $pr = $this->pullRequestApi->show($repository, $task->getNumber());
         if ($pr['draft'] ?? false) {
-            $this->issueApi->close($repository, $task->getNumber(), StateReason::NOT_PLANNED);
+            $this->issueApi->close($repository, $task->getNumber());
         }
     }
 
