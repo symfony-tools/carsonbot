@@ -24,7 +24,6 @@ class WipParserTest extends TestCase
         yield [true, '(WIP) xas'];
         yield [true, '[WIP]foo'];
         yield [true, '[wip] foo'];
-
         yield [false, 'Bar [WIP] foo'];
         yield [false, 'FOOWIP: foo'];
     }
