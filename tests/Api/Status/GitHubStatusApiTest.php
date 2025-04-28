@@ -16,7 +16,6 @@ use Psr\Log\LoggerInterface;
 class GitHubStatusApiTest extends TestCase
 {
     public const USER_NAME = 'weaverryan';
-
     public const REPO_NAME = 'carson';
 
     /**

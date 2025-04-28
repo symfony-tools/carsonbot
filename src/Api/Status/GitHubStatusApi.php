@@ -13,6 +13,7 @@ class GitHubStatusApi implements StatusApi
         Status::NEEDS_WORK => 'Status: Needs Work',
         Status::WORKS_FOR_ME => 'Status: Works for me',
         Status::REVIEWED => 'Status: Reviewed',
+        Status::WAITING_FEEDBACK => 'Status: Waiting feedback',
     ];
 
     private array $labelToStatus;
