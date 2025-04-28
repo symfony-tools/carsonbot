@@ -15,8 +15,7 @@ class LabelNameExtractorTest extends TestCase
      */
     public function testExtractLabels(array $expected, string $title)
     {
-        $api = new StaticLabelApi();
-        $extractor = new LabelNameExtractor($api, new NullLogger());
+        $extractor = new LabelNameExtractor(new StaticLabelApi(), new NullLogger());
         $repo = new Repository('carsonbot-playground', 'symfony');
 
         $this->assertSame($expected, $extractor->extractLabels($title, $repo));
