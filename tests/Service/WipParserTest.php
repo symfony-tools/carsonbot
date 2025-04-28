@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Service;
+namespace App\Tests\Service;
 
 use App\Service\WipParser;
 use PHPUnit\Framework\TestCase;
