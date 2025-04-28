@@ -67,7 +67,7 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
     public function onIssue(GitHubEvent $event)
     {
         $data = $event->getData();
-        if ('opened' !== $action = $data['action']) {
+        if ('opened' !== $data['action']) {
             return;
         }
         $repository = $event->getRepository();
