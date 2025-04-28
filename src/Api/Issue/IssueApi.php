@@ -26,7 +26,7 @@ interface IssueApi
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable;
 
     /**
-     * Close an issue or a pull request.
+     * Close an issue and mark it as "not_planned".
      */
-    public function close(Repository $repository, $issueNumber);
+    public function close(Repository $repository, $issueNumber): void;
 }

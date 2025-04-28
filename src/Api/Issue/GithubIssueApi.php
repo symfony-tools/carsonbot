@@ -3,6 +3,8 @@
 namespace App\Api\Issue;
 
 use App\Model\Repository;
+use App\Service\TaskHandler\CloseDraftHandler;
+use App\Service\TaskHandler\CloseStaleIssuesHandler;
 use Github\Api\Issue;
 use Github\Api\Issue\Comments;
 use Github\Api\Search;
@@ -54,9 +56,23 @@ class GithubIssueApi implements IssueApi
         return $this->issueApi->show($repository->getVendor(), $repository->getName(), $issueNumber);
     }
 
-    public function close(Repository $repository, $issueNumber)
+    /**
+     * Close an issue and mark it as "not_planned".
+     *
+     * @see CloseDraftHandler
+     * @see CloseStaleIssuesHandler
+     */
+    public function close(Repository $repository, $issueNumber): void
     {
-        $this->issueApi->update($repository->getVendor(), $repository->getName(), $issueNumber, ['state' => 'closed']);
+        $this->issueApi->update(
+            $repository->getVendor(),
+            $repository->getName(),
+            $issueNumber,
+            [
+                'state' => 'closed',
+                'state_reason' => 'not_planned',
+            ],
+        );
     }
 
     /**

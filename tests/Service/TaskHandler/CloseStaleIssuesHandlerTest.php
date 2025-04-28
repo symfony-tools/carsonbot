@@ -62,17 +62,15 @@ class CloseStaleIssuesHandlerTest extends TestCase
     {
         $labelApi = $this->getMockBuilder(NullLabelApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getIssueLabels'])
             ->getMock();
         $labelApi->expects($this->any())->method('getIssueLabels')->willReturn(['Bug']);
 
         $issueApi = $this->getMockBuilder(NullIssueApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['close', 'lastCommentWasMadeByBot', 'show'])
             ->getMock();
         $issueApi->expects($this->any())->method('show')->willReturn(['state' => 'open']);
         $issueApi->expects($this->any())->method('lastCommentWasMadeByBot')->willReturn(true);
-        $issueApi->expects($this->once())->method('close');
+        $issueApi->expects($this->once())->method('close')->with($this->anything(), 4711);
 
         $repoProvider = new RepositoryProvider(['carsonbot-playground/symfony' => []]);
 
