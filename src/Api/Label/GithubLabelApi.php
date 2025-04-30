@@ -30,9 +30,6 @@ class GithubLabelApi implements LabelApi
     ) {
     }
 
-    /**
-     * @return array|string[]
-     */
     public function getIssueLabels(int $issueNumber, Repository $repository): array
     {
         $key = $this->getCacheKey($issueNumber, $repository);
