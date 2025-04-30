@@ -3,8 +3,6 @@
 namespace App\Api\Issue;
 
 use App\Model\Repository;
-use App\Service\TaskHandler\CloseDraftHandler;
-use App\Service\TaskHandler\CloseStaleIssuesHandler;
 use Github\Api\Issue;
 use Github\Api\Issue\Comments;
 use Github\Api\Search;
@@ -21,7 +19,7 @@ class GithubIssueApi implements IssueApi
     ) {
     }
 
-    public function open(Repository $repository, string $title, string $body, array $labels)
+    public function open(Repository $repository, string $title, string $body, array $labels): void
     {
         $params = [
             'title' => $title,
@@ -43,7 +41,7 @@ class GithubIssueApi implements IssueApi
         }
     }
 
-    public function lastCommentWasMadeByBot(Repository $repository, $number): bool
+    public function lastCommentWasMadeByBot(Repository $repository, int $number): bool
     {
         $allComments = $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $number, ['per_page' => 100]);
         $lastComment = $allComments[count($allComments) - 1] ?? [];
@@ -51,18 +49,12 @@ class GithubIssueApi implements IssueApi
         return $this->botUsername === ($lastComment['user']['login'] ?? null);
     }
 
-    public function show(Repository $repository, $issueNumber): array
+    public function show(Repository $repository, int $issueNumber): array
     {
         return $this->issueApi->show($repository->getVendor(), $repository->getName(), $issueNumber);
     }
 
-    /**
-     * Close an issue and mark it as "not_planned".
-     *
-     * @see CloseDraftHandler
-     * @see CloseStaleIssuesHandler
-     */
-    public function close(Repository $repository, $issueNumber): void
+    public function close(Repository $repository, int $issueNumber): void
     {
         $this->issueApi->update(
             $repository->getVendor(),
@@ -78,7 +70,7 @@ class GithubIssueApi implements IssueApi
     /**
      * This will comment on both Issues and Pull Requests.
      */
-    public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody)
+    public function commentOnIssue(Repository $repository, int $issueNumber, string $commentBody): void
     {
         $this->issueCommentApi->create(
             $repository->getVendor(),

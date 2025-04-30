@@ -2,6 +2,7 @@
 
 namespace App\Tests\Subscriber;
 
+use App\Api\Label\LabelApi;
 use App\Api\Label\StaticLabelApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
@@ -14,16 +15,11 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class AutoLabelFromContentSubscriberTest extends TestCase
 {
-    private $autoLabelSubscriber;
+    private LabelApi $labelsApi;
 
-    private $labelsApi;
+    private Repository $repository;
 
-    private $repository;
-
-    /**
-     * @var EventDispatcher
-     */
-    private $dispatcher;
+    private EventDispatcher $dispatcher;
 
     protected function setUp(): void
     {
@@ -31,19 +27,19 @@ class AutoLabelFromContentSubscriberTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['addIssueLabels'])
             ->getMock();
-        $this->autoLabelSubscriber = new AutoLabelFromContentSubscriber($this->labelsApi, new LabelNameExtractor($this->labelsApi, new NullLogger()));
+
+        $autoLabelSubscriber = new AutoLabelFromContentSubscriber($this->labelsApi, new LabelNameExtractor($this->labelsApi, new NullLogger()));
         $this->repository = new Repository('weaverryan', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
-        $this->dispatcher->addSubscriber($this->autoLabelSubscriber);
+        $this->dispatcher->addSubscriber($autoLabelSubscriber);
     }
 
     public function testAutoLabelIssue()
     {
         $this->labelsApi->expects($this->once())
             ->method('addIssueLabels')
-            ->with(1234, ['Messenger'], $this->repository)
-            ->willReturn(null);
+            ->with(1234, ['Messenger'], $this->repository);
 
         $event = new GitHubEvent([
             'action' => 'opened',
@@ -70,8 +66,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
     {
         $this->labelsApi->expects($this->once())
             ->method('addIssueLabels')
-            ->with(1234, $expectedNewLabels, $this->repository)
-            ->willReturn(null);
+            ->with(1234, $expectedNewLabels, $this->repository);
 
         $event = new GitHubEvent([
             'action' => 'opened',

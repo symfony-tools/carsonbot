@@ -22,8 +22,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class PingStaleIssuesCommand extends Command
 {
-    public const MESSAGE_TWO_AFTER = '+2weeks';
-    public const MESSAGE_THREE_AND_CLOSE_AFTER = '+2weeks';
+    public const string MESSAGE_TWO_AFTER = '+2weeks';
+    public const string MESSAGE_THREE_AND_CLOSE_AFTER = '+2weeks';
 
     protected static $defaultName = 'app:issue:ping-stale';
 
@@ -69,12 +69,15 @@ class PingStaleIssuesCommand extends Command
         }
 
         foreach ($issues as $issue) {
+            /**
+             * @var array{number: int, name: string, labels: array<int, array{name: string}>} $issue
+             */
             $comment = $this->commentGenerator->getComment($this->extractType($issue));
             $this->issueApi->commentOnIssue($repository, $issue['number'], $comment);
             $this->labelApi->addIssueLabel($issue['number'], 'Stalled', $repository);
 
             // add a scheduled task to process this issue again after 2 weeks
-            $this->scheduler->runLater($repository, (int) $issue['number'], Task::ACTION_INFORM_CLOSE_STALE, new \DateTimeImmutable(self::MESSAGE_TWO_AFTER));
+            $this->scheduler->runLater($repository, $issue['number'], Task::ACTION_INFORM_CLOSE_STALE, new \DateTimeImmutable(self::MESSAGE_TWO_AFTER));
         }
 
         return Command::SUCCESS;
@@ -83,6 +86,8 @@ class PingStaleIssuesCommand extends Command
     /**
      * Extract type from issue array. Make sure we prioritize labels if there are
      * more than one type defined.
+     *
+     * @param array{number: int, name: string, labels: array<int, array{name: string}>} $issue
      */
     private function extractType(array $issue): string
     {

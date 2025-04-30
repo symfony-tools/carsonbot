@@ -20,7 +20,7 @@ class TaskScheduler
     ) {
     }
 
-    public function runLater(Repository $repository, int $number, int $action, \DateTimeImmutable $checkAt)
+    public function runLater(Repository $repository, int $number, int $action, \DateTimeImmutable $checkAt): void
     {
         $task = new Task($repository->getFullName(), $number, $action, $checkAt);
         $this->taskRepo->persist($task);

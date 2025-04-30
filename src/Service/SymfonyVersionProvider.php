@@ -37,6 +37,8 @@ class SymfonyVersionProvider
     }
 
     /**
+     * @return array<int, string>
+     *
      * @throws \RuntimeException
      */
     public function getMaintainedVersions(): array

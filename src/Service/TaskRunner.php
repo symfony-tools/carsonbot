@@ -22,7 +22,7 @@ readonly class TaskRunner
     ) {
     }
 
-    public function run(Task $task)
+    public function run(Task $task): void
     {
         try {
             $this->doRun($task);

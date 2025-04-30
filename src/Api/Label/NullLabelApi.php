@@ -8,29 +8,24 @@ use App\Model\Repository;
 
 class NullLabelApi implements LabelApi
 {
-    public function getIssueLabels($issueNumber, Repository $repository): array
+    public function getIssueLabels(int $issueNumber, Repository $repository): array
     {
         return [];
     }
 
-    public function addIssueLabel($issueNumber, string $label, Repository $repository)
+    public function addIssueLabel(int $issueNumber, string $label, Repository $repository): void
     {
     }
 
-    public function removeIssueLabel($issueNumber, string $label, Repository $repository)
+    public function removeIssueLabel(int $issueNumber, string $label, Repository $repository): void
     {
     }
 
-    public function addIssueLabels($issueNumber, array $labels, Repository $repository)
+    public function addIssueLabels(int $issueNumber, array $labels, Repository $repository): void
     {
     }
 
     public function getAllLabelsForRepository(Repository $repository): array
-    {
-        return [];
-    }
-
-    public function getComponentLabelsForRepository(Repository $repository): array
     {
         return [];
     }

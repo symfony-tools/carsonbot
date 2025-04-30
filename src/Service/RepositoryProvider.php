@@ -14,6 +14,9 @@ class RepositoryProvider
      */
     private array $repositories = [];
 
+    /**
+     * @param array<string, array{secret?: string}> $repositories
+     */
     public function __construct(array $repositories)
     {
         foreach ($repositories as $repositoryFullName => $repositoryData) {

@@ -41,6 +41,7 @@ class ListTaskCommand extends Command
         }
 
         $limit = 100;
+        /** @var Task[] $tasks */
         $tasks = $this->repository->findBy($criteria, ['verifyAfter' => 'ASC'], $limit);
         $rows = [];
         foreach ($tasks as $task) {

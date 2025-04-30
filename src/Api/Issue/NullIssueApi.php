@@ -6,20 +6,20 @@ use App\Model\Repository;
 
 class NullIssueApi implements IssueApi
 {
-    public function open(Repository $repository, string $title, string $body, array $labels)
+    public function open(Repository $repository, string $title, string $body, array $labels): void
     {
     }
 
-    public function show(Repository $repository, $issueNumber): array
+    public function show(Repository $repository, int $issueNumber): array
     {
         return [];
     }
 
-    public function commentOnIssue(Repository $repository, $issueNumber, string $commentBody)
+    public function commentOnIssue(Repository $repository, int $issueNumber, string $commentBody): void
     {
     }
 
-    public function lastCommentWasMadeByBot(Repository $repository, $number): bool
+    public function lastCommentWasMadeByBot(Repository $repository, int $number): bool
     {
         return false;
     }
@@ -29,7 +29,7 @@ class NullIssueApi implements IssueApi
         return [];
     }
 
-    public function close(Repository $repository, $issueNumber): void
+    public function close(Repository $repository, int $issueNumber): void
     {
     }
 }
