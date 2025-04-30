@@ -115,7 +115,7 @@ class GithubLabelApi implements LabelApi
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function getComponentLabelsForRepository(Repository $repository): array
     {
@@ -136,7 +136,7 @@ class GithubLabelApi implements LabelApi
     }
 
     /**
-     * @return array<string, array{name: string, color: string}>
+     * @return array<array{name: string, color: string}>
      */
     private function getAllLabels(Repository $repository): array
     {
