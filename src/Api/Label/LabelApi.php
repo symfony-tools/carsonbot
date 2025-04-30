@@ -27,9 +27,4 @@ interface LabelApi
      * @return string[]
      */
     public function getAllLabelsForRepository(Repository $repository): array;
-
-    /**
-     * @return string[]
-     */
-    public function getComponentLabelsForRepository(Repository $repository): array;
 }

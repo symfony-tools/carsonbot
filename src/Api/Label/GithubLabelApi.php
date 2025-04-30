@@ -115,27 +115,6 @@ class GithubLabelApi implements LabelApi
     }
 
     /**
-     * @return list<string>
-     */
-    public function getComponentLabelsForRepository(Repository $repository): array
-    {
-        $key = 'component_labels_'.sha1($repository->getFullName());
-
-        return $this->cache->get($key, function (ItemInterface $item) use ($repository): array {
-            $labels = $this->getAllLabels($repository);
-            $item->expiresAfter(86400);
-            $componentLabels = [];
-            foreach ($labels as $label) {
-                if ('dddddd' === strtolower($label['color'])) {
-                    $componentLabels[] = $label['name'];
-                }
-            }
-
-            return $componentLabels;
-        });
-    }
-
-    /**
      * @return array<array{name: string, color: string}>
      */
     private function getAllLabels(Repository $repository): array

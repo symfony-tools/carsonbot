@@ -29,11 +29,6 @@ class StaticLabelApi extends NullLabelApi
         'Yaml',
     ];
 
-    public function getComponentLabelsForRepository(Repository $repository): array
-    {
-        return self::LABELS;
-    }
-
     public function getAllLabelsForRepository(Repository $repository): array
     {
         $labels = self::LABELS;

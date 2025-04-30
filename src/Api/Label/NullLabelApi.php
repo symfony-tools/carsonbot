@@ -29,9 +29,4 @@ class NullLabelApi implements LabelApi
     {
         return [];
     }
-
-    public function getComponentLabelsForRepository(Repository $repository): array
-    {
-        return [];
-    }
 }

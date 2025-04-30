@@ -14,8 +14,8 @@ use Psr\Log\LoggerInterface;
 class LabelNameExtractor
 {
     private const array LABEL_ALIASES = [
-        'bridge\doctrine' => 'DoctrineBridge',
-        'bridge\monolog' => 'MonologBridge',
+        'bridge/doctrine' => 'DoctrineBridge',
+        'bridge/monolog' => 'MonologBridge',
         'bridge/phpunit' => 'PhpUnitBridge',
         'bridge/proxymanager' => 'ProxyManagerBridge',
         'bridge/twig' => 'TwigBridge',
@@ -60,8 +60,6 @@ class LabelNameExtractor
     }
 
     /**
-     * Get all labels for a given label.
-     *
      * @return \Generator<string>
      */
     public function getAliasesForLabel(string $label): \Generator
