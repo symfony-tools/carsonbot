@@ -49,9 +49,6 @@ class GithubIssueApi implements IssueApi
         return $this->botUsername === ($lastComment['user']['login'] ?? null);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function show(Repository $repository, int $issueNumber): array
     {
         return $this->issueApi->show($repository->getVendor(), $repository->getName(), $issueNumber);
@@ -83,9 +80,6 @@ class GithubIssueApi implements IssueApi
         );
     }
 
-    /**
-     * @return array<int, array<string, mixed>>
-     */
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable
     {
         return $this->resultPager->fetchAllLazy($this->searchApi, 'issues', [

@@ -60,7 +60,9 @@ class RewriteUnwantedPhrasesSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param int &$count (optional)
+     * @param int<0, max>|null &$count
+     *
+     * @param-out int $count
      */
     private function replaceUnwantedPhrases(string $text, &$count): string
     {

@@ -12,7 +12,7 @@ use Github\Api\Issue\Milestones;
 class GithubMilestoneApi implements MilestoneApi
 {
     /**
-     * @var string[][]
+     * @var array<string, array<int, array{title: string, number: int}>>
      */
     private array $cache = [];
 
@@ -23,7 +23,7 @@ class GithubMilestoneApi implements MilestoneApi
     }
 
     /**
-     * @return array<array<string, mixed>>
+     * @return array<int, array{title: string, number: int}>
      */
     private function getMilestones(Repository $repository): array
     {
