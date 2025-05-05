@@ -13,6 +13,7 @@ abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterfac
         'needs work' => Status::NEEDS_WORK,
         'works for me' => Status::WORKS_FOR_ME,
         'reviewed' => Status::REVIEWED,
+        'waiting feedback' => Status::WAITING_FEEDBACK,
     ];
 
     public function __construct(
