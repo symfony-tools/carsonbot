@@ -8,6 +8,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var array<string, string>
+     */
     protected static array $triggerWordToStatus = [
         'needs review' => Status::NEEDS_REVIEW,
         'needs work' => Status::NEEDS_WORK,
@@ -34,7 +37,7 @@ abstract class AbstractStatusChangeSubscriber implements EventSubscriberInterfac
 
         if (preg_match_all($pattern, $body, $matches)) {
             // Second subpattern = first status character
-            return static::$triggerWordToStatus[strtolower(end($matches[1]))];
+            return static::$triggerWordToStatus[strtolower(end($matches[1]) ?: '')];
         }
 
         return null;

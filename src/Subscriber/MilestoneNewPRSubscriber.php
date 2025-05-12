@@ -16,8 +16,8 @@ class MilestoneNewPRSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly MilestoneApi $milestonesApi,
         private readonly SymfonyVersionProvider $symfonyVersionProvider,
-        private $ignoreCurrentVersion = false,
-        private $ignoreDefaultBranch = false,
+        private bool $ignoreCurrentVersion = false,
+        private bool $ignoreDefaultBranch = false,
     ) {
     }
 

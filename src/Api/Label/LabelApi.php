@@ -9,21 +9,22 @@ use App\Model\Repository;
  */
 interface LabelApi
 {
-    public function getIssueLabels($issueNumber, Repository $repository): array;
+    /**
+     * @return string[]
+     */
+    public function getIssueLabels(int $issueNumber, Repository $repository): array;
 
-    public function addIssueLabel($issueNumber, string $label, Repository $repository);
+    public function addIssueLabel(int $issueNumber, string $label, Repository $repository): void;
 
-    public function removeIssueLabel($issueNumber, string $label, Repository $repository);
+    public function removeIssueLabel(int $issueNumber, string $label, Repository $repository): void;
 
-    public function addIssueLabels($issueNumber, array $labels, Repository $repository);
+    /**
+     * @param string[] $labels
+     */
+    public function addIssueLabels(int $issueNumber, array $labels, Repository $repository): void;
 
     /**
      * @return string[]
      */
     public function getAllLabelsForRepository(Repository $repository): array;
-
-    /**
-     * @return string[]
-     */
-    public function getComponentLabelsForRepository(Repository $repository): array;
 }

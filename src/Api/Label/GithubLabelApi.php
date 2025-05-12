@@ -18,7 +18,7 @@ class GithubLabelApi implements LabelApi
     /**
      * In memory cache for specific issues.
      *
-     * @var array<array-key, array<array-key, bool>>
+     * @var array<string, array<string, bool>>
      */
     private array $labelCache = [];
 
@@ -30,7 +30,7 @@ class GithubLabelApi implements LabelApi
     ) {
     }
 
-    public function getIssueLabels($issueNumber, Repository $repository): array
+    public function getIssueLabels(int $issueNumber, Repository $repository): array
     {
         $key = $this->getCacheKey($issueNumber, $repository);
         if (!isset($this->labelCache[$key])) {
@@ -54,12 +54,12 @@ class GithubLabelApi implements LabelApi
         return $labels;
     }
 
-    public function addIssueLabel($issueNumber, string $label, Repository $repository)
+    public function addIssueLabel(int $issueNumber, string $label, Repository $repository): void
     {
         $this->addIssueLabels($issueNumber, [$label], $repository);
     }
 
-    public function removeIssueLabel($issueNumber, string $label, Repository $repository)
+    public function removeIssueLabel(int $issueNumber, string $label, Repository $repository): void
     {
         $key = $this->getCacheKey($issueNumber, $repository);
         if (isset($this->labelCache[$key]) && !isset($this->labelCache[$key][$label])) {
@@ -81,7 +81,7 @@ class GithubLabelApi implements LabelApi
         }
     }
 
-    public function addIssueLabels($issueNumber, array $labels, Repository $repository)
+    public function addIssueLabels(int $issueNumber, array $labels, Repository $repository): void
     {
         $key = $this->getCacheKey($issueNumber, $repository);
         $labelsToAdd = [];
@@ -115,31 +115,13 @@ class GithubLabelApi implements LabelApi
     }
 
     /**
-     * @return string[]
+     * @return array<array{name: string, color: string}>
      */
-    public function getComponentLabelsForRepository(Repository $repository): array
-    {
-        $key = 'component_labels_'.sha1($repository->getFullName());
-
-        return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
-            $labels = $this->getAllLabels($repository);
-            $item->expiresAfter(86400);
-            $componentLabels = [];
-            foreach ($labels as $label) {
-                if ('dddddd' === strtolower($label['color'])) {
-                    $componentLabels[] = $label['name'];
-                }
-            }
-
-            return $componentLabels;
-        });
-    }
-
     private function getAllLabels(Repository $repository): array
     {
         $key = 'labels_'.sha1($repository->getFullName());
 
-        return $this->cache->get($key, function (ItemInterface $item) use ($repository) {
+        return $this->cache->get($key, function (ItemInterface $item) use ($repository): array {
             $labels = $this->resultPager->fetchAll($this->labelsApi, 'all', [$repository->getVendor(), $repository->getName()]);
             $item->expiresAfter(604800);
 
@@ -147,7 +129,7 @@ class GithubLabelApi implements LabelApi
         });
     }
 
-    private function getCacheKey($issueNumber, Repository $repository)
+    private function getCacheKey(int $issueNumber, Repository $repository): string
     {
         return sprintf('%s_%s_%s', $issueNumber, $repository->getVendor(), $repository->getName());
     }

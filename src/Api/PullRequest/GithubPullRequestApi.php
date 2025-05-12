@@ -17,12 +17,12 @@ class GithubPullRequestApi implements PullRequestApi
     ) {
     }
 
-    public function show(Repository $repository, $number): array
+    public function show(Repository $repository, int $number): array
     {
         return (array) $this->pullRequest->show($repository->getVendor(), $repository->getName(), $number);
     }
 
-    public function updateTitle(Repository $repository, $number, string $title, ?string $body = null): void
+    public function updateTitle(Repository $repository, int $number, string $title, ?string $body = null): void
     {
         $params = ['title' => $title];
 

@@ -8,20 +8,26 @@ use Psr\Log\LoggerInterface;
 
 class GitHubStatusApi implements StatusApi
 {
-    private static array $statusToLabel = [
+    /**
+     * @var array<string, string>
+     */
+    private const array STATUS_TO_LABEL = [
         Status::NEEDS_REVIEW => 'Status: Needs Review',
         Status::NEEDS_WORK => 'Status: Needs Work',
         Status::WORKS_FOR_ME => 'Status: Works for me',
         Status::REVIEWED => 'Status: Reviewed',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     private array $labelToStatus;
 
     public function __construct(
         private readonly LabelApi $labelsApi,
         private readonly LoggerInterface $logger,
     ) {
-        $this->labelToStatus = array_flip(self::$statusToLabel);
+        $this->labelToStatus = array_flip(self::STATUS_TO_LABEL);
     }
 
     /**
@@ -30,11 +36,11 @@ class GitHubStatusApi implements StatusApi
      */
     public function setIssueStatus(int $issueNumber, ?string $newStatus, Repository $repository): void
     {
-        if (null !== $newStatus && !isset(self::$statusToLabel[$newStatus])) {
+        if (null !== $newStatus && !isset(self::STATUS_TO_LABEL[$newStatus])) {
             throw new \InvalidArgumentException(sprintf('Invalid status "%s"', $newStatus));
         }
 
-        $newLabel = null === $newStatus ? null : self::$statusToLabel[$newStatus];
+        $newLabel = null === $newStatus ? null : self::STATUS_TO_LABEL[$newStatus];
         $this->logger->info(sprintf('Fetching issue labels for issue %s, repository %s', $issueNumber, $repository->getFullName()));
         $currentLabels = $this->labelsApi->getIssueLabels($issueNumber, $repository);
 
@@ -69,7 +75,7 @@ class GitHubStatusApi implements StatusApi
         }
     }
 
-    public function getIssueStatus($issueNumber, Repository $repository): ?string
+    public function getIssueStatus(int $issueNumber, Repository $repository): ?string
     {
         $currentLabels = $this->labelsApi->getIssueLabels($issueNumber, $repository);
 
@@ -85,6 +91,6 @@ class GitHubStatusApi implements StatusApi
 
     public static function getNeedsReviewLabel(): string
     {
-        return self::$statusToLabel[Status::NEEDS_REVIEW];
+        return self::STATUS_TO_LABEL[Status::NEEDS_REVIEW];
     }
 }
