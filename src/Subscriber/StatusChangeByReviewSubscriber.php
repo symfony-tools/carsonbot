@@ -40,7 +40,7 @@ class StatusChangeByReviewSubscriber extends AbstractStatusChangeSubscriber
         $newStatus = match (strtolower($data['review']['state'])) {
             'approved' => Status::REVIEWED,
             'changes_requested' => Status::NEEDS_WORK,
-            default => $this->parseStatusFromText($data['review']['body']),
+            default => $this->parseStatusFromText($data['review']['body'] ?? ''),
         };
 
         if (
