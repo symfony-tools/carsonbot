@@ -22,7 +22,7 @@ class BugLabelNewIssueSubscriber implements EventSubscriberInterface
     {
         $data = $event->getData();
         $repository = $event->getRepository();
-        if ('labeled' !== $action = $data['action']) {
+        if ('labeled' !== $data['action']) {
             return;
         }
 
