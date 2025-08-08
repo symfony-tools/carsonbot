@@ -59,7 +59,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
-        $this->assertSame('[Console][FrameworkBundle] [bar] Foo', $responseData['new_title']);
+        $this->assertSame('[Console][FrameworkBundle][bar] Foo', $responseData['new_title']);
     }
 
     public function testOnPullRequestLabeledCaseInsensitive()
@@ -110,7 +110,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $responseData = $event->getResponseData();
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
-        $this->assertSame('[Console] [Random] Foo normal title', $responseData['new_title']);
+        $this->assertSame('[Console][Random] Foo normal title', $responseData['new_title']);
     }
 
     public function testExtraBlankSpace()
@@ -201,8 +201,8 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $responseData = $event->getResponseData();
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
-        // Since Platform and Agent are not recognized labels, they stay in the title with the space
-        $this->assertSame('[Bug] [Platform] [Agent] Foo Bar', $responseData['new_title']);
+        // Since Platform and Agent are not recognized labels, they stay in the title without spaces
+        $this->assertSame('[Bug][Platform][Agent] Foo Bar', $responseData['new_title']);
     }
 
     /**
@@ -257,5 +257,51 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
         $this->assertSame('[Console][FrameworkBundle]', $responseData['new_title']);
+    }
+
+    /**
+     * Test when title has unrecognized bracketed text like [Foo] that isn't a label
+     */
+    public function testUnrecognizedBracketedTextWithNewLabel()
+    {
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => '[Foo] Bar',  // [Foo] is not a recognized label
+            'labels' => [
+                ['name' => 'Console', 'color' => 'dddddd'],  // Adding Console label
+            ],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+        
+        // Currently produces: [Console] [Foo] Bar (with space)
+        // Should produce: [Console][Foo] Bar (no space between brackets)
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+        $this->assertSame('[Console][Foo] Bar', $responseData['new_title']);
+    }
+
+    /**
+     * Test multiple unrecognized bracketed texts with real labels
+     */
+    public function testMultipleUnrecognizedBracketsWithRealLabels()
+    {
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => '[TODO] [WIP] [Foo] Some title',  // [TODO], [WIP], [Foo] are not recognized labels
+            'labels' => [
+                ['name' => 'Console', 'color' => 'dddddd'],
+                ['name' => 'FrameworkBundle', 'color' => 'dddddd'],
+            ],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+        
+        // Should keep unrecognized brackets but without spaces between any brackets
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+        $this->assertSame('[Console][FrameworkBundle][TODO][WIP][Foo] Some title', $responseData['new_title']);
     }
 }
