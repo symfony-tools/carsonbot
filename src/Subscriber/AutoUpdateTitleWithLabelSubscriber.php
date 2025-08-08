@@ -80,7 +80,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         $remainingTitle = $prTitle;
         
         // Match all consecutive bracketed items at the start of the title
-        while (preg_match('/^\[([^\]]+)\]\s*/', $remainingTitle, $matches)) {
+        while (preg_match('/^\[([^]]+)]\s*/', $remainingTitle, $matches)) {
             $leadingBrackets .= '['.$matches[1].']';
             $remainingTitle = substr($remainingTitle, strlen($matches[0]));
         }
