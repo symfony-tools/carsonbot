@@ -219,18 +219,19 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
-        
+
+        // The bug would cause this to be '[Platform] [Agent] Foo Bar'
         // because the labels are added with concatenation but not recognized
         // for removal from the title
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
-        
+
         // This is what SHOULD happen (labels concatenated without spaces)
         $this->assertSame('[Agent][Platform] Foo Bar', $responseData['new_title']);
     }
 
     /**
-     * Test that ensures no spaces are ever added between label brackets
+     * Test that ensures no spaces are ever added between label brackets.
      */
     public function testNoSpacesBetweenLabelBrackets()
     {
@@ -246,7 +247,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
-        
+
         // Should produce labels without spaces and no trailing space
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
@@ -254,7 +255,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
     }
 
     /**
-     * Test when title has unrecognized bracketed text like [Foo] that isn't a label
+     * Test when title has unrecognized bracketed text like [Foo] that isn't a label.
      */
     public function testUnrecognizedBracketedTextWithNewLabel()
     {
@@ -268,7 +269,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
-        
+
         // Currently produces: [Console] [Foo] Bar (with space)
         // Should produce: [Console][Foo] Bar (no space between brackets)
         $this->assertCount(2, $responseData);
@@ -277,7 +278,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
     }
 
     /**
-     * Test multiple unrecognized bracketed texts with real labels
+     * Test multiple unrecognized bracketed texts with real labels.
      */
     public function testMultipleUnrecognizedBracketsWithRealLabels()
     {
@@ -292,7 +293,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
-        
+
         // Should keep unrecognized brackets but without spaces between any brackets
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
