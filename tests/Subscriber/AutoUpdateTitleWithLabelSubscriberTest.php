@@ -220,7 +220,6 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
         
-        // The bug would cause this to be '[Platform] [Agent] Foo Bar'
         // because the labels are added with concatenation but not recognized
         // for removal from the title
         $this->assertCount(2, $responseData);
