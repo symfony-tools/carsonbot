@@ -75,8 +75,22 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         // Clean string from all HTML chars and remove whitespace at the beginning
         $prTitle = (string) preg_replace('@^[\h\s]+@u', '', html_entity_decode($prTitle));
 
-        // Add back labels
-        $prTitle = trim($prPrefix.' '.trim($prTitle));
+        // Extract any bracketed text at the beginning of the title
+        $leadingBrackets = '';
+        $remainingTitle = $prTitle;
+
+        // Match all consecutive bracketed items at the start of the title
+        while (preg_match('/^\[([^]]+)]\s*/', $remainingTitle, $matches)) {
+            $leadingBrackets .= '['.$matches[1].']';
+            $remainingTitle = substr($remainingTitle, strlen($matches[0]));
+        }
+
+        // Combine: valid labels + any unrecognized brackets + remaining title
+        if ('' !== trim($remainingTitle)) {
+            $prTitle = $prPrefix.$leadingBrackets.' '.trim($remainingTitle);
+        } else {
+            $prTitle = $prPrefix.$leadingBrackets;
+        }
         if ($originalTitle === $prTitle) {
             return;
         }
