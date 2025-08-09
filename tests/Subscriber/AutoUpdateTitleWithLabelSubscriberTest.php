@@ -205,11 +205,6 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertSame('[Bug][Platform][Agent] Foo Bar', $responseData['new_title']);
     }
 
-    /**
-     * This test reproduces the actual bug: when labels are attached to the PR
-     * but are not in the repository's configured label list, they won't be
-     * removed from the title, causing spacing issues.
-     */
     public function testBugWithLabelsNotInRepositoryLabelList()
     {
         $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
