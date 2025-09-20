@@ -10,4 +10,5 @@ class IssueType
     public const FEATURE = 'Feature';
     public const UNKNOWN = 'Unknown';
     public const RFC = 'RFC';
+    public const DOCUMENTATION = 'Documentation';
 }

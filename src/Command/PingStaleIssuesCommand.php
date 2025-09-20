@@ -95,6 +95,7 @@ class PingStaleIssuesCommand extends Command
             IssueType::FEATURE => false,
             IssueType::BUG => false,
             IssueType::RFC => false,
+            IssueType::DOCUMENTATION => false,
         ];
 
         foreach ($issue['labels'] as $label) {
