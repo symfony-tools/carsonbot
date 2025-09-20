@@ -40,7 +40,7 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
             $prLabels[] = $label;
         }
 
-        // the PR body usually indicates if this is a Bug, Feature, BC Break or Deprecation
+        // the PR body usually indicates if this is a Bug, Feature, BC Break, Deprecation or Documentation
         if (preg_match('/\|\s*Bug fix\?\s*\|\s*yes\s*/i', $prBody, $matches)) {
             $prLabels[] = 'Bug';
         }
@@ -52,6 +52,9 @@ class AutoLabelFromContentSubscriber implements EventSubscriberInterface
         }
         if (preg_match('/\|\s*Deprecations\?\s*\|\s*yes\s*/i', $prBody, $matches)) {
             $prLabels[] = 'Deprecation';
+        }
+        if (preg_match('/\|\s*Documentation\?\s*\|\s*yes\s*/i', $prBody, $matches)) {
+            $prLabels[] = 'Documentation';
         }
 
         $this->labelsApi->addIssueLabels($prNumber, $prLabels, $repository);
