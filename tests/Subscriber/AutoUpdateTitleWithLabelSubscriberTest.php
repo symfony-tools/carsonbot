@@ -295,12 +295,15 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertSame('[Console][FrameworkBundle][TODO][WIP][Foo] Some title', $responseData['new_title']);
     }
 
-    public function testAiBundleNormalizationForSymfonyAi()
+    /**
+     * @dataProvider provideAiBundleTitles
+     */
+    public function testAiBundleNormalizationForSymfonyAi(string $inputTitle, string $expectedTitle)
     {
         $repository = new Repository('symfony', 'ai', null);
         $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $repository);
         $this->pullRequestApi->method('show')->willReturn([
-            'title' => '[AiBundle] Fix something',
+            'title' => $inputTitle,
             'labels' => [],
         ]);
 
@@ -309,23 +312,16 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
 
         $this->assertCount(2, $responseData);
         $this->assertSame(1234, $responseData['pull_request']);
-        $this->assertSame('[AI Bundle] Fix something', $responseData['new_title']);
+        $this->assertSame($expectedTitle, $responseData['new_title']);
     }
 
-    public function testAiBundleWithSpaceNormalizationForSymfonyAi()
+    public static function provideAiBundleTitles(): iterable
     {
-        $repository = new Repository('symfony', 'ai', null);
-        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $repository);
-        $this->pullRequestApi->method('show')->willReturn([
-            'title' => '[Ai Bundle] Fix something',
-            'labels' => [],
-        ]);
-
-        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
-        $responseData = $event->getResponseData();
-
-        $this->assertCount(2, $responseData);
-        $this->assertSame(1234, $responseData['pull_request']);
-        $this->assertSame('[AI Bundle] Fix something', $responseData['new_title']);
+        yield 'AiBundle without space' => ['[AiBundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'Ai Bundle with space' => ['[Ai Bundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'lowercase aibundle' => ['[aibundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'lowercase ai bundle' => ['[ai bundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'uppercase AIBUNDLE' => ['[AIBUNDLE] Fix something', '[AI Bundle] Fix something'];
+        yield 'uppercase AI BUNDLE' => ['[AI BUNDLE] Fix something', '[AI Bundle] Fix something'];
     }
 }
