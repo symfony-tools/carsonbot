@@ -326,12 +326,16 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         yield 'lowercase ai bundle' => ['[ai bundle] Fix something', '[AI Bundle] Fix something'];
         yield 'uppercase AIBUNDLE' => ['[AIBUNDLE] Fix something', '[AI Bundle] Fix something'];
         yield 'uppercase AI BUNDLE' => ['[AI BUNDLE] Fix something', '[AI Bundle] Fix something'];
+        yield 'ai-bundle with hyphen' => ['[ai-bundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'AI-Bundle with hyphen' => ['[AI-Bundle] Fix something', '[AI Bundle] Fix something'];
         yield 'McpBundle without space' => ['[McpBundle] Fix something', '[MCP Bundle] Fix something'];
         yield 'Mcp Bundle with space' => ['[Mcp Bundle] Fix something', '[MCP Bundle] Fix something'];
         yield 'lowercase mcpbundle' => ['[mcpbundle] Fix something', '[MCP Bundle] Fix something'];
         yield 'lowercase mcp bundle' => ['[mcp bundle] Fix something', '[MCP Bundle] Fix something'];
         yield 'uppercase MCPBUNDLE' => ['[MCPBUNDLE] Fix something', '[MCP Bundle] Fix something'];
         yield 'uppercase MCP BUNDLE' => ['[MCP BUNDLE] Fix something', '[MCP Bundle] Fix something'];
+        yield 'mcp-bundle with hyphen' => ['[mcp-bundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'MCP-Bundle with hyphen' => ['[MCP-Bundle] Fix something', '[MCP Bundle] Fix something'];
     }
 
     public function testAiBundleNotNormalizedForOtherRepositories()
