@@ -294,4 +294,38 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertSame(1234, $responseData['pull_request']);
         $this->assertSame('[Console][FrameworkBundle][TODO][WIP][Foo] Some title', $responseData['new_title']);
     }
+
+    public function testAiBundleNormalizationForSymfonyAi()
+    {
+        $repository = new Repository('symfony', 'ai', null);
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => '[AiBundle] Fix something',
+            'labels' => [],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+        $this->assertSame('[AI Bundle] Fix something', $responseData['new_title']);
+    }
+
+    public function testAiBundleWithSpaceNormalizationForSymfonyAi()
+    {
+        $repository = new Repository('symfony', 'ai', null);
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => '[Ai Bundle] Fix something',
+            'labels' => [],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+        $this->assertSame('[AI Bundle] Fix something', $responseData['new_title']);
+    }
 }
