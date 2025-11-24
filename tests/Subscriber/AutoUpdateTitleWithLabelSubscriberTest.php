@@ -294,4 +294,63 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertSame(1234, $responseData['pull_request']);
         $this->assertSame('[Console][FrameworkBundle][TODO][WIP][Foo] Some title', $responseData['new_title']);
     }
+
+    /**
+     * @dataProvider provideTitles
+     */
+    public function testBundleNormalizationForSymfonyAi(string $inputTitle, string $expectedTitle)
+    {
+        $repository = new Repository('symfony', 'ai', null);
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => $inputTitle,
+            'labels' => [],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+        $this->assertSame($expectedTitle, $responseData['new_title']);
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function provideTitles(): iterable
+    {
+        yield 'AiBundle without space' => ['[AiBundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'Ai Bundle with space' => ['[Ai Bundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'lowercase aibundle' => ['[aibundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'lowercase ai bundle' => ['[ai bundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'uppercase AIBUNDLE' => ['[AIBUNDLE] Fix something', '[AI Bundle] Fix something'];
+        yield 'uppercase AI BUNDLE' => ['[AI BUNDLE] Fix something', '[AI Bundle] Fix something'];
+        yield 'ai-bundle with hyphen' => ['[ai-bundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'AI-Bundle with hyphen' => ['[AI-Bundle] Fix something', '[AI Bundle] Fix something'];
+        yield 'McpBundle without space' => ['[McpBundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'Mcp Bundle with space' => ['[Mcp Bundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'lowercase mcpbundle' => ['[mcpbundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'lowercase mcp bundle' => ['[mcp bundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'uppercase MCPBUNDLE' => ['[MCPBUNDLE] Fix something', '[MCP Bundle] Fix something'];
+        yield 'uppercase MCP BUNDLE' => ['[MCP BUNDLE] Fix something', '[MCP Bundle] Fix something'];
+        yield 'mcp-bundle with hyphen' => ['[mcp-bundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'MCP-Bundle with hyphen' => ['[MCP-Bundle] Fix something', '[MCP Bundle] Fix something'];
+    }
+
+    public function testAiBundleNotNormalizedForOtherRepositories()
+    {
+        $repository = new Repository('symfony', 'symfony', null);
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => '[AiBundle] Fix something',
+            'labels' => [],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        // No change expected for non-symfony/ai repositories
+        $this->assertEmpty($responseData);
+    }
 }
