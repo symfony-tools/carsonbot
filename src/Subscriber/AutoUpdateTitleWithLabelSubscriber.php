@@ -92,9 +92,10 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
             $prTitle = $prPrefix.$leadingBrackets;
         }
 
-        // Special handling for symfony/ai: normalize AI Bundle variations in the title
+        // Special handling for symfony/ai: normalize AI Bundle and MCP Bundle variations in the title
         if ('symfony/ai' === $repository->getFullName()) {
             $prTitle = preg_replace('/\[ai\s*bundle\]/i', '[AI Bundle]', $prTitle) ?? $prTitle;
+            $prTitle = preg_replace('/\[mcp\s*bundle\]/i', '[MCP Bundle]', $prTitle) ?? $prTitle;
         }
 
         if ($originalTitle === $prTitle) {

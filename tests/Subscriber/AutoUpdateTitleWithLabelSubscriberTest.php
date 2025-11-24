@@ -296,7 +296,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
     }
 
     /**
-     * @dataProvider provideAiBundleTitles
+     * @dataProvider provideTitles
      */
     public function testAiBundleNormalizationForSymfonyAi(string $inputTitle, string $expectedTitle)
     {
@@ -315,7 +315,10 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertSame($expectedTitle, $responseData['new_title']);
     }
 
-    public static function provideAiBundleTitles(): iterable
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function provideTitles(): iterable
     {
         yield 'AiBundle without space' => ['[AiBundle] Fix something', '[AI Bundle] Fix something'];
         yield 'Ai Bundle with space' => ['[Ai Bundle] Fix something', '[AI Bundle] Fix something'];
@@ -323,6 +326,12 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         yield 'lowercase ai bundle' => ['[ai bundle] Fix something', '[AI Bundle] Fix something'];
         yield 'uppercase AIBUNDLE' => ['[AIBUNDLE] Fix something', '[AI Bundle] Fix something'];
         yield 'uppercase AI BUNDLE' => ['[AI BUNDLE] Fix something', '[AI Bundle] Fix something'];
+        yield 'McpBundle without space' => ['[McpBundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'Mcp Bundle with space' => ['[Mcp Bundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'lowercase mcpbundle' => ['[mcpbundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'lowercase mcp bundle' => ['[mcp bundle] Fix something', '[MCP Bundle] Fix something'];
+        yield 'uppercase MCPBUNDLE' => ['[MCPBUNDLE] Fix something', '[MCP Bundle] Fix something'];
+        yield 'uppercase MCP BUNDLE' => ['[MCP BUNDLE] Fix something', '[MCP Bundle] Fix something'];
     }
 
     public function testAiBundleNotNormalizedForOtherRepositories()
