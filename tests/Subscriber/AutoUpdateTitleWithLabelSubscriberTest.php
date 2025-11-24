@@ -324,4 +324,20 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         yield 'uppercase AIBUNDLE' => ['[AIBUNDLE] Fix something', '[AI Bundle] Fix something'];
         yield 'uppercase AI BUNDLE' => ['[AI BUNDLE] Fix something', '[AI Bundle] Fix something'];
     }
+
+    public function testAiBundleNotNormalizedForOtherRepositories()
+    {
+        $repository = new Repository('symfony', 'symfony', null);
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => '[AiBundle] Fix something',
+            'labels' => [],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        // No change expected for non-symfony/ai repositories
+        $this->assertEmpty($responseData);
+    }
 }
