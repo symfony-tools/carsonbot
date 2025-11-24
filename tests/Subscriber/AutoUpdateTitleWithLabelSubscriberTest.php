@@ -298,7 +298,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
     /**
      * @dataProvider provideTitles
      */
-    public function testAiBundleNormalizationForSymfonyAi(string $inputTitle, string $expectedTitle)
+    public function testBundleNormalizationForSymfonyAi(string $inputTitle, string $expectedTitle)
     {
         $repository = new Repository('symfony', 'ai', null);
         $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $repository);
