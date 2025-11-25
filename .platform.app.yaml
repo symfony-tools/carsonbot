@@ -20,10 +20,6 @@ web:
 
 disk: 2048
 
-#variables:
-#    php:
-#        opcache.preload: /app/config/preload.php
-
 mounts:
     '/var': { source: local, source_path: var }
 
