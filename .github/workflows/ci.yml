@@ -19,7 +19,7 @@ jobs:
           coverage: none
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download dependencies
         uses: ramsey/composer-install@v3
@@ -57,7 +57,7 @@ jobs:
           tools: phpstan:2.1, cs2pr
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download dependencies
         uses: ramsey/composer-install@v3
@@ -78,7 +78,7 @@ jobs:
           tools: php-cs-fixer:3.64, cs2pr
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: PHP-CS-Fixer
         run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
@@ -95,7 +95,7 @@ jobs:
           tools: vimeo/psalm:5.18.0
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download dependencies
         uses: ramsey/composer-install@v3
