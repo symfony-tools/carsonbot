@@ -17,5 +17,6 @@
     </projectFiles>
     <issueHandlers>
         <MissingOverrideAttribute errorLevel="suppress" />
+        <UnusedClass errorLevel="suppress" />
     </issueHandlers>
 </psalm>
