@@ -96,8 +96,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
             'Cool new Feature!',
             <<<EOF
 FOO
-EOF
-            ,
+EOF,
             [],
         ];
 
@@ -117,8 +116,7 @@ Well hi cool peeps!
 | Fixed tickets | n/a
 | License       | MIT
 | Doc PR        | n/a
-EOF
-            ,
+EOF,
             ['Bug'],
         ];
 
@@ -138,8 +136,7 @@ Well hi cool peeps!
 | Fixed tickets | n/a
 | License       | MIT
 | Doc PR        | n/a
-EOF
-            ,
+EOF,
             ['Bug', 'Feature', 'BC Break', 'Deprecation'],
         ];
 
@@ -159,16 +156,14 @@ Well hi cool peeps!
 | Fixed tickets | n/a
 | License       | MIT
 | Doc PR        | n/a
-EOF
-            ,
+EOF,
             ['Bug', 'Feature', 'BC Break', 'Deprecation'],
         ];
 
         $tests[] = [
             '[Asset][bc Break][Fake] Extracting from title [Bug]',
             <<<EOF
-EOF
-            ,
+EOF,
             ['Asset', 'BC Break', 'Bug'],
         ];
 
@@ -176,8 +171,7 @@ EOF
         $tests[] = [
             '[di][Fake] Extracting from title [Bug]',
             <<<EOF
-EOF
-            ,
+EOF,
             ['DependencyInjection', 'Bug'],
         ];
 
