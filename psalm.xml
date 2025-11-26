@@ -6,6 +6,8 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     errorBaseline="psalm.baseline.xml"
+    ensureOverrideAttribute="false"
+    findUnusedCode="false"
 >
     <projectFiles>
         <directory name="src" />
@@ -13,7 +15,4 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
-    <issueHandlers>
-        <MissingOverrideAttribute errorLevel="suppress" />
-    </issueHandlers>
 </psalm>
