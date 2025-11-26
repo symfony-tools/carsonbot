@@ -4,7 +4,7 @@
     "type": "project",
     "license": "MIT",
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.4",
         "doctrine/common": "^3.0",
         "doctrine/dbal": "^2.13",
         "doctrine/doctrine-bundle": "^2.4",
@@ -42,7 +42,7 @@
     },
     "config": {
         "platform": {
-            "php": "8.3"
+            "php": "8.4"
         },
         "preferred-install": {
             "*": "dist"
