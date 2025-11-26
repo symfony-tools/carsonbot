@@ -81,7 +81,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: PHP-CS-Fixer
-        run: php-cs-fixer fix --dry-run --diff --format=checkstyle | cs2pr
+        run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
 
   psalm:
     name: Psalm
