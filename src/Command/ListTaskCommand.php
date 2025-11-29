@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\Task;
 use App\Repository\TaskRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,10 +16,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
+#[AsCommand(name: 'app:task:list')]
 class ListTaskCommand extends Command
 {
-    protected static $defaultName = 'app:task:list';
-
     public function __construct(
         private readonly TaskRepository $repository,
     ) {

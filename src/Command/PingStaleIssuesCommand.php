@@ -9,6 +9,7 @@ use App\Entity\Task;
 use App\Service\RepositoryProvider;
 use App\Service\StaleIssueCommentGenerator;
 use App\Service\TaskScheduler;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,12 +21,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
+#[AsCommand(name: 'app:issue:ping-stale')]
 class PingStaleIssuesCommand extends Command
 {
     public const string MESSAGE_TWO_AFTER = '+2weeks';
     public const string MESSAGE_THREE_AND_CLOSE_AFTER = '+2weeks';
-
-    protected static $defaultName = 'app:issue:ping-stale';
 
     public function __construct(
         private readonly RepositoryProvider $repositoryProvider,
