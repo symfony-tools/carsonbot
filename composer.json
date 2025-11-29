@@ -18,7 +18,7 @@
         "symfony/framework-bundle": "^6.4",
         "symfony/http-client": "^6.4",
         "symfony/lock": "^6.4",
-        "symfony/monolog-bundle": "~3.5",
+        "symfony/monolog-bundle": "^3.5",
         "symfony/runtime": "^6.4",
         "symfony/security-core": "^6.4",
         "symfony/translation-contracts": "*",
