@@ -19,13 +19,10 @@ class Task
     public const int ACTION_CLOSE_DRAFT = 2;
     public const int ACTION_INFORM_CLOSE_STALE = 3;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
@@ -35,11 +32,11 @@ class Task
 
     public function __construct(
         #[ORM\Column(type: 'string')]
-        private readonly string $repositoryFullName,
+        private string $repositoryFullName,
         #[ORM\Column(type: 'integer')]
-        private readonly int $number,
+        private int $number,
         #[ORM\Column(type: 'integer')]
-        private readonly int $action,
+        private int $action,
         #[ORM\Column(type: 'datetime_immutable')]
         private \DateTimeImmutable $verifyAfter,
     ) {
