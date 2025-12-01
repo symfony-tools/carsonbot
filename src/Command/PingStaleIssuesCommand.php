@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class PingStaleIssuesCommand extends Command
+final class PingStaleIssuesCommand extends Command
 {
     public const string MESSAGE_TWO_AFTER = '+2weeks';
     public const string MESSAGE_THREE_AND_CLOSE_AFTER = '+2weeks';

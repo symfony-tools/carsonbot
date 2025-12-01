@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class ListTaskCommand extends Command
+final class ListTaskCommand extends Command
 {
     protected static $defaultName = 'app:task:list';
 
