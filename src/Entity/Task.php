@@ -19,27 +19,39 @@ class Task
     public const int ACTION_CLOSE_DRAFT = 2;
     public const int ACTION_INFORM_CLOSE_STALE = 3;
 
-    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Column]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     private int $id;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column]
+    private string $repositoryFullName;
+
+    #[ORM\Column]
+    private int $number;
+
+    #[ORM\Column]
+    private int $action;
+
+    #[ORM\Column]
+    private \DateTimeImmutable $verifyAfter;
+
+    #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
 
     public function __construct(
-        #[ORM\Column(type: 'string')]
-        private string $repositoryFullName,
-        #[ORM\Column(type: 'integer')]
-        private int $number,
-        #[ORM\Column(type: 'integer')]
-        private int $action,
-        #[ORM\Column(type: 'datetime_immutable')]
-        private \DateTimeImmutable $verifyAfter,
+        string $repositoryFullName,
+        int $number,
+        int $action,
+        \DateTimeImmutable $verifyAfter,
     ) {
+        $this->repositoryFullName = $repositoryFullName;
+        $this->number = $number;
+        $this->action = $action;
+        $this->verifyAfter = $verifyAfter;
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
