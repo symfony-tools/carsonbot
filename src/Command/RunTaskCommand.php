@@ -7,15 +7,15 @@ namespace App\Command;
 use App\Repository\TaskRepository;
 use App\Service\TaskRunner;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'app:task:run')]
 final class RunTaskCommand extends Command
 {
-    protected static $defaultName = 'app:task:run';
-
     public function __construct(
         private readonly TaskRepository $repository,
         private readonly TaskRunner $taskRunner,
