@@ -35,7 +35,7 @@ class UnsupportedBranchSubscriberTest extends TestCase
         $this->issueApi = $this->createMock(NullIssueApi::class);
         $symfonyVersionProvider = $this->getMockBuilder(SymfonyVersionProvider::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getMaintainedVersions'])
+            ->onlyMethods(['getMaintainedVersions'])
             ->getMock();
         $symfonyVersionProvider->method('getMaintainedVersions')->willReturn(['4.4', '5.1']);
 

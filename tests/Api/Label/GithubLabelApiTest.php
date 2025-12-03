@@ -40,7 +40,7 @@ class GithubLabelApiTest extends TestCase
 
         $resultPager = $this->getMockBuilder(ResultPager::class)
             ->disableOriginalConstructor()
-            ->setMethods(['fetchAll'])
+            ->onlyMethods(['fetchAll'])
             ->getMock();
         $resultPager->method('fetchAll')->willReturnCallback(fn () => $this->backendApi->all('x', 'y'));
 

@@ -19,13 +19,13 @@ class InformAboutClosingStaleIssuesHandlerTest extends TestCase
     {
         $labelApi = $this->getMockBuilder(NullLabelApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getIssueLabels', 'lastCommentWasMadeByBot'])
+            ->onlyMethods(['getIssueLabels'])
             ->getMock();
         $labelApi->expects($this->any())->method('getIssueLabels')->willReturn(['Bug', 'Keep open']);
 
         $issueApi = $this->getMockBuilder(NullIssueApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['close', 'lastCommentWasMadeByBot', 'show'])
+            ->onlyMethods(['close', 'lastCommentWasMadeByBot', 'show'])
             ->getMock();
         $issueApi->expects($this->any())->method('show')->willReturn(['state' => 'open']);
         $issueApi->expects($this->any())->method('lastCommentWasMadeByBot')->willReturn(true);
@@ -33,7 +33,7 @@ class InformAboutClosingStaleIssuesHandlerTest extends TestCase
 
         $scheduler = $this->getMockBuilder(TaskScheduler::class)
             ->disableOriginalConstructor()
-            ->setMethods(['runLater'])
+            ->onlyMethods(['runLater'])
             ->getMock();
         $scheduler->expects($this->never())->method('runLater');
 
@@ -47,13 +47,13 @@ class InformAboutClosingStaleIssuesHandlerTest extends TestCase
     {
         $labelApi = $this->getMockBuilder(NullLabelApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getIssueLabels', 'lastCommentWasMadeByBot'])
+            ->onlyMethods(['getIssueLabels'])
             ->getMock();
         $labelApi->expects($this->any())->method('getIssueLabels')->willReturn(['Bug']);
 
         $issueApi = $this->getMockBuilder(NullIssueApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['close', 'lastCommentWasMadeByBot', 'show'])
+            ->onlyMethods(['close', 'lastCommentWasMadeByBot', 'show'])
             ->getMock();
         $issueApi->expects($this->any())->method('show')->willReturn(['state' => 'open']);
         $issueApi->expects($this->any())->method('lastCommentWasMadeByBot')->willReturn(false);
@@ -61,7 +61,7 @@ class InformAboutClosingStaleIssuesHandlerTest extends TestCase
 
         $scheduler = $this->getMockBuilder(TaskScheduler::class)
             ->disableOriginalConstructor()
-            ->setMethods(['runLater'])
+            ->onlyMethods(['runLater'])
             ->getMock();
         $scheduler->expects($this->never())->method('runLater');
 
@@ -75,13 +75,13 @@ class InformAboutClosingStaleIssuesHandlerTest extends TestCase
     {
         $labelApi = $this->getMockBuilder(NullLabelApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getIssueLabels'])
+            ->onlyMethods(['getIssueLabels'])
             ->getMock();
         $labelApi->expects($this->any())->method('getIssueLabels')->willReturn(['Bug']);
 
         $issueApi = $this->getMockBuilder(NullIssueApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['close', 'lastCommentWasMadeByBot', 'show'])
+            ->onlyMethods(['close', 'lastCommentWasMadeByBot', 'show'])
             ->getMock();
         $issueApi->expects($this->any())->method('show')->willReturn(['state' => 'open']);
         $issueApi->expects($this->any())->method('lastCommentWasMadeByBot')->willReturn(true);
@@ -89,7 +89,7 @@ class InformAboutClosingStaleIssuesHandlerTest extends TestCase
 
         $scheduler = $this->getMockBuilder(TaskScheduler::class)
             ->disableOriginalConstructor()
-            ->setMethods(['runLater'])
+            ->onlyMethods(['runLater'])
             ->getMock();
         $scheduler->expects($this->once())->method('runLater');
 

@@ -8,6 +8,7 @@ use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
 use App\Subscriber\StatusChangeByCommentSubscriber;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -36,9 +37,7 @@ class StatusChangeByCommentSubscriberTest extends TestCase
         $this->dispatcher->addSubscriber($this->statusChangeSubscriber);
     }
 
-    /**
-     * @dataProvider getCommentsForStatusChange
-     */
+    #[DataProvider('getCommentsForStatusChange')]
     public function testOnIssueComment($comment, $expectedStatus)
     {
         if (null !== $expectedStatus) {
@@ -61,7 +60,7 @@ class StatusChangeByCommentSubscriberTest extends TestCase
         $this->assertSame($expectedStatus, $responseData['status_change']);
     }
 
-    public function getCommentsForStatusChange()
+    public static function getCommentsForStatusChange(): array
     {
         return [
             ['Have a great day!', null],
@@ -98,10 +97,7 @@ class StatusChangeByCommentSubscriberTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getCommentsForStatusChange
-     */
-    public function testOnIssueCommentAuthorSelfReview()
+    public function testOnIssueCommentAuthorSelfReview(): void
     {
         $this->statusApi->expects($this->never())
             ->method('setIssueStatus')

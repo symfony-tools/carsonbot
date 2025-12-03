@@ -5,14 +5,13 @@ namespace App\Tests\Service;
 use App\Api\Label\StaticLabelApi;
 use App\Model\Repository;
 use App\Service\LabelNameExtractor;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
 class LabelNameExtractorTest extends TestCase
 {
-    /**
-     * @dataProvider provideLabels
-     */
+    #[DataProvider('provideLabels')]
     public function testExtractLabels(array $expected, string $title)
     {
         $extractor = new LabelNameExtractor(new StaticLabelApi(), new NullLogger());

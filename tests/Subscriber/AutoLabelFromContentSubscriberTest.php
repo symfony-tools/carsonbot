@@ -9,6 +9,7 @@ use App\GitHubEvents;
 use App\Model\Repository;
 use App\Service\LabelNameExtractor;
 use App\Subscriber\AutoLabelFromContentSubscriber;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -25,7 +26,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
     {
         $this->labelsApi = $this->getMockBuilder(StaticLabelApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['addIssueLabels'])
+            ->onlyMethods(['addIssueLabels'])
             ->getMock();
 
         $autoLabelSubscriber = new AutoLabelFromContentSubscriber($this->labelsApi, new LabelNameExtractor($this->labelsApi, new NullLogger()));
@@ -59,9 +60,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
         $this->assertSame(['Messenger'], $responseData['issue_labels']);
     }
 
-    /**
-     * @dataProvider getPRTests
-     */
+    #[DataProvider('getPRTests')]
     public function testAutoLabelPR($prTitle, $prBody, array $expectedNewLabels)
     {
         $this->labelsApi->expects($this->once())
@@ -87,7 +86,7 @@ class AutoLabelFromContentSubscriberTest extends TestCase
         $this->assertSame($expectedNewLabels, $responseData['pr_labels']);
     }
 
-    public function getPRTests()
+    public static function getPRTests(): array
     {
         $tests = [];
 

@@ -7,6 +7,7 @@ use App\Api\Status\StatusApi;
 use App\Service\RepositoryProvider;
 use Happyr\ServiceMocking\ServiceMock;
 use Happyr\ServiceMocking\Test\RestoreServiceContainer;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class WebhookControllerTest extends WebTestCase
@@ -39,9 +40,7 @@ class WebhookControllerTest extends WebTestCase
         $statusApi->setIssueStatus(2, null, $repository->getRepository('carsonbot-playground/symfony'));
     }
 
-    /**
-     * @dataProvider getTests
-     */
+    #[DataProvider('getTests')]
     public function testIssueComment($eventHeader, $payloadFilename, $expectedResponse)
     {
         $client = $this->client;
@@ -56,7 +55,7 @@ class WebhookControllerTest extends WebTestCase
         $this->assertSame($expectedResponse, $responseData);
     }
 
-    public function getTests(): array
+    public static function getTests(): array
     {
         return [
             'On issue commented' => [

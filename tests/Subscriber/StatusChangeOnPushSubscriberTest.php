@@ -8,6 +8,7 @@ use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
 use App\Subscriber\StatusChangeOnPushSubscriber;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -34,9 +35,7 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->dispatcher->addSubscriber($this->statusChangeSubscriber);
     }
 
-    /**
-     * @dataProvider getStatuses
-     */
+    #[DataProvider('getStatuses')]
     public function testOnPushingCommits($currentStatus, $statusChange)
     {
         $this->statusApi->expects($this->any())
@@ -64,7 +63,7 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->assertSame($statusChange, $responseData['status_change']);
     }
 
-    public function getStatuses()
+    public static function getStatuses(): array
     {
         return [
             [Status::NEEDS_WORK, Status::NEEDS_REVIEW],

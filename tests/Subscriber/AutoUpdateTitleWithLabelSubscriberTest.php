@@ -9,6 +9,7 @@ use App\GitHubEvents;
 use App\Model\Repository;
 use App\Service\LabelNameExtractor;
 use App\Subscriber\AutoUpdateTitleWithLabelSubscriber;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -30,7 +31,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $labelsApi = new StaticLabelApi();
         $this->pullRequestApi = $this->getMockBuilder(NullPullRequestApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['show'])
+            ->onlyMethods(['show'])
             ->getMock();
 
         $store = $this->getMockBuilder(PersistingStoreInterface::class)->getMock();
@@ -295,9 +296,7 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertSame('[Console][FrameworkBundle][TODO][WIP][Foo] Some title', $responseData['new_title']);
     }
 
-    /**
-     * @dataProvider provideTitles
-     */
+    #[DataProvider('provideTitles')]
     public function testBundleNormalizationForSymfonyAi(string $inputTitle, string $expectedTitle)
     {
         $repository = new Repository('symfony', 'ai', null);
