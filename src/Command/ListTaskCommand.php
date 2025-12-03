@@ -7,8 +7,8 @@ namespace App\Command;
 use App\Entity\Task;
 use App\Repository\TaskRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -24,7 +24,7 @@ final class ListTaskCommand
 
     public function __invoke(
         SymfonyStyle $io,
-        #[InputOption]
+        #[Option]
         ?int $number = null,
     ): int {
         if (null === $number) {
