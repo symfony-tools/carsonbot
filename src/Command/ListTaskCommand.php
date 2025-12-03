@@ -14,7 +14,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-#[AsCommand(name: 'app:task:list', description: 'List scheduled tasks')]
+#[AsCommand(
+    name: 'app:task:list',
+    description: 'List scheduled tasks',
+)]
 final class ListTaskCommand
 {
     public function __construct(

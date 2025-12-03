@@ -22,7 +22,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-#[AsCommand(name: 'app:issue:ping-stale', description: 'Ping stale issues and schedule them for closing')]
+#[AsCommand(
+    name: 'app:issue:ping-stale',
+    description: 'Ping stale issues and schedule them for closing',
+)]
 final class PingStaleIssuesCommand
 {
     public const string MESSAGE_TWO_AFTER = '+2weeks';

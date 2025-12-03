@@ -12,7 +12,10 @@ use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'app:task:run', description: 'Run scheduled tasks')]
+#[AsCommand(
+    name: 'app:task:run',
+    description: 'Run scheduled tasks',
+)]
 final class RunTaskCommand
 {
     public function __construct(
