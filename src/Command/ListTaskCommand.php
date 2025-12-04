@@ -27,7 +27,7 @@ final class ListTaskCommand
 
     public function __invoke(
         SymfonyStyle $io,
-        #[Option]
+        #[Option(description: 'The issue number we are interested in')]
         ?int $number = null,
     ): int {
         if (null === $number) {
