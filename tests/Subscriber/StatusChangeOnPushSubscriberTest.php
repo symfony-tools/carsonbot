@@ -64,16 +64,14 @@ class StatusChangeOnPushSubscriberTest extends TestCase
     }
 
     /**
-     * @return array<array{string, string|null}>
+     * @return iterable<array{string, string|null}>
      */
-    public static function getStatuses(): array
+    public static function getStatuses(): iterable
     {
-        return [
-            [Status::NEEDS_WORK, Status::NEEDS_REVIEW],
-            [Status::REVIEWED, null],
-            [Status::WORKS_FOR_ME, null],
-            [Status::NEEDS_REVIEW, null],
-        ];
+        yield [Status::NEEDS_WORK, Status::NEEDS_REVIEW];
+        yield [Status::REVIEWED, null];
+        yield [Status::WORKS_FOR_ME, null];
+        yield [Status::NEEDS_REVIEW, null];
     }
 
     public function testOnNonPushPullRequestEvent()

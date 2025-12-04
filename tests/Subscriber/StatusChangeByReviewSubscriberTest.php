@@ -65,43 +65,41 @@ class StatusChangeByReviewSubscriberTest extends TestCase
     }
 
     /**
-     * @return array<array{string, string|null}>
+     * @return iterable<array{string, string|null}>
      */
-    public static function getCommentsForStatusChange(): array
+    public static function getCommentsForStatusChange(): iterable
     {
-        return [
-            ['Have a great day!', null],
-            // basic tests for status change
-            ['Status: needs review', Status::NEEDS_REVIEW],
-            ['Status: needs work', Status::NEEDS_WORK],
-            ['Status: reviewed', Status::REVIEWED],
-            // accept quotes
-            ['Status: "reviewed"', Status::REVIEWED],
-            ["Status: 'reviewed'", Status::REVIEWED],
-            // accept trailing punctuation
-            ['Status: works for me!', Status::WORKS_FOR_ME],
-            ['Status: works for me.', Status::WORKS_FOR_ME],
-            // play with different formatting
-            ['STATUS: REVIEWED', Status::REVIEWED],
-            ['**Status**: reviewed', Status::REVIEWED],
-            ['**Status:** reviewed', Status::REVIEWED],
-            ['**Status: reviewed**', Status::REVIEWED],
-            ['**Status: reviewed!**', Status::REVIEWED],
-            ['**Status: reviewed**.', Status::REVIEWED],
-            ['Status:reviewed', Status::REVIEWED],
-            ['Status:     reviewed', Status::REVIEWED],
-            // reject missing colon
-            ['Status reviewed', null],
-            // multiple matches - use the last one
-            ["Status: needs review \r\n that is what the issue *was* marked as.\r\n Status: reviewed", Status::REVIEWED],
-            // "needs review" does not come directly after status: , so there is no status change
-            ['Here is my status: I\'m really happy! I realize this needs review, but I\'m, having too much fun Googling cats!', null],
-            // reject if the status is not on a line of its own
-            // use case: someone posts instructions about how to change a status
-            // in a comment
-            ['You should include e.g. the line `Status: needs review` in your comment', null],
-            ['Before the ticket was in state "Status: reviewed", but then the status was changed', null],
-        ];
+        yield ['Have a great day!', null];
+        // basic tests for status change
+        yield ['Status: needs review', Status::NEEDS_REVIEW];
+        yield ['Status: needs work', Status::NEEDS_WORK];
+        yield ['Status: reviewed', Status::REVIEWED];
+        // accept quotes
+        yield ['Status: "reviewed"', Status::REVIEWED];
+        yield ["Status: 'reviewed'", Status::REVIEWED];
+        // accept trailing punctuation
+        yield ['Status: works for me!', Status::WORKS_FOR_ME];
+        yield ['Status: works for me.', Status::WORKS_FOR_ME];
+        // play with different formatting
+        yield ['STATUS: REVIEWED', Status::REVIEWED];
+        yield ['**Status**: reviewed', Status::REVIEWED];
+        yield ['**Status:** reviewed', Status::REVIEWED];
+        yield ['**Status: reviewed**', Status::REVIEWED];
+        yield ['**Status: reviewed!**', Status::REVIEWED];
+        yield ['**Status: reviewed**.', Status::REVIEWED];
+        yield ['Status:reviewed', Status::REVIEWED];
+        yield ['Status:     reviewed', Status::REVIEWED];
+        // reject missing colon
+        yield ['Status reviewed', null];
+        // multiple matches - use the last one
+        yield ["Status: needs review \r\n that is what the issue *was* marked as.\r\n Status: reviewed", Status::REVIEWED];
+        // "needs review" does not come directly after status: , so there is no status change
+        yield ['Here is my status: I\'m really happy! I realize this needs review, but I\'m, having too much fun Googling cats!', null];
+        // reject if the status is not on a line of its own
+        // use case: someone posts instructions about how to change a status
+        // in a comment
+        yield ['You should include e.g. the line `Status: needs review` in your comment', null];
+        yield ['Before the ticket was in state "Status: reviewed", but then the status was changed', null];
     }
 
     #[DataProviderExternal(ValidCommandProvider::class, 'get')]
