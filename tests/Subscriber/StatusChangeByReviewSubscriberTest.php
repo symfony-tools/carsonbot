@@ -64,6 +64,9 @@ class StatusChangeByReviewSubscriberTest extends TestCase
         $this->assertSame($expectedStatus, $responseData['status_change']);
     }
 
+    /**
+     * @return array<array{string, string|null}>
+     */
     public static function getCommentsForStatusChange(): array
     {
         return [

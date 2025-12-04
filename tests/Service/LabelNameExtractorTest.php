@@ -20,6 +20,9 @@ class LabelNameExtractorTest extends TestCase
         $this->assertSame($expected, $extractor->extractLabels($title, $repo));
     }
 
+    /**
+     * @return iterable<array{list<string>, string}>
+     */
     public static function provideLabels(): iterable
     {
         yield [['Messenger'], '[Messenger] Foobar'];

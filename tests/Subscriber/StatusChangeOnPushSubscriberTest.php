@@ -63,6 +63,9 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->assertSame($statusChange, $responseData['status_change']);
     }
 
+    /**
+     * @return array<array{string, string|null}>
+     */
     public static function getStatuses(): array
     {
         return [

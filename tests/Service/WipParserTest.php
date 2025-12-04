@@ -16,6 +16,9 @@ class WipParserTest extends TestCase
         $this->assertSame($expected, WipParser::matchTitle($title));
     }
 
+    /**
+     * @return iterable<array{bool, string}>
+     */
     public static function titlesProvider(): iterable
     {
         yield [true, '[WIP] foo'];

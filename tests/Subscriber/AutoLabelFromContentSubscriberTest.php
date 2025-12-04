@@ -86,6 +86,9 @@ class AutoLabelFromContentSubscriberTest extends TestCase
         $this->assertSame($expectedNewLabels, $responseData['pr_labels']);
     }
 
+    /**
+     * @return array<array{string, string, list<string>}>
+     */
     public static function getPRTests(): array
     {
         $tests = [];

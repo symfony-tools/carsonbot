@@ -11,7 +11,10 @@ use App\Subscriber\StatusChangeByCommentSubscriber;
  */
 class ValidCommandProvider
 {
-    public static function get()
+    /**
+     * @return iterable<array{string, class-string}>
+     */
+    public static function get(): iterable
     {
         yield ['Status: needs review', StatusChangeByCommentSubscriber::class];
         yield ['Status: needs work', StatusChangeByCommentSubscriber::class];

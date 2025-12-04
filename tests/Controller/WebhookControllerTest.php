@@ -55,6 +55,9 @@ class WebhookControllerTest extends WebTestCase
         $this->assertSame($expectedResponse, $responseData);
     }
 
+    /**
+     * @return array<string, array{string, string, array<string, mixed>}>
+     */
     public static function getTests(): array
     {
         return [
