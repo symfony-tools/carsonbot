@@ -9,6 +9,9 @@ use App\GitHubEvents;
 use App\Model\Repository;
 use App\Subscriber\StatusChangeByCommentSubscriber;
 use App\Subscriber\StatusChangeByReviewSubscriber;
+use App\Tests\ValidCommandProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -37,9 +40,7 @@ class StatusChangeByReviewSubscriberTest extends TestCase
         $this->dispatcher->addSubscriber($this->statusChangeSubscriber);
     }
 
-    /**
-     * @dataProvider getCommentsForStatusChange
-     */
+    #[DataProvider('getCommentsForStatusChange')]
     public function testOnReview($comment, $expectedStatus)
     {
         if (null !== $expectedStatus) {
@@ -63,7 +64,10 @@ class StatusChangeByReviewSubscriberTest extends TestCase
         $this->assertSame($expectedStatus, $responseData['status_change']);
     }
 
-    public function getCommentsForStatusChange()
+    /**
+     * @return array<array{string, string|null}>
+     */
+    public static function getCommentsForStatusChange(): array
     {
         return [
             ['Have a great day!', null],
@@ -100,9 +104,7 @@ class StatusChangeByReviewSubscriberTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider \App\Tests\ValidCommandProvider::get()
-     */
+    #[DataProviderExternal(ValidCommandProvider::class, 'get')]
     public function testCommandCollision($comment, $subscriber)
     {
         if (StatusChangeByCommentSubscriber::class === $subscriber) {

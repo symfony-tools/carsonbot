@@ -31,7 +31,7 @@ class MilestoneNewPRSubscriberTest extends TestCase
         $this->milestonesApi = $this->createMock(GithubMilestoneApi::class);
         $this->symfonyVersionProvider = $this->getMockBuilder(SymfonyVersionProvider::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCurrentVersion'])
+            ->onlyMethods(['getCurrentVersion'])
             ->getMock();
         $this->symfonyVersionProvider->method('getCurrentVersion')->willReturn('5.1');
         $this->subscriber = new MilestoneNewPRSubscriber($this->milestonesApi, $this->symfonyVersionProvider);

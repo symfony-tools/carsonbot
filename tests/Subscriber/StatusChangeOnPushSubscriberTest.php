@@ -8,6 +8,7 @@ use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
 use App\Subscriber\StatusChangeOnPushSubscriber;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -34,15 +35,13 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->dispatcher->addSubscriber($this->statusChangeSubscriber);
     }
 
-    /**
-     * @dataProvider getStatuses
-     */
+    #[DataProvider('getStatuses')]
     public function testOnPushingCommits($currentStatus, $statusChange)
     {
         $this->statusApi->expects($this->any())
             ->method('getIssueStatus')
             ->with(1234, $this->repository)
-            ->will($this->returnValue($currentStatus));
+            ->willReturn($currentStatus);
 
         if (null !== $statusChange) {
             $this->statusApi->expects($this->once())
@@ -64,7 +63,10 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->assertSame($statusChange, $responseData['status_change']);
     }
 
-    public function getStatuses()
+    /**
+     * @return array<array{string, string|null}>
+     */
+    public static function getStatuses(): array
     {
         return [
             [Status::NEEDS_WORK, Status::NEEDS_REVIEW],
@@ -79,7 +81,7 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->statusApi->expects($this->any())
             ->method('getIssueStatus')
             ->with(1234, $this->repository)
-            ->will($this->returnValue(Status::NEEDS_WORK));
+            ->willReturn(Status::NEEDS_WORK);
 
         $event = new GitHubEvent([
             'action' => 'labeled',
@@ -98,7 +100,7 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->statusApi->expects($this->any())
             ->method('getIssueStatus')
             ->with(1234, $this->repository)
-            ->will($this->returnValue(Status::NEEDS_WORK));
+            ->willReturn(Status::NEEDS_WORK);
 
         $event = new GitHubEvent([
             'action' => 'synchronize',

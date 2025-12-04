@@ -91,18 +91,21 @@ class GitHubStatusApiTest extends TestCase
             ->with(1234)
             ->willReturn(['Bug', 'Status: Needs Review', 'Status: Needs Work']);
 
+        $removedLabels = [];
         $this->labelsApi->expects($this->exactly(2))
             ->method('removeIssueLabel')
-            ->withConsecutive(
-                [1234, 'Status: Needs Review'],
-                [1234, 'Status: Needs Work']
-            );
+            ->willReturnCallback(function ($issueNumber, $label) use (&$removedLabels) {
+                $removedLabels[] = [$issueNumber, $label];
+            });
 
         $this->labelsApi->expects($this->once())
             ->method('addIssueLabel')
             ->with(1234, 'Status: Reviewed');
 
         $this->api->setIssueStatus(1234, Status::REVIEWED, $this->repository);
+
+        $this->assertContains([1234, 'Status: Needs Review'], $removedLabels);
+        $this->assertContains([1234, 'Status: Needs Work'], $removedLabels);
     }
 
     public function testSetIssueStatusDoesNothingIfAlreadySet()
@@ -145,18 +148,21 @@ class GitHubStatusApiTest extends TestCase
             ->with(1234)
             ->willReturn(['Bug', 'Status: Needs Review', 'Unconfirmed']);
 
+        $removedLabels = [];
         $this->labelsApi->expects($this->exactly(2))
             ->method('removeIssueLabel')
-            ->withConsecutive(
-                [1234, 'Status: Needs Review'],
-                [1234, 'Unconfirmed']
-            );
+            ->willReturnCallback(function ($issueNumber, $label) use (&$removedLabels) {
+                $removedLabels[] = [$issueNumber, $label];
+            });
 
         $this->labelsApi->expects($this->once())
             ->method('addIssueLabel')
             ->with(1234, 'Status: Reviewed');
 
         $this->api->setIssueStatus(1234, Status::REVIEWED, $this->repository);
+
+        $this->assertContains([1234, 'Status: Needs Review'], $removedLabels);
+        $this->assertContains([1234, 'Unconfirmed'], $removedLabels);
     }
 
     public function testGetIssueStatus()

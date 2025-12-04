@@ -39,13 +39,13 @@ class CloseDraftHandlerTest extends TestCase
     {
         $prApi = $this->getMockBuilder(NullPullRequestApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['show'])
+            ->onlyMethods(['show'])
             ->getMock();
         $prApi->expects($this->once())->method('show')->willReturn(['draft' => false]);
 
         $issueApi = $this->getMockBuilder(NullIssueApi::class)
             ->disableOriginalConstructor()
-            ->setMethods(['close'])
+            ->onlyMethods(['close'])
             ->getMock();
         $issueApi->expects($this->never())->method('close');
 

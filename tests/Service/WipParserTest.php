@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Service\WipParser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class WipParserTest extends TestCase
 {
-    /**
-     * @dataProvider titlesProvider
-     */
+    #[DataProvider('titlesProvider')]
     public function testMatchTitle(bool $expected, string $title)
     {
         $this->assertSame($expected, WipParser::matchTitle($title));
     }
 
+    /**
+     * @return iterable<array{bool, string}>
+     */
     public static function titlesProvider(): iterable
     {
         yield [true, '[WIP] foo'];
