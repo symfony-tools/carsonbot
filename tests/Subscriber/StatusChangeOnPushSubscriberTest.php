@@ -41,7 +41,7 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->statusApi->expects($this->any())
             ->method('getIssueStatus')
             ->with(1234, $this->repository)
-            ->will($this->returnValue($currentStatus));
+            ->willReturn($currentStatus);
 
         if (null !== $statusChange) {
             $this->statusApi->expects($this->once())
@@ -78,7 +78,7 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->statusApi->expects($this->any())
             ->method('getIssueStatus')
             ->with(1234, $this->repository)
-            ->will($this->returnValue(Status::NEEDS_WORK));
+            ->willReturn(Status::NEEDS_WORK);
 
         $event = new GitHubEvent([
             'action' => 'labeled',
@@ -97,7 +97,7 @@ class StatusChangeOnPushSubscriberTest extends TestCase
         $this->statusApi->expects($this->any())
             ->method('getIssueStatus')
             ->with(1234, $this->repository)
-            ->will($this->returnValue(Status::NEEDS_WORK));
+            ->willReturn(Status::NEEDS_WORK);
 
         $event = new GitHubEvent([
             'action' => 'synchronize',

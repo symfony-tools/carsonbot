@@ -40,7 +40,7 @@
     "require-dev": {
         "happyr/service-mocking": "^1.0",
         "symfony/browser-kit": "^7.4",
-        "phpunit/phpunit": "^11.5",
+        "phpunit/phpunit": "^12.1",
         "symfony/web-profiler-bundle": "^7.4"
     },
     "config": {
