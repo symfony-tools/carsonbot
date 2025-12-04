@@ -8,30 +8,28 @@ use App\Repository\TaskRepository;
 use App\Service\TaskRunner;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'app:task:run')]
-final class RunTaskCommand extends Command
+#[AsCommand(
+    name: 'app:task:run',
+    description: 'Run scheduled tasks',
+)]
+final class RunTaskCommand
 {
     public function __construct(
         private readonly TaskRepository $repository,
         private readonly TaskRunner $taskRunner,
         private readonly LoggerInterface $logger,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Limit the number of tasks to run', '10');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $limit = (int) $input->getOption('limit');
+    public function __invoke(
+        OutputInterface $output,
+        #[Option(name: 'limit', shortcut: 'l', description: 'Limit the number of tasks to run')]
+        int $limit = 10,
+    ): int {
         foreach ($this->repository->getTasksToVerify($limit) as $task) {
             try {
                 $this->taskRunner->run($task);

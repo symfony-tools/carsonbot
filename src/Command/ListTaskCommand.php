@@ -7,37 +7,33 @@ namespace App\Command;
 use App\Entity\Task;
 use App\Repository\TaskRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-#[AsCommand(name: 'app:task:list')]
-final class ListTaskCommand extends Command
+#[AsCommand(
+    name: 'app:task:list',
+    description: 'List scheduled tasks',
+)]
+final class ListTaskCommand
 {
     public function __construct(
         private readonly TaskRepository $repository,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->addOption('number', null, InputOption::VALUE_REQUIRED, 'The issue number we are interested in', null);
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        /** @var mixed|null $number */
-        $number = $input->getOption('number');
+    public function __invoke(
+        SymfonyStyle $io,
+        #[Option(description: 'The issue number we are interested in')]
+        ?int $number = null,
+    ): int {
         if (null === $number) {
             $criteria = [];
         } else {
-            $criteria = ['number' => (int) $number];
+            $criteria = ['number' => $number];
         }
 
         $limit = 100;
@@ -53,7 +49,6 @@ final class ListTaskCommand extends Command
             ];
         }
 
-        $io = new SymfonyStyle($input, $output);
         $io->table(['Repo', 'Number', 'Action', 'Verify After'], $rows);
         $io->write(sprintf('Total of %d items in the table. ', $taskCount = count($tasks)));
         if ($limit === $taskCount) {
