@@ -20,11 +20,7 @@ class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
     public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
-        if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
-            return;
-        }
-
-        if ($data['pull_request']['maintainer_can_modify'] ?? true) {
+        if (!in_array($data['action'], ['opened', 'ready_for_review', 'edited']) || ($data['pull_request']['draft'] ?? false)) {
             return;
         }
 
@@ -34,6 +30,21 @@ class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
 
         $repository = $event->getRepository();
         $pullRequestNumber = $data['pull_request']['number'];
+        $commentId = $this->commentsApi->findBotComment($repository, $pullRequestNumber, 'Allow edits from maintainer');
+
+        if ($data['pull_request']['maintainer_can_modify'] ?? true) {
+            if ($commentId) {
+                $this->commentsApi->removeComment($event->getRepository(), $commentId);
+            }
+
+            return;
+        }
+
+        // Avoid duplicate comments
+        if ($commentId) {
+            return;
+        }
+
         $this->commentsApi->commentOnIssue($repository, $pullRequestNumber, <<<TXT
 It looks like you unchecked the "Allow edits from maintainer" box. That is fine, but please note that if you have multiple commits, you'll need to squash your commits into one before this can be merged. Or, you can check the "Allow edits from maintainers" box and the maintainer can squash for you.
 
