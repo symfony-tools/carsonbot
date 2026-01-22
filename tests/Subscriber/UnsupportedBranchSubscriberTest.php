@@ -104,4 +104,53 @@ class UnsupportedBranchSubscriberTest extends TestCase
         $responseData = $event->getResponseData();
         $this->assertEmpty($responseData);
     }
+
+    public function testOnPullRequestEditedCleanup()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('findBotComment')
+            ->with($this->repository, 1234, 'target one of these branches instead')
+            ->willReturn(888);
+
+        $this->issueApi->expects($this->once())
+            ->method('removeComment')
+            ->with($this->repository, 888);
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '4.4'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedIdempotency()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('findBotComment')
+            ->with($this->repository, 1234, 'target one of these branches instead')
+            ->willReturn(888);
+
+        $this->issueApi->expects($this->never())
+            ->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '4.3'], // Unsupported branch
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
 }

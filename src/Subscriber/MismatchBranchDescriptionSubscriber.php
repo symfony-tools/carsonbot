@@ -24,7 +24,7 @@ class MismatchBranchDescriptionSubscriber implements EventSubscriberInterface
     public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
-        if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
+        if (!in_array($data['action'], ['opened', 'ready_for_review', 'edited']) || ($data['pull_request']['draft'] ?? false)) {
             return;
         }
 
@@ -38,7 +38,18 @@ class MismatchBranchDescriptionSubscriber implements EventSubscriberInterface
         }
 
         $targetBranch = $data['pull_request']['base']['ref'];
+        $commentId = $this->issueApi->findBotComment($event->getRepository(), $number, 'seems your PR description refers to branch');
+
         if ($targetBranch === $descriptionBranch) {
+            if ($commentId) {
+                $this->issueApi->removeComment($event->getRepository(), $commentId);
+            }
+
+            return;
+        }
+
+        // Avoid duplicate comments
+        if ($commentId) {
             return;
         }
 

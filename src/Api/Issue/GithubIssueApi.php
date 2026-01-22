@@ -88,4 +88,25 @@ class GithubIssueApi implements IssueApi
             'desc',
         ]);
     }
+
+    public function findBotComment(Repository $repository, int $issueNumber, string $search): ?int
+    {
+        $allComments = $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $issueNumber, ['per_page' => 100]);
+        foreach (array_reverse($allComments) as $comment) {
+            if ($this->botUsername !== ($comment['user']['login'] ?? null)) {
+                continue;
+            }
+
+            if (str_contains($comment['body'] ?? '', $search)) {
+                return $comment['id'];
+            }
+        }
+
+        return null;
+    }
+
+    public function removeComment(Repository $repository, int $commentId): void
+    {
+        $this->issueCommentApi->remove($repository->getVendor(), $repository->getName(), $commentId);
+    }
 }
