@@ -37,4 +37,8 @@ interface IssueApi
      * Close an issue and mark it as "not_planned".
      */
     public function close(Repository $repository, int $issueNumber): void;
+
+    public function findBotComment(Repository $repository, int $issueNumber, string $search): ?int;
+
+    public function removeComment(Repository $repository, int $commentId): void;
 }
