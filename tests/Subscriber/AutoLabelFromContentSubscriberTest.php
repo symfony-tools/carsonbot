@@ -179,4 +179,39 @@ EOF,
 
         return $tests;
     }
+
+    public function testIgnoredLabelsAreNotAppliedFromPRTitle(): void
+    {
+        $labelsApi = $this->getMockBuilder(StaticLabelApi::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['addIssueLabels'])
+            ->getMock();
+
+        $subscriber = new AutoLabelFromContentSubscriber($labelsApi, new LabelNameExtractor($labelsApi, new NullLogger()));
+        $repository = new Repository('weaverryan', 'symfony', null, ['Bug']);
+
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addSubscriber($subscriber);
+
+        $labelsApi->expects($this->once())
+            ->method('addIssueLabels')
+            ->with(1234, ['Asset', 'BC Break'], $repository);
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'title' => '[Asset][bc Break][Bug] Some PR title',
+                'body' => '',
+                'draft' => false,
+            ],
+        ], $repository);
+
+        $dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+
+        $responseData = $event->getResponseData();
+
+        $this->assertSame(1234, $responseData['pull_request']);
+        $this->assertSame(['Asset', 'BC Break'], $responseData['pr_labels']);
+    }
 }

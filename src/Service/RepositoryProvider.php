@@ -15,7 +15,7 @@ class RepositoryProvider
     private array $repositories = [];
 
     /**
-     * @param array<string, array{secret?: string}> $repositories
+     * @param array<string, array{secret?: string, ignored_labels?: list<string>}> $repositories
      */
     public function __construct(array $repositories)
     {
@@ -29,7 +29,8 @@ class RepositoryProvider
             $this->addRepository(new Repository(
                 $vendorName,
                 $repositoryName,
-                $repositoryData['secret'] ?? null
+                $repositoryData['secret'] ?? null,
+                $repositoryData['ignored_labels'] ?? [],
             ));
         }
     }

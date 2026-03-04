@@ -10,12 +10,14 @@ use App\Api\Status\GitHubStatusApi;
 class Repository
 {
     /**
-     * @param string|null $secret the webhook secret used by GitHub
+     * @param string|null   $secret        the webhook secret used by GitHub
+     * @param list<string>  $ignoredLabels labels that should not be auto-applied from PR/issue titles
      */
     public function __construct(
         private readonly string $vendor,
         private readonly string $name,
         private readonly ?string $secret = null,
+        private readonly array $ignoredLabels = [],
     ) {
     }
 
@@ -42,6 +44,14 @@ class Repository
             $this->getName(),
             rawurlencode(GitHubStatusApi::getNeedsReviewLabel())
         );
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getIgnoredLabels(): array
+    {
+        return $this->ignoredLabels;
     }
 
     public function getFullName(): string

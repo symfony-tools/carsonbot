@@ -31,4 +31,28 @@ class LabelNameExtractorTest extends TestCase
         yield [['Messenger', 'Mime'], '[Messenger] [Mime] Foobar'];
         yield [['Messenger', 'Mime'], '[Messenger] Foobar [Mime]'];
     }
+
+    public function testIgnoredLabelsAreFilteredOut(): void
+    {
+        $extractor = new LabelNameExtractor(new StaticLabelApi(), new NullLogger());
+        $repo = new Repository('carsonbot-playground', 'symfony', null, ['Messenger']);
+
+        $this->assertSame([], $extractor->extractLabels('[Messenger] Foobar', $repo));
+    }
+
+    public function testIgnoredLabelsAreCaseInsensitive(): void
+    {
+        $extractor = new LabelNameExtractor(new StaticLabelApi(), new NullLogger());
+        $repo = new Repository('carsonbot-playground', 'symfony', null, ['messenger']);
+
+        $this->assertSame([], $extractor->extractLabels('[Messenger] Foobar', $repo));
+    }
+
+    public function testIgnoredLabelsOnlyFilterConfiguredOnes(): void
+    {
+        $extractor = new LabelNameExtractor(new StaticLabelApi(), new NullLogger());
+        $repo = new Repository('carsonbot-playground', 'symfony', null, ['Messenger']);
+
+        $this->assertSame(['Mime'], $extractor->extractLabels('[Messenger] [Mime] Foobar', $repo));
+    }
 }

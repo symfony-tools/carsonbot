@@ -74,6 +74,8 @@ parameters:
                 - 'App\Subscriber\RewriteUnwantedPhrasesSubscriber'
                 - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
             secret: '%env(SYMFONY_AI_SECRET)%'
+            ignored_labels:
+                - 'Run examples'
 
         symfony/ux:
             subscribers:

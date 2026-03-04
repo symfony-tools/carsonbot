@@ -54,6 +54,9 @@ class LabelNameExtractor
             }
         }
 
+        $ignoredLabels = array_map('strtolower', $repository->getIgnoredLabels());
+        $labels = array_values(array_filter($labels, static fn (string $label): bool => !\in_array(strtolower($label), $ignoredLabels, true)));
+
         $this->logger->debug('Searched for labels in title', ['title' => $title, 'labels' => \json_encode($labels, \JSON_THROW_ON_ERROR)]);
 
         return $labels;
