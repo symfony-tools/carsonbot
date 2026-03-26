@@ -32,11 +32,11 @@ class AllowEditFromMaintainerSubscriberTest extends TestCase
         $this->issueApi->expects($this->once())
             ->method('findBotComment')
             ->with($this->repository, 1234, 'Allow edits from maintainer')
-            ->willReturn(666);
+            ->willReturn('IC_kwNodeId666');
 
         $this->issueApi->expects($this->once())
-            ->method('removeComment')
-            ->with($this->repository, 666);
+            ->method('minimizeComment')
+            ->with($this->repository, 'IC_kwNodeId666');
 
         $event = new GitHubEvent([
             'action' => 'edited',
@@ -56,7 +56,7 @@ class AllowEditFromMaintainerSubscriberTest extends TestCase
         $this->issueApi->expects($this->once())
             ->method('findBotComment')
             ->with($this->repository, 1234, 'Allow edits from maintainer')
-            ->willReturn(666);
+            ->willReturn('IC_kwNodeId666');
 
         $this->issueApi->expects($this->never())
             ->method('commentOnIssue');

@@ -3,6 +3,7 @@
 namespace App\Api\Issue;
 
 use App\Model\Repository;
+use Github\Api\GraphQL;
 use Github\Api\Issue;
 use Github\Api\Issue\Comments;
 use Github\Api\Search;
@@ -15,6 +16,7 @@ class GithubIssueApi implements IssueApi
         private readonly Comments $issueCommentApi,
         private readonly Issue $issueApi,
         private readonly Search $searchApi,
+        private readonly GraphQL $graphqlApi,
         private readonly string $botUsername,
     ) {
     }
@@ -89,7 +91,7 @@ class GithubIssueApi implements IssueApi
         ]);
     }
 
-    public function findBotComment(Repository $repository, int $issueNumber, string $search): ?int
+    public function findBotComment(Repository $repository, int $issueNumber, string $search): ?string
     {
         $allComments = $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $issueNumber, ['per_page' => 100]);
         foreach (array_reverse($allComments) as $comment) {
@@ -98,15 +100,21 @@ class GithubIssueApi implements IssueApi
             }
 
             if (str_contains($comment['body'] ?? '', $search)) {
-                return $comment['id'];
+                return $comment['node_id'];
             }
         }
 
         return null;
     }
 
-    public function removeComment(Repository $repository, int $commentId): void
+    public function minimizeComment(Repository $repository, string $commentNodeId): void
     {
-        $this->issueCommentApi->remove($repository->getVendor(), $repository->getName(), $commentId);
+        $this->graphqlApi->execute('
+            mutation($subjectId: ID!) {
+                minimizeComment(input: {subjectId: $subjectId, classifier: OUTDATED}) {
+                    minimizedComment { isMinimized }
+                }
+            }
+        ', ['subjectId' => $commentNodeId]);
     }
 }

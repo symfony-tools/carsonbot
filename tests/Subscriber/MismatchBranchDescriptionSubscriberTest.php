@@ -217,11 +217,11 @@ TXT;
         $this->issueApi->expects($this->once())
             ->method('findBotComment')
             ->with($this->repository, 1234, 'seems your PR description refers to branch')
-            ->willReturn(777);
+            ->willReturn('IC_kwNodeId777');
 
         $this->issueApi->expects($this->once())
-            ->method('removeComment')
-            ->with($this->repository, 777);
+            ->method('minimizeComment')
+            ->with($this->repository, 'IC_kwNodeId777');
 
         $body = <<<TXT
 | Q | A
@@ -246,7 +246,7 @@ TXT;
         $this->issueApi->expects($this->once())
             ->method('findBotComment')
             ->with($this->repository, 1234, 'seems your PR description refers to branch')
-            ->willReturn(777);
+            ->willReturn('IC_kwNodeId777');
 
         $this->issueApi->expects($this->never())
             ->method('commentOnIssue');

@@ -42,7 +42,7 @@ class MismatchBranchDescriptionSubscriber implements EventSubscriberInterface
 
         if ($targetBranch === $descriptionBranch) {
             if ($commentId) {
-                $this->issueApi->removeComment($event->getRepository(), $commentId);
+                $this->issueApi->minimizeComment($event->getRepository(), $commentId);
             }
 
             return;

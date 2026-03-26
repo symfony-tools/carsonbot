@@ -34,7 +34,7 @@ class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
 
         if ($data['pull_request']['maintainer_can_modify'] ?? true) {
             if ($commentId) {
-                $this->commentsApi->removeComment($event->getRepository(), $commentId);
+                $this->commentsApi->minimizeComment($event->getRepository(), $commentId);
             }
 
             return;

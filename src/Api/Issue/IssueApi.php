@@ -38,7 +38,7 @@ interface IssueApi
      */
     public function close(Repository $repository, int $issueNumber): void;
 
-    public function findBotComment(Repository $repository, int $issueNumber, string $search): ?int;
+    public function findBotComment(Repository $repository, int $issueNumber, string $search): ?string;
 
-    public function removeComment(Repository $repository, int $commentId): void;
+    public function minimizeComment(Repository $repository, string $commentNodeId): void;
 }

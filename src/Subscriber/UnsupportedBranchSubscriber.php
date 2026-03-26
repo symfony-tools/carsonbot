@@ -46,7 +46,7 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
 
         if ($targetBranch === $data['repository']['default_branch'] || in_array($targetBranch, $validBranches)) {
             if ($commentId) {
-                $this->issueApi->removeComment($event->getRepository(), $commentId);
+                $this->issueApi->minimizeComment($event->getRepository(), $commentId);
             }
 
             return;
