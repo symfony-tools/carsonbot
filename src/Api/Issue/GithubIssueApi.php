@@ -93,21 +93,43 @@ class GithubIssueApi implements IssueApi
 
     public function findBotComment(Repository $repository, int $issueNumber, string $search): ?string
     {
-        $allComments = $this->issueCommentApi->all($repository->getVendor(), $repository->getName(), $issueNumber, ['per_page' => 100]);
-        foreach (array_reverse($allComments) as $comment) {
-            if ($this->botUsername !== ($comment['user']['login'] ?? null)) {
+        $result = $this->graphqlApi->execute('
+            query($owner: String!, $repo: String!, $number: Int!) {
+                repository(owner: $owner, name: $repo) {
+                    issueOrPullRequest(number: $number) {
+                        ... on Issue { comments(last: 100) { ...botCommentNodes } }
+                        ... on PullRequest { comments(last: 100) { ...botCommentNodes } }
+                    }
+                }
+            }
+            fragment botCommentNodes on IssueCommentConnection {
+                nodes { id body isMinimized author { login } }
+            }
+        ', [
+            'owner' => $repository->getVendor(),
+            'repo' => $repository->getName(),
+            'number' => $issueNumber,
+        ]);
+
+        $nodes = $result['data']['repository']['issueOrPullRequest']['comments']['nodes'] ?? [];
+        foreach (array_reverse($nodes) as $comment) {
+            if ($comment['isMinimized'] ?? false) {
+                continue;
+            }
+
+            if ($this->botUsername !== ($comment['author']['login'] ?? null)) {
                 continue;
             }
 
             if (str_contains($comment['body'] ?? '', $search)) {
-                return $comment['node_id'];
+                return $comment['id'];
             }
         }
 
         return null;
     }
 
-    public function minimizeComment(Repository $repository, string $commentNodeId): void
+    public function minimizeComment(string $commentNodeId): void
     {
         $this->graphqlApi->execute('
             mutation($subjectId: ID!) {

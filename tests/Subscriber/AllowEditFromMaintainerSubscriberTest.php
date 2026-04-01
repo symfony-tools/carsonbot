@@ -36,7 +36,7 @@ class AllowEditFromMaintainerSubscriberTest extends TestCase
 
         $this->issueApi->expects($this->once())
             ->method('minimizeComment')
-            ->with($this->repository, 'IC_kwNodeId666');
+            ->with('IC_kwNodeId666');
 
         $event = new GitHubEvent([
             'action' => 'edited',

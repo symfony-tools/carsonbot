@@ -221,7 +221,7 @@ TXT;
 
         $this->issueApi->expects($this->once())
             ->method('minimizeComment')
-            ->with($this->repository, 'IC_kwNodeId777');
+            ->with('IC_kwNodeId777');
 
         $body = <<<TXT
 | Q | A

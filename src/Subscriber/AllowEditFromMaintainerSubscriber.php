@@ -30,11 +30,13 @@ class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
 
         $repository = $event->getRepository();
         $pullRequestNumber = $data['pull_request']['number'];
-        $commentId = $this->commentsApi->findBotComment($repository, $pullRequestNumber, 'Allow edits from maintainer');
+        $commentId = 'opened' !== $data['action']
+            ? $this->commentsApi->findBotComment($repository, $pullRequestNumber, 'Allow edits from maintainer')
+            : null;
 
         if ($data['pull_request']['maintainer_can_modify'] ?? true) {
             if ($commentId) {
-                $this->commentsApi->minimizeComment($event->getRepository(), $commentId);
+                $this->commentsApi->minimizeComment($commentId);
             }
 
             return;

@@ -42,11 +42,13 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
         }
 
         $number = $data['pull_request']['number'];
-        $commentId = $this->issueApi->findBotComment($event->getRepository(), $number, 'target one of these branches instead');
+        $commentId = 'opened' !== $data['action']
+            ? $this->issueApi->findBotComment($event->getRepository(), $number, 'target one of these branches instead')
+            : null;
 
         if ($targetBranch === $data['repository']['default_branch'] || in_array($targetBranch, $validBranches)) {
             if ($commentId) {
-                $this->issueApi->minimizeComment($event->getRepository(), $commentId);
+                $this->issueApi->minimizeComment($commentId);
             }
 
             return;

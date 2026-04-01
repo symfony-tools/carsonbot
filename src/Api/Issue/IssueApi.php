@@ -40,5 +40,5 @@ interface IssueApi
 
     public function findBotComment(Repository $repository, int $issueNumber, string $search): ?string;
 
-    public function minimizeComment(Repository $repository, string $commentNodeId): void;
+    public function minimizeComment(string $commentNodeId): void;
 }

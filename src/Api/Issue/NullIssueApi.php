@@ -38,7 +38,7 @@ class NullIssueApi implements IssueApi
         return null;
     }
 
-    public function minimizeComment(Repository $repository, string $commentNodeId): void
+    public function minimizeComment(string $commentNodeId): void
     {
     }
 }

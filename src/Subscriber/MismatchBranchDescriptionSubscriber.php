@@ -38,11 +38,13 @@ class MismatchBranchDescriptionSubscriber implements EventSubscriberInterface
         }
 
         $targetBranch = $data['pull_request']['base']['ref'];
-        $commentId = $this->issueApi->findBotComment($event->getRepository(), $number, 'seems your PR description refers to branch');
+        $commentId = 'opened' !== $data['action']
+            ? $this->issueApi->findBotComment($event->getRepository(), $number, 'seems your PR description refers to branch')
+            : null;
 
         if ($targetBranch === $descriptionBranch) {
             if ($commentId) {
-                $this->issueApi->minimizeComment($event->getRepository(), $commentId);
+                $this->issueApi->minimizeComment($commentId);
             }
 
             return;

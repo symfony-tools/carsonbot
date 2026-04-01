@@ -114,7 +114,7 @@ class UnsupportedBranchSubscriberTest extends TestCase
 
         $this->issueApi->expects($this->once())
             ->method('minimizeComment')
-            ->with($this->repository, 'IC_kwNodeId888');
+            ->with('IC_kwNodeId888');
 
         $event = new GitHubEvent([
             'action' => 'edited',
