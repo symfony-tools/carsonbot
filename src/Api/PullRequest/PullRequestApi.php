@@ -22,4 +22,11 @@ interface PullRequestApi
     public function updateTitle(Repository $repository, int $number, string $title, ?string $body = null): void;
 
     public function getAuthorCount(Repository $repository, string $author): int;
+
+    /**
+     * Get list of files changed in a PR.
+     *
+     * @return list<string>
+     */
+    public function getFiles(Repository $repository, int $number): array;
 }

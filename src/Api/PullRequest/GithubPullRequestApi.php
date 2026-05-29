@@ -39,4 +39,14 @@ class GithubPullRequestApi implements PullRequestApi
 
         return $result['total_count'];
     }
+
+    public function getFiles(Repository $repository, int $number): array
+    {
+        $files = $this->pullRequest->files($repository->getVendor(), $repository->getName(), $number);
+
+        /** @var list<string> $result */
+        $result = array_values(array_map(fn (array $file): string => $file['filename'], $files));
+
+        return $result;
+    }
 }
