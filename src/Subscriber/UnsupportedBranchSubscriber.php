@@ -27,14 +27,11 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
     public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
-        if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
+        if (!in_array($data['action'], ['opened', 'ready_for_review', 'edited']) || ($data['pull_request']['draft'] ?? false)) {
             return;
         }
 
         $targetBranch = $data['pull_request']['base']['ref'];
-        if ($targetBranch === $data['repository']['default_branch']) {
-            return;
-        }
 
         try {
             $validBranches = $this->symfonyVersionProvider->getMaintainedVersions();
@@ -44,11 +41,24 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (in_array($targetBranch, $validBranches)) {
+        $number = $data['pull_request']['number'];
+        $commentId = 'opened' !== $data['action']
+            ? $this->issueApi->findBotComment($event->getRepository(), $number, 'target one of these branches instead')
+            : null;
+
+        if ($targetBranch === $data['repository']['default_branch'] || in_array($targetBranch, $validBranches)) {
+            if ($commentId) {
+                $this->issueApi->minimizeComment($commentId);
+            }
+
             return;
         }
 
-        $number = $data['pull_request']['number'];
+        // Avoid duplicate comments
+        if ($commentId) {
+            return;
+        }
+
         $validBranchesString = implode(', ', $validBranches);
         $this->issueApi->commentOnIssue($event->getRepository(), $number, <<<TXT
 Hey!
