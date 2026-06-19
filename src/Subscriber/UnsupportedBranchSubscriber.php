@@ -31,6 +31,11 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Ignore edits that only changed the title or body
+        if ('edited' === $data['action'] && !isset($data['changes']['base'])) {
+            return;
+        }
+
         $targetBranch = $data['pull_request']['base']['ref'];
 
         try {

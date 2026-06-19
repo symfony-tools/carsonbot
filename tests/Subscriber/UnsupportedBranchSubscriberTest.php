@@ -118,6 +118,7 @@ class UnsupportedBranchSubscriberTest extends TestCase
 
         $event = new GitHubEvent([
             'action' => 'edited',
+            'changes' => ['base' => ['ref' => ['from' => '4.3'], 'sha' => ['from' => 'abc123']]],
             'pull_request' => [
                 'number' => 1234,
                 'base' => ['ref' => '4.4'],
@@ -142,9 +143,30 @@ class UnsupportedBranchSubscriberTest extends TestCase
 
         $event = new GitHubEvent([
             'action' => 'edited',
+            'changes' => ['base' => ['ref' => ['from' => '4.4'], 'sha' => ['from' => 'abc123']]],
             'pull_request' => [
                 'number' => 1234,
-                'base' => ['ref' => '4.3'], // Unsupported branch
+                'base' => ['ref' => '4.3'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedWithoutBaseChangeIsIgnored()
+    {
+        $this->issueApi->expects($this->never())->method('findBotComment');
+        $this->issueApi->expects($this->never())->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['title' => ['from' => 'Old title']],
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '4.3'],
             ],
             'repository' => [
                 'default_branch' => '5.x',
