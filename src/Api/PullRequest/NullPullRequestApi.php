@@ -24,4 +24,9 @@ class NullPullRequestApi implements PullRequestApi
     {
         return 1;
     }
+
+    public function getFiles(Repository $repository, int $number): array
+    {
+        return [];
+    }
 }
