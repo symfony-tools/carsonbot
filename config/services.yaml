@@ -90,6 +90,20 @@ parameters:
                 - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
             secret: '%env(SYMFONY_UX_SECRET)%'
 
+        symfony/reprise:
+            subscribers:
+                - 'App\Subscriber\AutoLabelFromContentSubscriber'
+                - 'App\Subscriber\AutoUpdateTitleWithLabelSubscriber'
+                - 'App\Subscriber\StatusChangeByCommentSubscriber'
+                - 'App\Subscriber\StatusChangeOnPushSubscriber'
+                - 'App\Subscriber\StatusChangeByReviewSubscriber'
+                - 'App\Subscriber\NeedsReviewNewPRSubscriber'
+                - 'App\Subscriber\BugLabelNewIssueSubscriber'
+                - 'App\Subscriber\RemoveStalledLabelOnCommentSubscriber'
+                - 'App\Subscriber\RewriteUnwantedPhrasesSubscriber'
+                - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
+            secret: '%env(SYMFONY_REPRISE_SECRET)%'
+
         symfony/webpack-encore:
             subscribers:
                 - 'App\Subscriber\AutoLabelFromContentSubscriber'
