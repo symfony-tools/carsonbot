@@ -131,6 +131,21 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertSame('[ErrorHandler] restrict the maximum length of the X-Debug-Exception header', $responseData['new_title']);
     }
 
+    public function testTitleWithoutComponentLabelDoesNotGetLeadingSpace()
+    {
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => 'Release v8.1.6',
+            'labels' => [
+                ['name' => 'Status: Needs Review', 'color' => 'ededed'],
+            ],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+
+        $this->assertEmpty($event->getResponseData());
+    }
+
     public function testMultipleLabelsWithoutSpaceBetweenBrackets()
     {
         $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);

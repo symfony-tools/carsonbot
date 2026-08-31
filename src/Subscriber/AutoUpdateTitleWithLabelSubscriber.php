@@ -86,11 +86,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         }
 
         // Combine: valid labels + any unrecognized brackets + remaining title
-        if ('' !== trim($remainingTitle)) {
-            $prTitle = $prPrefix.$leadingBrackets.' '.trim($remainingTitle);
-        } else {
-            $prTitle = $prPrefix.$leadingBrackets;
-        }
+        $prTitle = trim($prPrefix.$leadingBrackets.' '.trim($remainingTitle));
 
         if ('symfony/ai' === $repository->getFullName()) {
             $prTitle = preg_replace('/\[ai[\s\-]*bundle\]/i', '[AI Bundle]', $prTitle) ?? $prTitle;
