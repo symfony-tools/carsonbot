@@ -4,6 +4,7 @@ namespace App\Tests\Api\Issue;
 
 use App\Api\Issue\GithubIssueApi;
 use App\Model\Repository;
+use Github\Api\GraphQL;
 use Github\Api\Issue;
 use Github\Api\Issue\Comments;
 use Github\Api\Search;
@@ -32,6 +33,8 @@ class GithubIssueApiTest extends TestCase
 
     private Search|MockObject $searchApi;
 
+    private GraphQL|MockObject $graphqlApi;
+
     private Repository $repository;
 
     protected function setUp(): void
@@ -52,11 +55,16 @@ class GithubIssueApiTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $this->graphqlApi = $this->getMockBuilder(GraphQL::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $this->api = new GithubIssueApi(
             $this->resultPager,
             $this->issueCommentApi,
             $this->backendApi,
             $this->searchApi,
+            $this->graphqlApi,
             self::BOT_USERNAME
         );
 
@@ -196,6 +204,58 @@ class GithubIssueApiTest extends TestCase
             );
 
         $this->api->open($this->repository, $title, $body, $labels);
+    }
+
+    public function testFindBotCommentReturnsNodeId()
+    {
+        $this->graphqlApi->expects($this->once())
+            ->method('execute')
+            ->willReturn([
+                'data' => ['repository' => ['issueOrPullRequest' => ['comments' => ['nodes' => [
+                    ['id' => 'IC_user', 'body' => 'some comment', 'isMinimized' => false, 'author' => ['login' => 'user1']],
+                    ['id' => 'IC_bot123', 'body' => 'Hey! target one of these branches instead', 'isMinimized' => false, 'author' => ['login' => self::BOT_USERNAME]],
+                ]]]]],
+            ]);
+
+        $this->assertSame('IC_bot123', $this->api->findBotComment($this->repository, 1234, 'target one of these branches instead'));
+    }
+
+    public function testFindBotCommentReturnsNullWhenNotFound()
+    {
+        $this->graphqlApi->expects($this->once())
+            ->method('execute')
+            ->willReturn([
+                'data' => ['repository' => ['issueOrPullRequest' => ['comments' => ['nodes' => [
+                    ['id' => 'IC_user', 'body' => 'some comment', 'isMinimized' => false, 'author' => ['login' => 'user1']],
+                ]]]]],
+            ]);
+
+        $this->assertNull($this->api->findBotComment($this->repository, 1234, 'target one of these branches instead'));
+    }
+
+    public function testFindBotCommentSkipsMinimizedComments()
+    {
+        $this->graphqlApi->expects($this->once())
+            ->method('execute')
+            ->willReturn([
+                'data' => ['repository' => ['issueOrPullRequest' => ['comments' => ['nodes' => [
+                    ['id' => 'IC_bot123', 'body' => 'Hey! target one of these branches instead', 'isMinimized' => true, 'author' => ['login' => self::BOT_USERNAME]],
+                ]]]]],
+            ]);
+
+        $this->assertNull($this->api->findBotComment($this->repository, 1234, 'target one of these branches instead'));
+    }
+
+    public function testMinimizeComment()
+    {
+        $this->graphqlApi->expects($this->once())
+            ->method('execute')
+            ->with(
+                $this->stringContains('minimizeComment'),
+                ['subjectId' => 'IC_bot123']
+            );
+
+        $this->api->minimizeComment('IC_bot123');
     }
 
     public function testFindStaleIssues()

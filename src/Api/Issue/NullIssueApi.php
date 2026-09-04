@@ -32,4 +32,13 @@ class NullIssueApi implements IssueApi
     public function close(Repository $repository, int $issueNumber): void
     {
     }
+
+    public function findBotComment(Repository $repository, int $issueNumber, string $search): ?string
+    {
+        return null;
+    }
+
+    public function minimizeComment(string $commentNodeId): void
+    {
+    }
 }
