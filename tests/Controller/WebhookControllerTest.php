@@ -65,7 +65,7 @@ class WebhookControllerTest extends WebTestCase
     public function testRequestWithInvalidSignatureIsRejected()
     {
         $body = file_get_contents(__DIR__.'/../webhook_examples/issue_comment.created.json');
-        $this->postWebhook('issue_comment', $body, 'sha1='.hash_hmac('sha1', $body, 'not-the-configured-secret'));
+        $this->postWebhook('issue_comment', $body, 'sha256='.hash_hmac('sha256', $body, 'not-the-configured-secret'));
 
         $this->assertResponseStatusCodeSame(403);
     }
@@ -74,7 +74,7 @@ class WebhookControllerTest extends WebTestCase
     {
         $server = ['HTTP_X-Github-Event' => $eventHeader];
         if (null !== $signature) {
-            $server['HTTP_X-Hub-Signature'] = $signature;
+            $server['HTTP_X-Hub-Signature-256'] = $signature;
         }
 
         $this->client->request('POST', '/webhooks/github', [], [], $server, $body);
@@ -86,7 +86,7 @@ class WebhookControllerTest extends WebTestCase
             ->getRepository('carsonbot-playground/symfony')
             ->getSecret();
 
-        return 'sha1='.hash_hmac('sha1', $body, $secret);
+        return 'sha256='.hash_hmac('sha256', $body, $secret);
     }
 
     /**
