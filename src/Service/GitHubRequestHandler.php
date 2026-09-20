@@ -29,7 +29,8 @@ class GitHubRequestHandler
      */
     public function handle(Request $request): array
     {
-        $data = json_decode($request->getContent(), true);
+        $content = $request->getContent();
+        $data = json_decode($content, true);
         if (null === $data) {
             throw new BadRequestHttpException('Invalid JSON body!');
         }
@@ -47,24 +48,17 @@ class GitHubRequestHandler
         }
 
         $secret = $repository->getSecret();
-        if (is_string($secret) && '' !== trim($secret)) {
-            if (!$request->headers->has('X-Hub-Signature')) {
-                throw new AccessDeniedHttpException('The request is not secured.');
-            }
+        if (null === $secret || '' === trim($secret)) {
+            throw new AccessDeniedHttpException(sprintf('No webhook secret configured for repository "%s".', $repository->getFullName()));
+        }
 
-            $content = $request->getContent();
-            if (!$content) {
-                throw new BadRequestHttpException('Empty request body!');
-            }
+        $signature = $request->headers->get('X-Hub-Signature');
+        if (null === $signature || '' === $signature) {
+            throw new AccessDeniedHttpException('The request is not secured.');
+        }
 
-            $signature = $request->headers->get('X-Hub-Signature');
-            if (!$signature) {
-                throw new BadRequestHttpException('Invalid signature!');
-            }
-
-            if (!$this->authenticate($signature, $secret, $content)) {
-                throw new AccessDeniedHttpException('Invalid signature.');
-            }
+        if (!$this->authenticate($signature, $secret, $content)) {
+            throw new AccessDeniedHttpException('Invalid signature.');
         }
 
         $event = new GitHubEvent($data, $repository);
