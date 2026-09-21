@@ -52,7 +52,7 @@ class GitHubRequestHandler
             throw new AccessDeniedHttpException(sprintf('No webhook secret configured for repository "%s".', $repository->getFullName()));
         }
 
-        $signature = $request->headers->get('X-Hub-Signature');
+        $signature = $request->headers->get('X-Hub-Signature-256');
         if (null === $signature || '' === $signature) {
             throw new AccessDeniedHttpException('The request is not secured.');
         }
@@ -92,10 +92,6 @@ class GitHubRequestHandler
 
     private function authenticate(string $hash, string $key, string $data): bool
     {
-        if (!extension_loaded('hash')) {
-            throw new \RuntimeException('"hash" extension is needed to check request signature.');
-        }
-
-        return hash_equals($hash, 'sha1='.hash_hmac('sha1', $data, $key));
+        return hash_equals($hash, 'sha256='.hash_hmac('sha256', $data, $key));
     }
 }

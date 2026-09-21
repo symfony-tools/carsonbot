@@ -36,9 +36,23 @@ class GitHubRequestHandlerTest extends TestCase
         $handler = $this->createHandler(['carsonbot-playground/symfony' => ['secret' => 'a_secret']]);
         $body = $this->createBody();
 
-        $responseData = $handler->handle($this->createRequest($body, 'sha1='.hash_hmac('sha1', $body, 'a_secret')));
+        $responseData = $handler->handle($this->createRequest($body, 'sha256='.hash_hmac('sha256', $body, 'a_secret')));
 
         $this->assertSame(['unsupported_action' => 'issues'], $responseData);
+    }
+
+    public function testLegacySha1SignatureIsRejected()
+    {
+        $handler = $this->createHandler(['carsonbot-playground/symfony' => ['secret' => 'a_secret']]);
+        $body = $this->createBody();
+
+        $request = $this->createRequest($body);
+        $request->headers->set('X-Hub-Signature', 'sha1='.hash_hmac('sha1', $body, 'a_secret'));
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->expectExceptionMessage('The request is not secured.');
+
+        $handler->handle($request);
     }
 
     /**
@@ -53,7 +67,7 @@ class GitHubRequestHandlerTest extends TestCase
     {
         $server = ['HTTP_X-Github-Event' => 'issues'];
         if (null !== $signature) {
-            $server['HTTP_X-Hub-Signature'] = $signature;
+            $server['HTTP_X-Hub-Signature-256'] = $signature;
         }
 
         return Request::create('/webhooks/github', 'POST', [], [], [], $server, $body);
