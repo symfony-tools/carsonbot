@@ -60,6 +60,7 @@ parameters:
                 - 'App\Subscriber\UpdateMilestoneWhenLabeledWaitingCodeMergeSubscriber'
                 - 'App\Subscriber\AllowEditFromMaintainerSubscriber'
                 - 'App\Subscriber\ApproveCiForNonContributors'
+            secret: '%env(CARSONBOT_PLAYGROUND_SECRET)%'
 
         symfony/ai:
             subscribers:
