@@ -20,7 +20,7 @@ class StaticLabelApi extends NullLabelApi
         'Enhancement', 'ErrorHandler', 'EventDispatcher', 'ExpressionLanguage',
         'Feature', 'Filesystem', 'Finder', 'Form', 'FrameworkBundle',
         'HttpClient', 'HttpFoundation', 'HttpKernel', 'Inflector', 'Intl', 'JsonPath', 'JsonStreamer', 'Ldap',
-        'Locale', 'Lock', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'Notifier', 'ObjectMapper',
+        'Locale', 'Lock', 'KeyManagement', 'Mailer', 'Messenger', 'Mime', 'MonologBridge', 'Notifier', 'ObjectMapper',
         'OptionsResolver', 'PasswordHasher', 'PhpUnitBridge', 'Process', 'PropertyAccess',
         'PropertyInfo', 'ProxyManagerBridge', 'PsrHttpMessageBridge', 'RemoteEvent', 'Routing',
         'Scheduler', 'Security', 'SecurityBundle', 'Serializer', 'Stopwatch', 'String',
