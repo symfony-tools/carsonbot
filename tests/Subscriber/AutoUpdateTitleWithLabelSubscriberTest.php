@@ -146,6 +146,39 @@ class AutoUpdateTitleWithLabelSubscriberTest extends TestCase
         $this->assertEmpty($event->getResponseData());
     }
 
+    public function testLabelInTheMiddleOfTheTitleIsKept()
+    {
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => '[HttpKernel][Lock] Document the #[Lock] attribute',
+            'labels' => [
+                ['name' => 'HttpKernel', 'color' => 'dddddd'],
+                ['name' => 'Lock', 'color' => 'dddddd'],
+            ],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+
+        $this->assertEmpty($event->getResponseData());
+    }
+
+    public function testLabelInTheMiddleOfTheTitleIsKeptWhenAddingThePrefix()
+    {
+        $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);
+        $this->pullRequestApi->method('show')->willReturn([
+            'title' => 'Add the #[Cache] attribute to [Console] commands',
+            'labels' => [
+                ['name' => 'Cache', 'color' => 'dddddd'],
+            ],
+        ]);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+        $this->assertCount(2, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+        $this->assertSame('[Cache] Add the #[Cache] attribute to [Console] commands', $responseData['new_title']);
+    }
+
     public function testMultipleLabelsWithoutSpaceBetweenBrackets()
     {
         $event = new GitHubEvent(['action' => 'labeled', 'number' => 1234, 'pull_request' => []], $this->repository);

@@ -48,6 +48,10 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         $originalTitle = $prTitle = trim($githubPullRequest['title'] ?? '');
         $validLabels = [];
 
+        // Only look for labels in the leading brackets: brackets further in the title are part of it, like a "#[Lock]" PHP attribute
+        $titleBody = (string) preg_replace('/^(?:\s*\[[^]]+])*/', '', $prTitle);
+        $prTitle = substr($prTitle, 0, strlen($prTitle) - strlen($titleBody));
+
         foreach ($githubPullRequest['labels'] ?? [] as $label) {
             if ('dddddd' === strtolower($label['color'])) {
                 $validLabels[] = $label['name'];
@@ -65,6 +69,7 @@ class AutoUpdateTitleWithLabelSubscriber implements EventSubscriberInterface
         foreach ($this->labelExtractor->extractLabels($prTitle, $repository) as $label) {
             $prTitle = str_ireplace('['.$label.']', '', $prTitle);
         }
+        $prTitle .= $titleBody;
 
         sort($validLabels);
         $prPrefix = '';
