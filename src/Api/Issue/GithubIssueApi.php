@@ -3,6 +3,7 @@
 namespace App\Api\Issue;
 
 use App\Model\Repository;
+use Github\Api\GraphQL;
 use Github\Api\Issue;
 use Github\Api\Issue\Comments;
 use Github\Api\Search;
@@ -15,6 +16,7 @@ class GithubIssueApi implements IssueApi
         private readonly Comments $issueCommentApi,
         private readonly Issue $issueApi,
         private readonly Search $searchApi,
+        private readonly GraphQL $graphqlApi,
         private readonly string $botUsername,
     ) {
     }
@@ -87,5 +89,54 @@ class GithubIssueApi implements IssueApi
             'updated',
             'desc',
         ]);
+    }
+
+    public function findBotComment(Repository $repository, int $issueNumber, string $search): ?string
+    {
+        $result = $this->graphqlApi->execute('
+            query($owner: String!, $repo: String!, $number: Int!) {
+                repository(owner: $owner, name: $repo) {
+                    issueOrPullRequest(number: $number) {
+                        ... on Issue { comments(last: 100) { ...botCommentNodes } }
+                        ... on PullRequest { comments(last: 100) { ...botCommentNodes } }
+                    }
+                }
+            }
+            fragment botCommentNodes on IssueCommentConnection {
+                nodes { id body isMinimized author { login } }
+            }
+        ', [
+            'owner' => $repository->getVendor(),
+            'repo' => $repository->getName(),
+            'number' => $issueNumber,
+        ]);
+
+        $nodes = $result['data']['repository']['issueOrPullRequest']['comments']['nodes'] ?? [];
+        foreach (array_reverse($nodes) as $comment) {
+            if ($comment['isMinimized'] ?? false) {
+                continue;
+            }
+
+            if ($this->botUsername !== ($comment['author']['login'] ?? null)) {
+                continue;
+            }
+
+            if (str_contains($comment['body'] ?? '', $search)) {
+                return $comment['id'];
+            }
+        }
+
+        return null;
+    }
+
+    public function minimizeComment(string $commentNodeId): void
+    {
+        $this->graphqlApi->execute('
+            mutation($subjectId: ID!) {
+                minimizeComment(input: {subjectId: $subjectId, classifier: OUTDATED}) {
+                    minimizedComment { isMinimized }
+                }
+            }
+        ', ['subjectId' => $commentNodeId]);
     }
 }
