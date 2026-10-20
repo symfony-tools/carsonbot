@@ -104,4 +104,75 @@ class UnsupportedBranchSubscriberTest extends TestCase
         $responseData = $event->getResponseData();
         $this->assertEmpty($responseData);
     }
+
+    public function testOnPullRequestEditedCleanup()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('findBotComment')
+            ->with($this->repository, 1234, 'target one of these branches instead')
+            ->willReturn('IC_kwNodeId888');
+
+        $this->issueApi->expects($this->once())
+            ->method('minimizeComment')
+            ->with('IC_kwNodeId888');
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['base' => ['ref' => ['from' => '4.3'], 'sha' => ['from' => 'abc123']]],
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '4.4'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedIdempotency()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('findBotComment')
+            ->with($this->repository, 1234, 'target one of these branches instead')
+            ->willReturn('IC_kwNodeId888');
+
+        $this->issueApi->expects($this->never())
+            ->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['base' => ['ref' => ['from' => '4.4'], 'sha' => ['from' => 'abc123']]],
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '4.3'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedWithoutBaseChangeIsIgnored()
+    {
+        $this->issueApi->expects($this->never())->method('findBotComment');
+        $this->issueApi->expects($this->never())->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['title' => ['from' => 'Old title']],
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '4.3'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
 }
