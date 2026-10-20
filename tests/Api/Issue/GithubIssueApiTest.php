@@ -6,8 +6,10 @@ use App\Api\Issue\GithubIssueApi;
 use App\Model\Repository;
 use Github\Api\Issue;
 use Github\Api\Issue\Comments;
+use Github\Api\Issue\Timeline;
 use Github\Api\Search;
 use Github\ResultPager;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -32,6 +34,8 @@ class GithubIssueApiTest extends TestCase
 
     private Search|MockObject $searchApi;
 
+    private Timeline|MockObject $timelineApi;
+
     private Repository $repository;
 
     protected function setUp(): void
@@ -51,6 +55,14 @@ class GithubIssueApiTest extends TestCase
         $this->searchApi = $this->getMockBuilder(Search::class)
             ->disableOriginalConstructor()
             ->getMock();
+
+        $this->timelineApi = $this->getMockBuilder(Timeline::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->backendApi->expects($this->any())
+            ->method('timeline')
+            ->willReturn($this->timelineApi);
 
         $this->api = new GithubIssueApi(
             $this->resultPager,
@@ -198,27 +210,81 @@ class GithubIssueApiTest extends TestCase
         $this->api->open($this->repository, $title, $body, $labels);
     }
 
+    #[DataProvider('provideTimelines')]
+    public function testHasOpenPullRequest(array $events, bool $expected)
+    {
+        $this->resultPager->expects($this->once())
+            ->method('fetchAllLazy')
+            ->with($this->timelineApi, 'all', [self::USER_NAME, self::REPO_NAME, 1234])
+            ->willReturn((fn () => yield from $events)());
+
+        $this->assertSame($expected, $this->api->hasOpenPullRequest($this->repository, 1234));
+    }
+
+    public static function provideTimelines(): iterable
+    {
+        $pullRequest = static fn (string $state, string $repository = self::USER_NAME.'/'.self::REPO_NAME): array => [
+            'event' => 'cross-referenced',
+            'source' => ['type' => 'issue', 'issue' => [
+                'state' => $state,
+                'pull_request' => [],
+                'repository' => ['full_name' => $repository],
+            ]],
+        ];
+
+        yield 'no events' => [[], false];
+        yield 'open pull request' => [[['event' => 'commented'], $pullRequest('open')], true];
+        yield 'closed pull request' => [[$pullRequest('closed')], false];
+        yield 'pull request of another repository' => [[$pullRequest('open', 'other/repo')], false];
+        yield 'issue' => [[[
+            'event' => 'cross-referenced',
+            'source' => ['type' => 'issue', 'issue' => [
+                'state' => 'open',
+                'repository' => ['full_name' => self::USER_NAME.'/'.self::REPO_NAME],
+            ]],
+        ]], false];
+    }
+
     public function testFindStaleIssues()
     {
         $date = new \DateTimeImmutable('2022-01-01');
-        $expectedResults = [
+        $issues = [
             ['number' => 1234, 'title' => 'Stale issue 1'],
             ['number' => 5678, 'title' => 'Stale issue 2'],
         ];
+        $openPullRequest = [
+            'event' => 'cross-referenced',
+            'source' => ['type' => 'issue', 'issue' => [
+                'state' => 'open',
+                'pull_request' => [],
+                'repository' => ['full_name' => self::USER_NAME.'/'.self::REPO_NAME],
+            ]],
+        ];
 
-        $this->resultPager->expects($this->once())
+        $this->resultPager->expects($this->exactly(3))
             ->method('fetchAllLazy')
-            ->with(
-                $this->searchApi,
-                'issues',
-                [
-                    sprintf('repo:%s/%s is:issue -label:"Keep open" -label:"Missing translations" is:open -linked:pr updated:<2022-01-01', self::USER_NAME, self::REPO_NAME),
-                    'updated',
-                    'desc',
-                ]
-            )
-            ->willReturn((fn () => yield from $expectedResults)());
+            ->willReturnCallback(function ($api, string $method, array $parameters) use ($issues, $openPullRequest) {
+                if ($this->searchApi === $api) {
+                    $this->assertSame('issues', $method);
+                    $this->assertSame([
+                        sprintf('repo:%s/%s is:issue -label:"Keep open" -label:"Missing translations" is:open -linked:pr updated:<2022-01-01', self::USER_NAME, self::REPO_NAME),
+                        'updated',
+                        'desc',
+                    ], $parameters);
 
-        $this->assertSame($expectedResults, iterator_to_array($this->api->findStaleIssues($this->repository, $date)));
+                    yield from $issues;
+
+                    return;
+                }
+
+                $this->assertSame($this->timelineApi, $api);
+
+                // the second issue has a pull request targeting a maintenance branch
+                if (5678 === $parameters[2]) {
+                    yield $openPullRequest;
+                }
+            });
+
+        $this->assertSame([$issues[0]], iterator_to_array($this->api->findStaleIssues($this->repository, $date), false));
     }
 }

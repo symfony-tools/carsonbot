@@ -27,7 +27,7 @@ class InformAboutClosingStaleIssuesHandler implements TaskHandlerInterface
     }
 
     /**
-     * Close the issue if the last comment was made by the bot and "Keep open" label does not exist.
+     * Close the issue if the last comment was made by the bot and neither a "Keep open" label nor an open pull request exist.
      */
     public function handle(Task $task): void
     {
@@ -41,7 +41,7 @@ class InformAboutClosingStaleIssuesHandler implements TaskHandlerInterface
         }
 
         $labels = $this->labelApi->getIssueLabels($task->getNumber(), $repository);
-        if (in_array('Keep open', $labels)) {
+        if (in_array('Keep open', $labels) || $this->issueApi->hasOpenPullRequest($repository, $task->getNumber())) {
             $this->labelApi->removeIssueLabel($task->getNumber(), 'Stalled', $repository);
 
             return;
