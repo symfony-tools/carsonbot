@@ -24,6 +24,11 @@ class NullIssueApi implements IssueApi
         return false;
     }
 
+    public function hasOpenPullRequest(Repository $repository, int $issueNumber): bool
+    {
+        return false;
+    }
+
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable
     {
         return [];

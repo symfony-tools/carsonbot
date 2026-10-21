@@ -49,6 +49,25 @@ class GithubIssueApi implements IssueApi
         return $this->botUsername === ($lastComment['user']['login'] ?? null);
     }
 
+    public function hasOpenPullRequest(Repository $repository, int $issueNumber): bool
+    {
+        $events = $this->resultPager->fetchAllLazy($this->issueApi->timeline(), 'all', [$repository->getVendor(), $repository->getName(), $issueNumber]);
+
+        foreach ($events as $event) {
+            $source = $event['source']['issue'] ?? null;
+
+            if ('cross-referenced' === ($event['event'] ?? null)
+                && isset($source['pull_request'])
+                && 'open' === $source['state']
+                && $repository->getFullName() === ($source['repository']['full_name'] ?? null)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function show(Repository $repository, int $issueNumber): array
     {
         return $this->issueApi->show($repository->getVendor(), $repository->getName(), $issueNumber);
@@ -82,10 +101,18 @@ class GithubIssueApi implements IssueApi
 
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable
     {
-        return $this->resultPager->fetchAllLazy($this->searchApi, 'issues', [
+        $issues = $this->resultPager->fetchAllLazy($this->searchApi, 'issues', [
             sprintf('repo:%s is:issue -label:"Keep open" -label:"Missing translations" is:open -linked:pr updated:<%s', $repository->getFullName(), $noUpdateAfter->format('Y-m-d')),
             'updated',
             'desc',
         ]);
+
+        foreach ($issues as $issue) {
+            // "-linked:pr" misses the pull requests that target a maintenance branch,
+            // and the work going on in them does not update the issue
+            if (!$this->hasOpenPullRequest($repository, $issue['number'])) {
+                yield $issue;
+            }
+        }
     }
 }

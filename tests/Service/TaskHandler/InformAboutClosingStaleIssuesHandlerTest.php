@@ -98,4 +98,32 @@ class InformAboutClosingStaleIssuesHandlerTest extends TestCase
         $handler = new InformAboutClosingStaleIssuesHandler($labelApi, $issueApi, $repoProvider, new StaleIssueCommentGenerator(), $scheduler);
         $handler->handle(new Task('carsonbot-playground/symfony', 4711, Task::ACTION_CLOSE_STALE, new \DateTimeImmutable()));
     }
+
+    public function testHandleOpenPullRequest()
+    {
+        $labelApi = $this->getMockBuilder(NullLabelApi::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $labelApi->expects($this->any())->method('getIssueLabels')->willReturn(['Bug']);
+        $labelApi->expects($this->once())->method('removeIssueLabel')->with(4711, 'Stalled', $this->anything());
+
+        $issueApi = $this->getMockBuilder(NullIssueApi::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $issueApi->expects($this->any())->method('show')->willReturn(['state' => 'open']);
+        $issueApi->expects($this->any())->method('lastCommentWasMadeByBot')->willReturn(true);
+        $issueApi->expects($this->any())->method('hasOpenPullRequest')->willReturn(true);
+        $issueApi->expects($this->never())->method('commentOnIssue');
+
+        $scheduler = $this->getMockBuilder(TaskScheduler::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['runLater'])
+            ->getMock();
+        $scheduler->expects($this->never())->method('runLater');
+
+        $repoProvider = new RepositoryProvider(['carsonbot-playground/symfony' => []]);
+
+        $handler = new InformAboutClosingStaleIssuesHandler($labelApi, $issueApi, $repoProvider, new StaleIssueCommentGenerator(), $scheduler);
+        $handler->handle(new Task('carsonbot-playground/symfony', 4711, Task::ACTION_INFORM_CLOSE_STALE, new \DateTimeImmutable()));
+    }
 }

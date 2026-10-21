@@ -29,6 +29,14 @@ interface IssueApi
     public function lastCommentWasMadeByBot(Repository $repository, int $number): bool;
 
     /**
+     * Tells whether an open pull request of the same repository references the issue.
+     *
+     * GitHub links a pull request to the issues it fixes only when it targets the default
+     * branch, so this also catches the ones that target a maintenance branch.
+     */
+    public function hasOpenPullRequest(Repository $repository, int $issueNumber): bool;
+
+    /**
      * @return iterable<array<string, mixed>>
      */
     public function findStaleIssues(Repository $repository, \DateTimeImmutable $noUpdateAfter): iterable;
