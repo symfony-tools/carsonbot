@@ -3,6 +3,7 @@
 namespace App\Subscriber;
 
 use App\Api\Issue\IssueApi;
+use App\Api\Milestone\MilestoneApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use Psr\Log\LoggerInterface;
@@ -17,6 +18,7 @@ class MismatchBranchDescriptionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly IssueApi $issueApi,
+        private readonly MilestoneApi $milestoneApi,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -39,6 +41,11 @@ class MismatchBranchDescriptionSubscriber implements EventSubscriberInterface
 
         $targetBranch = $data['pull_request']['base']['ref'];
         if ($targetBranch === $descriptionBranch) {
+            return;
+        }
+
+        // The next version gets a milestone before it gets a branch
+        if ($targetBranch === $data['repository']['default_branch'] && version_compare($descriptionBranch, $targetBranch, '>') && $this->milestoneApi->exists($event->getRepository(), $descriptionBranch)) {
             return;
         }
 

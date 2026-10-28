@@ -4,6 +4,7 @@ namespace App\Tests\Subscriber;
 
 use App\Api\Issue\IssueApi;
 use App\Api\Issue\NullIssueApi;
+use App\Api\Milestone\MilestoneApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
@@ -33,7 +34,10 @@ final class MismatchBranchDescriptionSubscriberTest extends TestCase
     {
         $this->issueApi = $this->createMock(NullIssueApi::class);
 
-        $subscriber = new MismatchBranchDescriptionSubscriber($this->issueApi, new NullLogger());
+        $milestoneApi = $this->createStub(MilestoneApi::class);
+        $milestoneApi->method('exists')->willReturnCallback(fn (Repository $repository, string $milestoneName) => in_array($milestoneName, ['6.1', '6.2', '6.3']));
+
+        $subscriber = new MismatchBranchDescriptionSubscriber($this->issueApi, $milestoneApi, new NullLogger());
         $this->repository = new Repository('carsonbot-playground', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
@@ -119,6 +123,107 @@ TXT;
                     'ref' => '6.2',
                 ],
             ],
+            'repository' => [
+                'default_branch' => '6.2',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(1, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+    }
+
+    public function testOnPullRequestOpenNextVersion()
+    {
+        $this->issueApi->expects($this->never())
+            ->method('commentOnIssue');
+
+        $body = <<<TXT
+| Q             | A
+| ------------- | ---
+| Branch?       | 6.3
+| Bug fix?      | no
+TXT;
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'body' => $body,
+                'base' => [
+                    'ref' => '6.2',
+                ],
+            ],
+            'repository' => [
+                'default_branch' => '6.2',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(0, $responseData);
+    }
+
+    public function testOnPullRequestOpenNextVersionWithoutMilestone()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('commentOnIssue');
+
+        $body = <<<TXT
+| Q             | A
+| ------------- | ---
+| Branch?       | 6.4
+| Bug fix?      | no
+TXT;
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'body' => $body,
+                'base' => [
+                    'ref' => '6.2',
+                ],
+            ],
+            'repository' => [
+                'default_branch' => '6.2',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $responseData = $event->getResponseData();
+
+        $this->assertCount(1, $responseData);
+        $this->assertSame(1234, $responseData['pull_request']);
+    }
+
+    public function testOnPullRequestOpenNextVersionOnMaintenanceBranch()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('commentOnIssue');
+
+        $body = <<<TXT
+| Q             | A
+| ------------- | ---
+| Branch?       | 6.3
+| Bug fix?      | yes
+TXT;
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'body' => $body,
+                'base' => [
+                    'ref' => '6.1',
+                ],
+            ],
+            'repository' => [
+                'default_branch' => '6.2',
+            ],
         ], $this->repository);
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
@@ -176,6 +281,9 @@ TXT;
                 'base' => [
                     'ref' => '6.2',
                 ],
+            ],
+            'repository' => [
+                'default_branch' => '6.2',
             ],
         ], $this->repository);
 
