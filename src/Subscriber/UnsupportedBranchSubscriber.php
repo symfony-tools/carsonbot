@@ -27,28 +27,47 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
     public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
-        if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
+        if (!in_array($data['action'], ['opened', 'ready_for_review', 'edited']) || ($data['pull_request']['draft'] ?? false)) {
+            return;
+        }
+
+        if ('edited' === $data['action'] && !isset($data['changes']['base'])) {
             return;
         }
 
         $targetBranch = $data['pull_request']['base']['ref'];
-        if ($targetBranch === $data['repository']['default_branch']) {
-            return;
-        }
+        $validBranches = [];
+        $isSupported = $targetBranch === $data['repository']['default_branch'];
 
-        try {
-            $validBranches = $this->symfonyVersionProvider->getMaintainedVersions();
-        } catch (\Throwable $e) {
-            $this->logger->error('Failed to get valid branches', ['exception' => $e]);
+        if (!$isSupported) {
+            try {
+                $validBranches = $this->symfonyVersionProvider->getMaintainedVersions();
+            } catch (\Throwable $e) {
+                $this->logger->error('Failed to get valid branches', ['exception' => $e]);
 
-            return;
-        }
+                return;
+            }
 
-        if (in_array($targetBranch, $validBranches)) {
-            return;
+            $isSupported = in_array($targetBranch, $validBranches);
         }
 
         $number = $data['pull_request']['number'];
+        $commentId = 'opened' !== $data['action']
+            ? $this->issueApi->findBotComment($event->getRepository(), $number, 'target one of these branches instead')
+            : null;
+
+        if ($isSupported) {
+            if ($commentId) {
+                $this->issueApi->minimizeComment($commentId);
+            }
+
+            return;
+        }
+
+        if ($commentId) {
+            return;
+        }
+
         $validBranchesString = implode(', ', $validBranches);
         $this->issueApi->commentOnIssue($event->getRepository(), $number, <<<TXT
 Hey!

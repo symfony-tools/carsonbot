@@ -20,11 +20,7 @@ class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
     public function onPullRequest(GitHubEvent $event): void
     {
         $data = $event->getData();
-        if (!in_array($data['action'], ['opened', 'ready_for_review']) || ($data['pull_request']['draft'] ?? false)) {
-            return;
-        }
-
-        if ($data['pull_request']['maintainer_can_modify'] ?? true) {
+        if (!in_array($data['action'], ['opened', 'ready_for_review', 'edited']) || ($data['pull_request']['draft'] ?? false)) {
             return;
         }
 
@@ -34,6 +30,24 @@ class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
 
         $repository = $event->getRepository();
         $pullRequestNumber = $data['pull_request']['number'];
+
+        if ($data['pull_request']['maintainer_can_modify'] ?? true) {
+            if ('opened' !== $data['action'] && $commentId = $this->commentsApi->findBotComment($repository, $pullRequestNumber, 'Allow edits from maintainer')) {
+                $this->commentsApi->minimizeComment($commentId);
+            }
+
+            return;
+        }
+
+        // Carsonbot edits new PRs itself, so commenting on "edited" could duplicate the comment posted on "opened"
+        if ('edited' === $data['action']) {
+            return;
+        }
+
+        if ('ready_for_review' === $data['action'] && $this->commentsApi->findBotComment($repository, $pullRequestNumber, 'Allow edits from maintainer')) {
+            return;
+        }
+
         $this->commentsApi->commentOnIssue($repository, $pullRequestNumber, <<<TXT
 It looks like you unchecked the "Allow edits from maintainer" box. That is fine, but please note that if you have multiple commits, you'll need to squash your commits into one before this can be merged. Or, you can check the "Allow edits from maintainers" box and the maintainer can squash for you.
 

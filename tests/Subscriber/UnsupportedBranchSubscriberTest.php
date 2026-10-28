@@ -9,6 +9,7 @@ use App\GitHubEvents;
 use App\Model\Repository;
 use App\Service\SymfonyVersionProvider;
 use App\Subscriber\UnsupportedBranchSubscriber;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -30,16 +31,18 @@ class UnsupportedBranchSubscriberTest extends TestCase
      */
     private $dispatcher;
 
+    private SymfonyVersionProvider|MockObject $symfonyVersionProvider;
+
     protected function setUp(): void
     {
         $this->issueApi = $this->createMock(NullIssueApi::class);
-        $symfonyVersionProvider = $this->getMockBuilder(SymfonyVersionProvider::class)
+        $this->symfonyVersionProvider = $this->getMockBuilder(SymfonyVersionProvider::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getMaintainedVersions'])
             ->getMock();
-        $symfonyVersionProvider->method('getMaintainedVersions')->willReturn(['4.4', '5.1']);
+        $this->symfonyVersionProvider->method('getMaintainedVersions')->willReturn(['4.4', '5.1']);
 
-        $subscriber = new UnsupportedBranchSubscriber($symfonyVersionProvider, $this->issueApi, new NullLogger());
+        $subscriber = new UnsupportedBranchSubscriber($this->symfonyVersionProvider, $this->issueApi, new NullLogger());
         $this->repository = new Repository('carsonbot-playground', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
@@ -91,6 +94,27 @@ class UnsupportedBranchSubscriberTest extends TestCase
         $this->assertEmpty($responseData);
     }
 
+    public function testOnPullRequestOpenTargetingDefaultBranchDoesNotFetchVersions()
+    {
+        $this->symfonyVersionProvider->expects($this->never())->method('getMaintainedVersions');
+        $this->issueApi->expects($this->never())->method('findBotComment');
+        $this->issueApi->expects($this->never())->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '5.x'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $this->assertEmpty($event->getResponseData());
+    }
+
     public function testOnPullRequestNotOpen()
     {
         $this->issueApi->expects($this->never())
@@ -103,5 +127,104 @@ class UnsupportedBranchSubscriberTest extends TestCase
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $responseData = $event->getResponseData();
         $this->assertEmpty($responseData);
+    }
+
+    public function testOnPullRequestEditedCleanup()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('findBotComment')
+            ->with($this->repository, 1234, 'target one of these branches instead')
+            ->willReturn('IC_kwNodeId888');
+
+        $this->issueApi->expects($this->once())
+            ->method('minimizeComment')
+            ->with('IC_kwNodeId888');
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['base' => ['ref' => ['from' => '4.3'], 'sha' => ['from' => 'abc123']]],
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '4.4'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedToDefaultBranchCleanup()
+    {
+        $this->symfonyVersionProvider->expects($this->never())->method('getMaintainedVersions');
+
+        $this->issueApi->expects($this->once())
+            ->method('findBotComment')
+            ->with($this->repository, 1234, 'target one of these branches instead')
+            ->willReturn('IC_kwNodeId888');
+
+        $this->issueApi->expects($this->once())
+            ->method('minimizeComment')
+            ->with('IC_kwNodeId888');
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['base' => ['ref' => ['from' => '4.3'], 'sha' => ['from' => 'abc123']]],
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '5.x'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedIdempotency()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('findBotComment')
+            ->with($this->repository, 1234, 'target one of these branches instead')
+            ->willReturn('IC_kwNodeId888');
+
+        $this->issueApi->expects($this->never())
+            ->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['base' => ['ref' => ['from' => '4.4'], 'sha' => ['from' => 'abc123']]],
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '4.3'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedWithoutBaseChangeIsIgnored()
+    {
+        $this->issueApi->expects($this->never())->method('findBotComment');
+        $this->issueApi->expects($this->never())->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['title' => ['from' => 'Old title']],
+            'pull_request' => [
+                'number' => 1234,
+                'base' => ['ref' => '4.3'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
     }
 }

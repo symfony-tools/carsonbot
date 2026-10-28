@@ -319,4 +319,87 @@ TXT;
 
         $this->assertCount(0, $responseData);
     }
+
+    public function testOnPullRequestEditedCleanup()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('findBotComment')
+            ->with($this->repository, 1234, 'seems your PR description refers to branch')
+            ->willReturn('IC_kwNodeId777');
+
+        $this->issueApi->expects($this->once())
+            ->method('minimizeComment')
+            ->with('IC_kwNodeId777');
+
+        $body = <<<TXT
+| Q | A
+| --- | ---
+| Branch? | 6.2 |
+TXT;
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['base' => ['ref' => ['from' => '5.4'], 'sha' => ['from' => 'abc123']]],
+            'pull_request' => [
+                'number' => 1234,
+                'body' => $body,
+                'base' => ['ref' => '6.2'],
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedIdempotency()
+    {
+        $this->issueApi->expects($this->once())
+            ->method('findBotComment')
+            ->with($this->repository, 1234, 'seems your PR description refers to branch')
+            ->willReturn('IC_kwNodeId777');
+
+        $this->issueApi->expects($this->never())
+            ->method('commentOnIssue');
+
+        $body = <<<TXT
+| Q | A
+| --- | ---
+| Branch? | 6.2 |
+TXT;
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['body' => ['from' => '']],
+            'pull_request' => [
+                'number' => 1234,
+                'body' => $body,
+                'base' => ['ref' => '5.4'],
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedTitleIsIgnored()
+    {
+        $this->issueApi->expects($this->never())->method('findBotComment');
+        $this->issueApi->expects($this->never())->method('commentOnIssue');
+
+        $body = <<<TXT
+| Q | A
+| --- | ---
+| Branch? | 6.2 |
+TXT;
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['title' => ['from' => 'Old title']],
+            'pull_request' => [
+                'number' => 1234,
+                'body' => $body,
+                'base' => ['ref' => '5.4'],
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
 }
