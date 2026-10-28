@@ -19,14 +19,21 @@ class GithubWorkflowApi implements WorkflowApi
 
     public function approveWorkflowsForPullRequest(Repository $repository, string $headRepository, string $headBranch): void
     {
-        $runs = $this->resultPager->fetchAllLazy($this->workflowApi, 'all', [$repository->getVendor(), $repository->getName(), [
+        $pages = $this->resultPager->fetchAllLazy($this->workflowApi, 'all', [$repository->getVendor(), $repository->getName(), [
             'branch' => $headBranch,
             'status' => 'action_required',
         ]]);
 
-        foreach ($runs as $run) {
-            if ($headRepository === $run['head_repository']['full_name']) {
-                $this->workflowApi->approve($repository->getVendor(), $repository->getName(), $run['id']);
+        // Each page is a {"total_count": ..., "workflow_runs": [...]} object, not a list of runs
+        foreach ($pages as $key => $runs) {
+            if ('workflow_runs' !== $key) {
+                continue;
+            }
+
+            foreach ($runs as $run) {
+                if ($headRepository === $run['head_repository']['full_name']) {
+                    $this->workflowApi->approve($repository->getVendor(), $repository->getName(), $run['id']);
+                }
             }
         }
     }
