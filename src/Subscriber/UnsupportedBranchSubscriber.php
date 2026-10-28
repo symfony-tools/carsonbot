@@ -31,19 +31,24 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Ignore edits that only changed the title or body
         if ('edited' === $data['action'] && !isset($data['changes']['base'])) {
             return;
         }
 
         $targetBranch = $data['pull_request']['base']['ref'];
+        $validBranches = [];
+        $isSupported = $targetBranch === $data['repository']['default_branch'];
 
-        try {
-            $validBranches = $this->symfonyVersionProvider->getMaintainedVersions();
-        } catch (\Throwable $e) {
-            $this->logger->error('Failed to get valid branches', ['exception' => $e]);
+        if (!$isSupported) {
+            try {
+                $validBranches = $this->symfonyVersionProvider->getMaintainedVersions();
+            } catch (\Throwable $e) {
+                $this->logger->error('Failed to get valid branches', ['exception' => $e]);
 
-            return;
+                return;
+            }
+
+            $isSupported = in_array($targetBranch, $validBranches);
         }
 
         $number = $data['pull_request']['number'];
@@ -51,7 +56,7 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
             ? $this->issueApi->findBotComment($event->getRepository(), $number, 'target one of these branches instead')
             : null;
 
-        if ($targetBranch === $data['repository']['default_branch'] || in_array($targetBranch, $validBranches)) {
+        if ($isSupported) {
             if ($commentId) {
                 $this->issueApi->minimizeComment($commentId);
             }
@@ -59,7 +64,6 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Avoid duplicate comments
         if ($commentId) {
             return;
         }

@@ -51,7 +51,29 @@ class AllowEditFromMaintainerSubscriberTest extends TestCase
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
     }
 
-    public function testOnPullRequestEditedIdempotency()
+    public function testOnPullRequestOpened()
+    {
+        $this->issueApi->expects($this->never())->method('findBotComment');
+        $this->issueApi->expects($this->once())
+            ->method('commentOnIssue')
+            ->with($this->repository, 1234, $this->stringContains('Allow edits from maintainer'));
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'maintainer_can_modify' => false,
+                'head' => ['repo' => ['full_name' => 'contributor/symfony']],
+            ],
+            'repository' => ['full_name' => 'fabpot/symfony', 'owner' => ['login' => 'fabpot'], 'name' => 'symfony'],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+
+        $this->assertSame(['pull_request' => 1234, 'squash_comment' => true], $event->getResponseData());
+    }
+
+    public function testOnPullRequestReadyForReviewIdempotency()
     {
         $this->issueApi->expects($this->once())
             ->method('findBotComment')
@@ -60,6 +82,24 @@ class AllowEditFromMaintainerSubscriberTest extends TestCase
 
         $this->issueApi->expects($this->never())
             ->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'ready_for_review',
+            'pull_request' => [
+                'number' => 1234,
+                'maintainer_can_modify' => false,
+                'head' => ['repo' => ['full_name' => 'contributor/symfony']],
+            ],
+            'repository' => ['full_name' => 'fabpot/symfony', 'owner' => ['login' => 'fabpot'], 'name' => 'symfony'],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedDoesNotComment()
+    {
+        $this->issueApi->expects($this->never())->method('findBotComment');
+        $this->issueApi->expects($this->never())->method('commentOnIssue');
 
         $event = new GitHubEvent([
             'action' => 'edited',

@@ -28,6 +28,10 @@ class MismatchBranchDescriptionSubscriber implements EventSubscriberInterface
             return;
         }
 
+        if ('edited' === $data['action'] && !isset($data['changes']['body']) && !isset($data['changes']['base'])) {
+            return;
+        }
+
         $number = $data['pull_request']['number'];
 
         $descriptionBranch = $this->extractDescriptionBranchFromBody($data['pull_request']['body']);
@@ -50,7 +54,6 @@ class MismatchBranchDescriptionSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Avoid duplicate comments
         if ($commentId) {
             return;
         }

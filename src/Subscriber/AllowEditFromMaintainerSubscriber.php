@@ -30,20 +30,21 @@ class AllowEditFromMaintainerSubscriber implements EventSubscriberInterface
 
         $repository = $event->getRepository();
         $pullRequestNumber = $data['pull_request']['number'];
-        $commentId = 'opened' !== $data['action']
-            ? $this->commentsApi->findBotComment($repository, $pullRequestNumber, 'Allow edits from maintainer')
-            : null;
 
         if ($data['pull_request']['maintainer_can_modify'] ?? true) {
-            if ($commentId) {
+            if ('opened' !== $data['action'] && $commentId = $this->commentsApi->findBotComment($repository, $pullRequestNumber, 'Allow edits from maintainer')) {
                 $this->commentsApi->minimizeComment($commentId);
             }
 
             return;
         }
 
-        // Avoid duplicate comments
-        if ($commentId) {
+        // Carsonbot edits new PRs itself, so commenting on "edited" could duplicate the comment posted on "opened"
+        if ('edited' === $data['action']) {
+            return;
+        }
+
+        if ('ready_for_review' === $data['action'] && $this->commentsApi->findBotComment($repository, $pullRequestNumber, 'Allow edits from maintainer')) {
             return;
         }
 

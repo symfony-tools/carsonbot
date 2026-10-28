@@ -231,6 +231,7 @@ TXT;
 
         $event = new GitHubEvent([
             'action' => 'edited',
+            'changes' => ['base' => ['ref' => ['from' => '5.4'], 'sha' => ['from' => 'abc123']]],
             'pull_request' => [
                 'number' => 1234,
                 'body' => $body,
@@ -259,10 +260,35 @@ TXT;
 
         $event = new GitHubEvent([
             'action' => 'edited',
+            'changes' => ['body' => ['from' => '']],
             'pull_request' => [
                 'number' => 1234,
                 'body' => $body,
-                'base' => ['ref' => '5.4'], // Mismatch
+                'base' => ['ref' => '5.4'],
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+    }
+
+    public function testOnPullRequestEditedTitleIsIgnored()
+    {
+        $this->issueApi->expects($this->never())->method('findBotComment');
+        $this->issueApi->expects($this->never())->method('commentOnIssue');
+
+        $body = <<<TXT
+| Q | A
+| --- | ---
+| Branch? | 6.2 |
+TXT;
+
+        $event = new GitHubEvent([
+            'action' => 'edited',
+            'changes' => ['title' => ['from' => 'Old title']],
+            'pull_request' => [
+                'number' => 1234,
+                'body' => $body,
+                'base' => ['ref' => '5.4'],
             ],
         ], $this->repository);
 
