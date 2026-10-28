@@ -4,6 +4,7 @@ parameters:
             subscribers:
                 - 'App\Subscriber\AutoUpdateTitleWithLabelSubscriber'
                 - 'App\Subscriber\StatusChangeByCommentSubscriber'
+                - 'App\Subscriber\StatusChangeOnPushSubscriber'
                 - 'App\Subscriber\StatusChangeByReviewSubscriber'
                 - 'App\Subscriber\NeedsReviewNewPRSubscriber'
                 - 'App\Subscriber\BugLabelNewIssueSubscriber'
