@@ -30,5 +30,8 @@ class LabelNameExtractorTest extends TestCase
         yield [['Messenger', 'Mime'], '[Messenger][Mime] Foobar'];
         yield [['Messenger', 'Mime'], '[Messenger] [Mime] Foobar'];
         yield [['Messenger', 'Mime'], '[Messenger] Foobar [Mime]'];
+        yield [['HttpKernel'], '[HttpKernel] Compute #[Cache] durations without daylight saving time'];
+        yield [[], '#[Cache] durations without daylight saving time'];
+        yield [['HttpKernel'], 'Compute #[Cache] durations [HttpKernel]'];
     }
 }
