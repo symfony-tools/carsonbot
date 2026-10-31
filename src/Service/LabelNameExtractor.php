@@ -42,7 +42,7 @@ class LabelNameExtractor
     public function extractLabels(string $title, Repository $repository): array
     {
         $labels = [];
-        if (preg_match_all('/\[(?P<labels>.+)\]/U', $title, $matches)) {
+        if (preg_match_all('/(?<!#)\[(?P<labels>.+)\]/U', $title, $matches)) {
             $validLabels = $this->getLabels($repository);
             foreach ($matches['labels'] as $label) {
                 $label = $this->fixLabelName($label);

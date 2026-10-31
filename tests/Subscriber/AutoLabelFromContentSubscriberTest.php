@@ -169,6 +169,12 @@ EOF,
             ['Asset', 'BC Break', 'Bug'],
         ];
 
+        $tests[] = [
+            '[HttpKernel] Compute #[Cache] durations without daylight saving time',
+            '',
+            ['HttpKernel'],
+        ];
+
         // testing the fixLabelName: di -> DependencyInjection
         $tests[] = [
             '[di][Fake] Extracting from title [Bug]',
