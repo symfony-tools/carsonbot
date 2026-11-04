@@ -3,6 +3,7 @@
 namespace App\Subscriber;
 
 use App\Api\Issue\IssueApi;
+use App\Api\Milestone\MilestoneApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Service\SymfonyVersionProvider;
@@ -17,6 +18,7 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly SymfonyVersionProvider $symfonyVersionProvider,
         private readonly IssueApi $issueApi,
+        private readonly MilestoneApi $milestoneApi,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -48,7 +50,9 @@ class UnsupportedBranchSubscriber implements EventSubscriberInterface
                 return;
             }
 
-            $isSupported = in_array($targetBranch, $validBranches);
+            // Members of the organization can target an unmaintained branch on purpose, for example to backport a hardening
+            $isSupported = in_array($targetBranch, $validBranches)
+                || (in_array($data['pull_request']['author_association'] ?? '', ['OWNER', 'MEMBER']) && $this->milestoneApi->exists($event->getRepository(), $targetBranch));
         }
 
         $number = $data['pull_request']['number'];
