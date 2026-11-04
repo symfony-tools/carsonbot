@@ -4,6 +4,7 @@ namespace App\Tests\Subscriber;
 
 use App\Api\Issue\IssueApi;
 use App\Api\Issue\NullIssueApi;
+use App\Api\Milestone\MilestoneApi;
 use App\Event\GitHubEvent;
 use App\GitHubEvents;
 use App\Model\Repository;
@@ -33,6 +34,8 @@ class UnsupportedBranchSubscriberTest extends TestCase
 
     private SymfonyVersionProvider|MockObject $symfonyVersionProvider;
 
+    private MilestoneApi|MockObject $milestoneApi;
+
     protected function setUp(): void
     {
         $this->issueApi = $this->createMock(NullIssueApi::class);
@@ -42,7 +45,9 @@ class UnsupportedBranchSubscriberTest extends TestCase
             ->getMock();
         $this->symfonyVersionProvider->method('getMaintainedVersions')->willReturn(['4.4', '5.1']);
 
-        $subscriber = new UnsupportedBranchSubscriber($this->symfonyVersionProvider, $this->issueApi, new NullLogger());
+        $this->milestoneApi = $this->createMock(MilestoneApi::class);
+
+        $subscriber = new UnsupportedBranchSubscriber($this->symfonyVersionProvider, $this->issueApi, $this->milestoneApi, new NullLogger());
         $this->repository = new Repository('carsonbot-playground', 'symfony', null);
 
         $this->dispatcher = new EventDispatcher();
@@ -113,6 +118,81 @@ class UnsupportedBranchSubscriberTest extends TestCase
 
         $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
         $this->assertEmpty($event->getResponseData());
+    }
+
+    public function testOnPullRequestOpenByMemberTargetingMilestone()
+    {
+        $this->milestoneApi->expects($this->once())
+            ->method('exists')
+            ->with($this->repository, '4.3')
+            ->willReturn(true);
+
+        $this->issueApi->expects($this->never())
+            ->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'author_association' => 'MEMBER',
+                'base' => ['ref' => '4.3'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $this->assertEmpty($event->getResponseData());
+    }
+
+    public function testOnPullRequestOpenByMemberWithoutMilestone()
+    {
+        $this->milestoneApi->expects($this->once())
+            ->method('exists')
+            ->with($this->repository, '4.3')
+            ->willReturn(false);
+
+        $this->issueApi->expects($this->once())
+            ->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'author_association' => 'MEMBER',
+                'base' => ['ref' => '4.3'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $this->assertSame('4.3', $event->getResponseData()['unsupported_branch']);
+    }
+
+    public function testOnPullRequestOpenByContributorTargetingMilestone()
+    {
+        $this->milestoneApi->method('exists')->willReturn(true);
+
+        $this->issueApi->expects($this->once())
+            ->method('commentOnIssue');
+
+        $event = new GitHubEvent([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 1234,
+                'author_association' => 'CONTRIBUTOR',
+                'base' => ['ref' => '4.3'],
+            ],
+            'repository' => [
+                'default_branch' => '5.x',
+            ],
+        ], $this->repository);
+
+        $this->dispatcher->dispatch($event, GitHubEvents::PULL_REQUEST);
+        $this->assertSame('4.3', $event->getResponseData()['unsupported_branch']);
     }
 
     public function testOnPullRequestNotOpen()
